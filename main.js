@@ -63,7 +63,7 @@ function runCode(){
 }
 
 document.getElementById("run-button").addEventListener("click", runCode);
-document.getElementById("close-button").addEventListener("click", stopWorker);
+document.getElementById("stop-button").addEventListener("click", stopWorker);
 
 var objectTest = {
   title : "titre",

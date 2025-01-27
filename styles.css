@@ -82,6 +82,10 @@ body{
     font-size: 22px;
 }
 
+#stop-button{
+    margin-left: 5px;
+    font-size: 20px;
+}
 
 #minimize-icon{
     font-size: 23px;

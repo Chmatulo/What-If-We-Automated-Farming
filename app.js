@@ -45,7 +45,7 @@ document.addEventListener("mousemove", (event) => {
   if (isDragging) {
     // Update the textarea's position
     IDE_Container.style.left = event.clientX - offsetX + "px";
-    IDE_Container.style.top = event.clientY - offsetY - 38 + "px";
+    IDE_Container.style.top = event.clientY - offsetY - 56 + "px";
   }
 
   code_highlight.style.height = code_input.style.height
