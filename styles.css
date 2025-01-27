@@ -1,0 +1,138 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: rgb(123, 141, 151);
+    color: aliceblue;
+}
+
+#IDE-container{
+    position: relative;
+    width: 30px;
+    height: 200px;
+    outline: none;  
+    user-select: none;
+
+    min-height: 32px;
+    min-width: 350px;
+    resize: both;
+    overflow: hidden;
+  }
+
+#code-input {
+    resize: none;
+    color: transparent;
+    caret-color: rgb(235, 238, 241);
+  }
+
+#code-highlight{
+    pointer-events: none;
+    background-color: transparent;
+    color:white;
+    user-select: none;
+}
+
+.IDE{
+    height: calc(100% - 36px); 
+    width: calc(100% - 6px);
+
+    border: 3px solid rgb(86, 86, 86);
+    border-top: 32px solid rgb(86, 86, 86);
+    background-color: rgb(46, 46, 46);
+    color: #ece9e9;
+    border-radius: 5px;
+    cursor: text;
+    font-family: monospace;
+    font-size: 24px;
+    outline: none;
+
+    overflow: hidden;
+    position: absolute;
+    white-space: pre;
+    
+}
+
+.IDE-text{
+    font-family: monospace;
+    font-size: 24px;
+    outline: none;
+}
+
+.code-button{
+  background-color: rgb(100, 115, 34);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px rgb(29, 29, 29);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#run-icon{
+    font-size: 20px;
+}
+
+#close-button{
+    margin-left: 5px;
+    font-size: 22px;
+}
+
+
+#minimize-icon{
+    font-size: 23px;
+}
+
+.code-button:hover{
+    background-color: rgb(138, 160, 43);
+}
+
+#ide-header{
+    width: 100%;
+    height: 32px;
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left{
+    margin-left: 3px;
+    width: auto;
+    height: 100%;
+}
+
+.center{
+    width: auto;
+    height: 100%;
+    font-family: monospace;
+    font-size: 20px;
+    outline: none;
+    justify-content: center;
+}
+
+.right{
+    width: auto;
+    height: 100%;
+    margin-right: 5px;
+}
+
+.header{
+    display: flex;
+    align-items: center;
+}
+
+#ide-name{
+    all: unset;
+    font-family: monospace;
+    font-size: 20px;
+    color: #ece9e9;
+    text-align: center;
+    width: 50%;
+    padding: 0 12px 0 3px;
+}
+

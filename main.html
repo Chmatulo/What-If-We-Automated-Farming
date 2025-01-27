@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Python IDE</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.1/full/pyodide.js"></script>
+
+    <script src="https://kit.fontawesome.com/71cb158392.js" crossorigin="anonymous"></script>
+
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    
+    <h1>Custom Python IDE</h1>
+
+    <button onclick="send()">Send Message</button>
+    
+    <div id="IDE-container">
+        <textarea id="code-input" class="IDE" contenteditable="true"># Write your code here:</textarea>
+        <div id="code-highlight" class="IDE"># Write your code here:</div> 
+
+        <div id="ide-header">
+
+            <div class="left header">
+                <div id="run-button" class="code-button">
+                    <i id="run-icon" class="fa-solid fa-play icon"></i>
+                </div>
+            </div>
+
+
+            <div class="center header">
+                <input type="text" id="ide-name" maxlength="10" value="main" autocomplete="off">
+            </div>
+
+            <div class="right header">
+                <div id="minimize-button" class="code-button" onclick="minimize()">
+                    <i id="minimize-icon" class="fa-solid fa-minus icon"></i>
+                </div>
+
+                <div id="close-button" class="code-button">
+                    <i id="close-icon" class="fa-solid fa-xmark icon"></i>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="main.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
