@@ -166,3 +166,74 @@ if (IDE_Container.clientHeight > 32){
 
   }
 }
+
+var IDE_number = 0
+
+function createIDE(){
+
+  IDE_number++
+
+  // Main Container
+  const IDE_Container = document.createElement('div');
+  IDE_Container.classList.add("IDE-container")
+
+  // Textarea for code
+  const code_input = document.createElement('textarea');
+  code_input.classList.add("IDE")
+  code_input.value = '# Write your code here:';
+  IDE_Container.appendChild(code_input)
+
+  // Highlight Area for colors
+  const code_highlight = document.createElement('div');
+  code_highlight.classList.add("code-highlight", "IDE");
+  code_input.value = '# Write your code here:';
+  IDE_Container.appendChild(code_highlight)
+
+  // Header IDE
+  const IDE_Header = document.createElement('div');
+  IDE_Header.classList.add("ide-header")
+
+  // Left Header IDE
+  const left_Header = document.createElement('div');
+  left_Header.classList.add("left", "header")
+  IDE_Header.appendChild(left_Header)
+
+  // Run Button
+  const run_button = document.createElement('div');
+  run_button.classList.add("code-button", "run-button")
+  left_Header.appendChild(run_button)
+
+  // Run Icon
+  const run_icon = document.createElement('i');
+  run_icon.classList.add("fa-solid", "fa-play", "icon")
+  run_button.appendChild(run_icon)
+
+  // Stop Button
+  const stop_button = document.createElement('div');
+  stop_button.classList.add("code-button", "stop-button")
+  left_Header.appendChild(stop_button)
+
+  // Stop Icon
+  const stop_icon = document.createElement('i');
+  stop_icon.classList.add("fa-solid", "fa-stop", "icon")
+  stop_button.appendChild(run_icon)
+
+  // Central Header IDE
+  const center_Header = document.createElement('div');
+  center_Header.classList.add("center", "header")
+  IDE_Header.appendChild(center_Header)
+
+  // IDE name input
+  const IDE_name = document.createElement('input');
+  IDE_name.type = "text"
+  IDE_name.maxLength = 10
+  IDE_name.autocomplete = "off"
+  IDE_name.classList.add("ide-name")
+  if (IDE_number == 0){
+    IDE_name.value = "main"
+  } else {
+    IDE_name = "code " + IDE_number
+  }
+  center_Header.appendChild(IDE_name)
+
+}
