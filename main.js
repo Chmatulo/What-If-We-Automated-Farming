@@ -19,7 +19,6 @@ function runWorker(){
       console.log(data)
     } else if (type == "codeState"){
       codeRunning = data
-      console.log(codeRunning)
     }
   } else {
     console.log("fin")
