@@ -15,11 +15,23 @@
     
 
     <div id="main-container">
+        <div id="navbar">
+            <div id="navbar-left" class="navbar-child">a</div>
 
-    <h1>Custom Python IDE</h1>
+            <div id="navbar-center" class="navbar-child">
+                <h1>Nom du Jeu</h1>
+            </div>
+
+            <div id="navbar-right" class="navbar-child">
+                <i id="settings" class="fa-solid fa-gear navbarhover"></i>
+                <i id="unlock" class="fa-solid fa-unlock navbarhover"></i>
+                <i id="addIDE" class="fa-regular fa-square-plus navbarhover" onclick="createIDE()"></i>
+                
+            </div>
+        </div>
+
 
     <button onclick="send()">Send Message</button>
-    <button onclick="createIDE()">IDE Append</button>
 
     </div>
     
