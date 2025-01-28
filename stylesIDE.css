@@ -18,6 +18,7 @@
 .code-input {
     resize: none;
     caret-color: rgb(235, 238, 241);
+    padding-left: 5px;
 }
 
 .IDE{
@@ -33,7 +34,6 @@
     font-family: monospace;
     font-size: 22px;
     outline: none;
-    padding-left: 5px;
 
     overflow: hidden;
     position: absolute;

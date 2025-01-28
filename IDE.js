@@ -121,6 +121,7 @@ main_container.addEventListener("mouseup", () => {
   code_highlight.style.backgroundColor = "transparent"
   code_highlight.style.color = "white"
   code_highlight.style.userSelect = "none"
+  code_highlight.style.paddingLeft = "5px"
   code_highlight.innerText = '# Write your code here:';
   IDE_Container.appendChild(code_highlight)
 
