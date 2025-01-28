@@ -1,5 +1,5 @@
 .IDE-container{
-    position: relative;
+    position: absolute;
     width: 30px;
     height: 200px;
     outline: none;  
@@ -12,12 +12,34 @@
     min-width: 350px;
     resize: both;
     overflow: hidden;
+
 }
 
 .code-input {
     resize: none;
     color: transparent;
     caret-color: rgb(235, 238, 241);
+}
+
+.IDE{
+    height: calc(100% - 36px); 
+    width: calc(100% - 6px);
+
+    border: 3px solid rgb(86, 86, 86);
+    border-top: 32px solid rgb(86, 86, 86);
+    background-color: rgb(46, 46, 46);
+    color: #ece9e9;
+    border-radius: 5px;
+    cursor: text;
+    font-family: monospace;
+    font-size: 22px;
+    outline: none;
+    padding-left: 5px;
+
+    overflow: hidden;
+    position: absolute;
+    white-space: pre;
+    
 }
 
 .ide-header{
@@ -49,6 +71,12 @@
     justify-content: center;
 }
 
+.right{
+    width: auto;
+    height: 100%;
+    margin-right: 5px;
+}
+
 .code-button{
     background-color: rgb(100, 115, 34);
     border: none;
@@ -68,6 +96,11 @@
 
 .run-button{
     font-size: 20px;
+}
+
+.close-button{
+    margin-left: 5px;
+    font-size: 22px;
 }
 
 .stop-button{

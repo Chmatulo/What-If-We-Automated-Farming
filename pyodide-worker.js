@@ -14,6 +14,8 @@ loadPyodideAndPackages(); // lancer le chargement
 
 // Variables Générales
 
+var codeRunning = false
+
 var gameObject = {} // créeation objet gameObject
 
 // fonction recevoir message du main.js
@@ -39,10 +41,16 @@ self.onmessage = async (event) => {
   try {
     // Execution du code Python
     data = "import time\n" + data // ajouter module time
+    codeRunning = true
+    self.postMessage({ type: "codeState", data: codeRunning })
     const result = await pyodide.runPythonAsync(data); // Exécuter
+    codeRunning = false
+    self.postMessage({ type: "codeState", data: codeRunning })
     self.postMessage({ type: "result", data: result }); // Poster le résultat final (inutile mdr)
   } catch (error) {
     // Gestion erreur
+    codeRunning = false
+    self.postMessage({ type: "codeState", data: codeRunning })
     self.postMessage({ type: "result", data: `Error: ${error.message}` });
   } finally {
     //Supression globales

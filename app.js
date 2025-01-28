@@ -4,6 +4,7 @@
 const code_input = document.getElementById("code-input");
 const code_highlight = document.getElementById("code-highlight");
 
+/*
 code_input.addEventListener("keydown", (e) => {
 
     if (e.key === "Tab") {
@@ -22,12 +23,16 @@ code_input.addEventListener("keydown", (e) => {
     }
 });
 
-const IDE_Container = document.getElementById("IDE-container");
+*/
 
+const IDE_Container = document.getElementById("IDE-container");
+/*
 let isDragging = false;
 let offsetX = 0;
 let offsetY = 0;
+*/
 
+/*
 IDE_Container.addEventListener("mousedown", (event) => {
   // Check if the click is outside the content area but not on the resize corner
   const rect = IDE_Container.getBoundingClientRect();
@@ -40,7 +45,10 @@ IDE_Container.addEventListener("mousedown", (event) => {
     offsetY = event.clientY - IDE_Container.offsetTop;
   }
 });
+
+*/
 // Mouse move: Dragging logic
+/*
 document.addEventListener("mousemove", (event) => {
   if (isDragging) {
     // Update the textarea's position
@@ -53,7 +61,10 @@ document.addEventListener("mousemove", (event) => {
 
 
 });
+*/
 // Mouse up: Stop dragging
+
+/*
 document.addEventListener("mouseup", () => {
 
   if (code_input.clientHeight == 0){
@@ -62,9 +73,29 @@ document.addEventListener("mouseup", () => {
 
   isDragging = false;
 });
-
+*/
+/*
 code_input.addEventListener("input", updateHighlight);
 
+addEventListener("input", (event) => {
+  const textcontent = code_input.value;
+
+  let newText = highlightKeywords(textcontent, keywords)
+
+  code_highlight.innerHTML = newText;
+
+  const spans = code_highlight.querySelectorAll("span");
+
+spans.forEach((span) => {
+
+if (span.parentElement.tagName === "SPAN") {
+  span.style.color = '#9b9b9b'
+}
+
+});
+});
+*/ 
+/*
 function updateHighlight() {
     const textcontent = code_input.value;
 
@@ -83,11 +114,16 @@ function updateHighlight() {
 });
     
 }
+*/
 
+/*
 const functionColor = '#fddd5c';
 const nativeToolsColor = '#f5b00f';
 const numbersColor = '#fac039';
 const commentColor = '#9b9b9b';
+*/
+
+/*
 
 const palette = {};
 
@@ -95,13 +131,16 @@ const palette = {};
 const functionKeys = ["ping"];
 const nativeToolKeys = ["def", "if", "else", "for", "in", "while", "and", "return", "break", "print"];
 
+
 const keywords = [...functionKeys, ...nativeToolKeys]
 
 functionKeys.forEach(i => palette[i] = functionColor);
 
 nativeToolKeys.forEach(i => palette[i] = nativeToolsColor);
 
+*/
 
+/*
 function highlightKeywords(inputString, keywords) {
   // Escape special characters in keywords for RegExp
   const escapedKeywords = keywords.map(keyword => keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -136,6 +175,8 @@ return inputString
 }
 updateHighlight()
 
+*/
+/*
 let beforeWidth = 350;
 let beforeHeight = 200;
 
@@ -166,65 +207,167 @@ if (IDE_Container.clientHeight > 32){
 
   }
 }
-
-var IDE_number = 0
+*/
+var IDE_number = -1
 
 function createIDE(){
 
   IDE_number++
 
+  const functionColor = '#fddd5c';
+  const nativeToolsColor = '#f5b00f';
+  const numbersColor = '#fac039';
+  const commentColor = '#9b9b9b';
+
+  let beforeWidth = 350;
+  let beforeHeight = 200;
+
+  const palette = {};
+
+  // Group keys by their associated color
+  const functionKeys = ["ping"];
+  const nativeToolKeys = ["def", "if", "else", "for", "in", "while", "and", "return", "break", "print"];
+
+
+  const keywords = [...functionKeys, ...nativeToolKeys]
+
+  functionKeys.forEach(i => palette[i] = functionColor);
+
+  nativeToolKeys.forEach(i => palette[i] = nativeToolsColor);
+
+  let isDragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  let main_container = document.getElementById("main-container")
+
   // Main Container
-  const IDE_Container = document.createElement('div');
+  let IDE_Container = document.createElement('div');
   IDE_Container.classList.add("IDE-container")
+  IDE_Container.addEventListener("mousedown", (event) => {
+    // Check if the click is outside the content area but not on the resize corner
+    const rect = IDE_Container.getBoundingClientRect();
+    const isResizeArea = event.clientY > rect.top + 32;
+    // Start dragging if the click is not on the resize corner
+    if (!isResizeArea) {
+      isDragging = true;
+      // Calculate the offset
+      offsetX = event.clientX - IDE_Container.offsetLeft;
+      offsetY = event.clientY - IDE_Container.offsetTop;
+    }
+  });
 
   // Textarea for code
-  const code_input = document.createElement('textarea');
-  code_input.classList.add("IDE")
+  let code_input = document.createElement('textarea');
+  code_input.classList.add("code-input", "IDE")
   code_input.value = '# Write your code here:';
+  code_input.addEventListener("input", updateHighlight)
+  code_input.addEventListener("keydown", (e) => {
+
+    if (e.key === "Tab") {
+
+        e.preventDefault();
+
+        const start = code_input.selectionStart;
+        const end = code_input.selectionEnd;
+
+        // Insert four spaces at the cursor position
+        const value = code_input.value;
+        code_input.value = value.substring(0, start) + "    " + value.substring(end);
+
+        // Move the cursor after the inserted spaces
+        code_input.selectionStart = code_input.selectionEnd = start + 4;
+    }
+});
+
+code_input.addEventListener("input", (event) => {
+  const textcontent = code_input.value;
+
+  let newText = highlightKeywords(textcontent, keywords)
+
+  code_highlight.innerHTML = newText;
+
+  const spans = code_highlight.querySelectorAll("span");
+
+spans.forEach((span) => {
+
+if (span.parentElement.tagName === "SPAN") {
+  span.style.color = '#9b9b9b'
+}
+
+  });
+});
+
+main_container.addEventListener("mousemove", (event) => {
+  if (isDragging) {
+    // Update the textarea's position
+    IDE_Container.style.left = event.clientX - offsetX + "px";
+    IDE_Container.style.top = event.clientY - offsetY + "px";
+  }
+
+  code_highlight.style.height = code_input.style.height
+  code_highlight.style.width = code_input.style.width
+
+});
+
+main_container.addEventListener("mouseup", () => {
+
+  if (code_input.clientHeight == 0){
+    IDE_Container.style.resize = "none"
+  }
+
+  isDragging = false;
+});
+
   IDE_Container.appendChild(code_input)
 
   // Highlight Area for colors
-  const code_highlight = document.createElement('div');
-  code_highlight.classList.add("code-highlight", "IDE");
-  code_input.value = '# Write your code here:';
+  let code_highlight = document.createElement('div');
+  code_highlight.classList.add("IDE");
+  code_highlight.style.pointerEvents = "none"
+  code_highlight.style.backgroundColor = "transparent"
+  code_highlight.style.color = "white"
+  code_highlight.style.userSelect = "none"
+  code_highlight.innerText = '# Write your code here:';
   IDE_Container.appendChild(code_highlight)
 
   // Header IDE
-  const IDE_Header = document.createElement('div');
+  let IDE_Header = document.createElement('div');
   IDE_Header.classList.add("ide-header")
+  IDE_Container.appendChild(IDE_Header)
 
   // Left Header IDE
-  const left_Header = document.createElement('div');
+  let left_Header = document.createElement('div');
   left_Header.classList.add("left", "header")
   IDE_Header.appendChild(left_Header)
 
   // Run Button
-  const run_button = document.createElement('div');
+  let run_button = document.createElement('div');
   run_button.classList.add("code-button", "run-button")
   left_Header.appendChild(run_button)
 
   // Run Icon
-  const run_icon = document.createElement('i');
+  let run_icon = document.createElement('i');
   run_icon.classList.add("fa-solid", "fa-play", "icon")
   run_button.appendChild(run_icon)
 
   // Stop Button
-  const stop_button = document.createElement('div');
+  let stop_button = document.createElement('div');
   stop_button.classList.add("code-button", "stop-button")
   left_Header.appendChild(stop_button)
 
   // Stop Icon
-  const stop_icon = document.createElement('i');
+  let stop_icon = document.createElement('i');
   stop_icon.classList.add("fa-solid", "fa-stop", "icon")
-  stop_button.appendChild(run_icon)
+  stop_button.appendChild(stop_icon)
 
   // Central Header IDE
-  const center_Header = document.createElement('div');
+  let center_Header = document.createElement('div');
   center_Header.classList.add("center", "header")
   IDE_Header.appendChild(center_Header)
 
   // IDE name input
-  const IDE_name = document.createElement('input');
+  let IDE_name = document.createElement('input');
   IDE_name.type = "text"
   IDE_name.maxLength = 10
   IDE_name.autocomplete = "off"
@@ -232,8 +375,126 @@ function createIDE(){
   if (IDE_number == 0){
     IDE_name.value = "main"
   } else {
-    IDE_name = "code " + IDE_number
+    IDE_name.value = "code " + IDE_number
   }
   center_Header.appendChild(IDE_name)
 
+  // Right Header
+  let right_Header = document.createElement('div');
+  right_Header.classList.add("right", "header")
+  IDE_Header.appendChild(right_Header)
+
+  // Minimize Button
+  let minimize_button = document.createElement('div');
+  minimize_button.classList.add("code-button", "run-button")
+  right_Header.appendChild(minimize_button)
+  minimize_button.addEventListener('click', function() {
+
+    if (IDE_Container.clientHeight > 32){
+    
+      beforeHeight = IDE_Container.clientHeight
+      beforeWidth = IDE_Container.clientWidth
+    
+      IDE_Container.style.height = 32 + "px"
+      IDE_Container.style.width = 350  + "px"
+    
+      IDE_Container.style.resize = "none"
+    
+    } else {
+    
+      if (beforeHeight < 62){
+        beforeHeight = 62
+      }
+    
+      IDE_Container.style.resize = "both"
+    
+      IDE_Container.style.height = beforeHeight + "px"
+      IDE_Container.style.width = beforeWidth + "px"
+    
+      }
+  });
+
+  // Minimize Icon
+  let minimize_icon = document.createElement('i');
+  minimize_icon.classList.add("fa-solid", "fa-minus", "icon")
+  minimize_button.appendChild(minimize_icon)
+
+  // Close Button
+  let close_button = document.createElement('div');
+  close_button.classList.add("code-button", "close-button")
+  close_button.addEventListener("click", function () {
+      IDE_Container.remove();
+  });
+  right_Header.appendChild(close_button)
+
+  // Close Icon
+  let close_icon = document.createElement('i');
+  close_icon.classList.add("fa-solid", "fa-xmark", "icon")
+  close_button.appendChild(close_icon)
+
+  main_container.appendChild(IDE_Container)
+
+
+function updateHighlight() {
+  const textcontent = code_input.value;
+
+  let newText = highlightKeywords(textcontent, keywords)
+
+  code_highlight.innerHTML = newText;
+
+  const spans = code_highlight.querySelectorAll("span");
+
+spans.forEach((span) => {
+
+if (span.parentElement.tagName === "SPAN") {
+  span.style.color = '#9b9b9b'
+   }
+
+  });
+  
 }
+
+updateHighlight()
+
+function highlightKeywords(inputString, keywords) {
+  // Escape special characters in keywords for RegExp
+  const escapedKeywords = keywords.map(keyword => keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  
+  // Create a regex pattern for keywords
+  const keywordPattern = new RegExp(`\\b(${escapedKeywords.join('|')})\\b`, 'gi');
+  
+  // Create a regex pattern for all numbers
+  const numberPattern = /-?\b\d+(\.\d+)?\b/g;
+
+  const linePattern = /#.*$/gm;
+
+  // Replace matched comment lines with a styled span
+    inputString = inputString.replace(linePattern, (match) => {
+    return `<span class="IDE-text" style="color: ${commentColor};">${match}</span>`;
+  });
+
+  // Replace matched keywords with a styled span
+  inputString = inputString.replace(keywordPattern, (match) => {
+    const color = palette[match]
+    return `<span class="IDE-text" style="color: ${color};">${match}</span>`;
+  });
+
+  // Replace matched numbers with a styled span
+ inputString = inputString.replace(numberPattern, (match) => {
+    return `<span class="IDE-text" style="color: ${numbersColor};">${match}</span>`;
+  });
+
+
+return inputString
+
+  }
+
+  run_button.addEventListener('click', function() {
+    runCode(code_input.value)
+  });
+
+  stop_button.addEventListener("click", stopWorker);
+
+}
+
+createIDE()

@@ -1,5 +1,6 @@
 let worker = null;
 var receivingAllowed = true;
+let codeRunning = false;
 
 function runWorker(){
   if (!worker){
@@ -16,6 +17,9 @@ function runWorker(){
       console.log(data)
     } else if (type === "result") {
       console.log(data)
+    } else if (type == "codeState"){
+      codeRunning = data
+      console.log(codeRunning)
     }
   } else {
     console.log("fin")
@@ -31,7 +35,7 @@ function runWorker(){
 runWorker()
 
 function stopWorker(){
-
+  codeRunning = false;
   receivingAllowed = false;
 
   if (worker){
@@ -45,15 +49,14 @@ function stopWorker(){
   runWorker()
 
 }
-
-function runCode(){
+function runCode(code){
 
   receivingAllowed = true;
 
 
-    if (worker){
+    if (worker && !codeRunning){
       console.log("running code")
-      const code = document.getElementById("code-input").value
+      codeRunning = true;
       worker.postMessage({ type: "code", data : code });
     } else {
       console.log("No worker, restarting")
@@ -61,9 +64,6 @@ function runCode(){
     }
 
 }
-
-document.getElementById("run-button").addEventListener("click", runCode);
-document.getElementById("stop-button").addEventListener("click", stopWorker);
 
 var objectTest = {
   title : "titre",

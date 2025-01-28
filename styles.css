@@ -5,8 +5,16 @@
 
 body{
     background-color: rgb(123, 141, 151);
-    color: aliceblue;
+    color: rgb(235, 238, 241);
 }
+
+#main-container{
+    width: 100vw;
+    height: 100vh;
+    outline: 2px solid red;
+}
+
+/*
 
 #IDE-container{
     position: relative;
@@ -24,20 +32,7 @@ body{
     overflow: hidden;
   }
 
-#code-input {
-    resize: none;
-    color: transparent;
-    caret-color: rgb(235, 238, 241);
-  }
-
-#code-highlight{
-    pointer-events: none;
-    background-color: transparent;
-    color:white;
-    user-select: none;
-}
-
-.IDE{
+  .IDE{
     height: calc(100% - 36px); 
     width: calc(100% - 6px);
 
@@ -56,6 +51,19 @@ body{
     white-space: pre;
     
 }
+
+.code-highlight{
+    pointer-events: none;
+    background-color: transparent;
+    color:white;
+    user-select: none;
+}
+
+.code-input {
+    resize: none;
+    color: transparent;
+    caret-color: rgb(235, 238, 241);
+  }
 
 .IDE-text{
     font-family: monospace;
@@ -143,3 +151,4 @@ body{
     padding: 0 12px 0 3px;
 }
 
+*/
