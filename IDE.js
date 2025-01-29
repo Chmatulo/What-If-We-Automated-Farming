@@ -53,6 +53,7 @@ function createIDE(){
   code_input.classList.add("IDE", "code-input")
   code_input.value = '# Write your code here:';
   code_input.style.color = "transparent"
+  code_input.setAttribute('spellcheck', false)
   code_input.addEventListener("input", updateHighlight)
   code_input.addEventListener("keydown", (e) => {
 
