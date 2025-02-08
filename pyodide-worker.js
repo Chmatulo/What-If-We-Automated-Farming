@@ -54,7 +54,7 @@ self.onmessage = async (event) => {
     self.postMessage({ type: "result", data: `Error: ${error.message}` });
   } finally {
     //Supression globales
-    pyodide.globals.delete("ping"); // Nettoyer fonctions 
+    pyodide.globals.delete("ping");
     pyodide.globals.delete("checkVar");
     }
 

@@ -1,3 +1,4 @@
+
 let worker = null;
 var receivingAllowed = true;
 let codeRunning = false;

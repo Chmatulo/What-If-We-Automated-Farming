@@ -15,8 +15,8 @@ function createIDE(){
 
   const palette = {};
 
-  // Group keys by their associated color
-  const functionKeys = ["ping"];
+  // Grouper selon couleur
+  const functionKeys = ["ping", "move", "harvest", "plant", "canPlant", "canHarvest", "harvest", "canTill", "till"];
   const nativeToolKeys = ["def", "if", "else", "for", "in", "while", "and", "return", "break", "print"];
 
 
@@ -53,6 +53,7 @@ function createIDE(){
   code_input.classList.add("IDE", "code-input")
   code_input.value = '# Write your code here:';
   code_input.style.color = "transparent"
+  code_input.setAttribute('spellcheck', false)
   code_input.addEventListener("input", updateHighlight)
   code_input.addEventListener("keydown", (e) => {
 
@@ -250,29 +251,30 @@ if (span.parentElement.tagName === "SPAN") {
 updateHighlight()
 
 function highlightKeywords(inputString, keywords) {
-  // Escape special characters in keywords for RegExp
+
+  // Caractères spéciaux Regex
   const escapedKeywords = keywords.map(keyword => keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   
-  // Create a regex pattern for keywords
+  // Pattern Regex pour les keywords
   const keywordPattern = new RegExp(`\\b(${escapedKeywords.join('|')})\\b`, 'gi');
   
-  // Create a regex pattern for all numbers
+  // Pattern Regex pour les nombres
   const numberPattern = /-?\b\d+(\.\d+)?\b/g;
 
   const linePattern = /#.*$/gm;
 
-  // Replace matched comment lines with a styled span
+  // Remplacer mots par un span stylisé
     inputString = inputString.replace(linePattern, (match) => {
     return `<span class="IDE-text" style="color: ${commentColor};">${match}</span>`;
   });
 
-  // Replace matched keywords with a styled span
+  // Remplacer mots par un span stylisé
   inputString = inputString.replace(keywordPattern, (match) => {
     const color = palette[match]
     return `<span class="IDE-text" style="color: ${color};">${match}</span>`;
   });
 
-  // Replace matched numbers with a styled span
+  // Remplacer mots par un span stylisé
  inputString = inputString.replace(numberPattern, (match) => {
     return `<span class="IDE-text" style="color: ${numbersColor};">${match}</span>`;
   });
@@ -291,3 +293,21 @@ return inputString
 }
 
 createIDE()
+
+/*
+let personne = {}
+personne.name = "Pierre"
+personne.age = 18
+
+console.log(personne.name)
+
+
+function save(){
+    localStorage.setItem("user", JSON.stringify(personne));
+}
+
+function load(){
+    let storedUser = JSON.parse(localStorage.getItem("user"));
+    console.log(storedUser.name)
+}
+*/
