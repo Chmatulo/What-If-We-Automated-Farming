@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Schoolbell&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Iceland&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: rgb(123, 141, 151);
+    color: rgb(235, 238, 241);
+}
+
+#main-container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+}
+
+.sub-container{
+    width: 50vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#container-right{
+    display: flex;
+    flex-direction: column;
+}
+
+#container-left{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: 3vw;
+    padding-top: 17vh;
+}
+
+p{
+    font-family: "Iceland", serif;
+    position: relative;
+    animation: title-animation 6s linear infinite;
+}
+
+p[title-1]{
+    font-size: 20vh;
+}
+
+p[title-2]{
+    font-family: "Schoolbell", serif;
+    font-size: 5vh;
+    left: 5vw;
+    animation-delay: 2s;
+}
+
+p[title-3]{
+    font-size: 15vh;
+    left: 3vw;
+    animation-delay: 4s;
+}
+
+@keyframes title-animation {
+    0% {transform: scale(1);}
+    16% {transform: scale(1.03);}
+    31% {transform: scale(0.99);}
+    35% {transform: scale(1);}
+}
+
+
+.button{
+    margin: 1.5vh;
+    height: 10%;
+    aspect-ratio: 3/1;
+    
+    cursor: pointer;
+    transition: 0.15s ease;
+    box-shadow: 0px 2px 4px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px rgb(66, 75, 29);
+    font-size: 3vh;
+    border-radius: 6px;
+    color: #36395a;
+    transition: box-shadow 0.15s ease,transform 0.15s ease;
+    font-family: monospace;
+    font-weight: 600;
+    padding: 0 10px;
+
+    background-color: rgb(100, 115, 34);
+    color: rgb(235, 238, 241);
+}
+
+.button:hover{
+    box-shadow: 0px 4px 8px rgb(45 35 66 /60%), 0px 7px 13px -3px rgb(45 35 66 / 60%), inset 0px -3px 0px rgb(66, 75, 29);
+    transform: translate(-1px, -5px);
+}
