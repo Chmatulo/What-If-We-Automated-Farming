@@ -1,11 +1,19 @@
+:root {
+    --background: rgb(123, 141, 151);
+    --textColor: rgb(235, 238, 241);
+    --greenColor: rgb(100, 115, 34);
+    --borderColor: rgb(86, 86, 86);
+    --IDEBackground: rgb(46, 46, 46)
+  }
+
 *{
     margin: 0;
     padding: 0;
 }
 
 body{
-    background-color: rgb(123, 141, 151);
-    color: rgb(235, 238, 241);
+    background-color: var(--background);
+    color: var(--textColor);
 }
 
 #main-container{
@@ -58,7 +66,7 @@ body{
 }
 
 .navbarhover:hover{
-    color: rgb(204, 204, 204);
+    color: var(--textColor);
     cursor:pointer;
 }
 
@@ -75,12 +83,12 @@ body{
 }
 
 #field{
-    height: 600px;
-    width: 600px;
-    border: 2px solid yellow;
+    height: 50vh;
+    aspect-ratio: 1/1;
     position: absolute;
+    border-radius: 30px;
 }
 
 #soil{
-    border: 2px solid green;
+
 }

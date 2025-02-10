@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GAME</title>
 
+    <link rel="icon" href="data/img/main-logo.png">
+
     <script src="https://cdn.jsdelivr.net/pyodide/v0.27.1/full/pyodide.js"></script>
     <script src="https://kit.fontawesome.com/71cb158392.js" crossorigin="anonymous"></script>
 
+    <link href="variables.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
-    <link href="stylesIDE.css" rel="stylesheet">
-    <link rel="icon" href="data/img/main-logo.png">
+    <link href="stylesBlocks.css" rel="stylesheet">
 </head>
 <body>
     
@@ -30,10 +32,9 @@
 
         </div>
 
-
         <div id="canvas-container">
-            <canvas id="field"></canvas>
-            <canvas id="soil" style="display: block;"></canvas>
+            <canvas id="field" ></canvas>
+            <canvas id="soil" style="display: none;"></canvas>
         </div>
 
 
@@ -41,6 +42,6 @@
     </div>
 
     <script src="main.js"></script>
-    <script src="IDE.js"></script>
+    <script src="block-loader.js"></script>
 </body>
 </html>

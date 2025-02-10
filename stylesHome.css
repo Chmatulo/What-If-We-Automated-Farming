@@ -7,8 +7,8 @@
 }
 
 body{
-    background-color: rgb(123, 141, 151);
-    color: rgb(235, 238, 241);
+    background-color: var(--background);
+    color: var(--textColor);
     height: 100vh;
     width: 100vw;
 }
@@ -102,8 +102,8 @@ p[title-3]{
     font-weight: 600;
     padding: 0 10px;
 
-    background-color: rgb(100, 115, 34);
-    color: rgb(235, 238, 241);
+    background-color: var(--greenColor);
+    color: var(--textColor);
     user-select: none;
 }
 
