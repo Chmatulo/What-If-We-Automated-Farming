@@ -6,13 +6,14 @@
 body{
     background-color: rgb(123, 141, 151);
     color: rgb(235, 238, 241);
-    height: 100vh;
-    width: 100vw;
 }
 
 #main-container{
-    width: 100%;
+    width: 100vw;
     height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 #navbar{
@@ -66,6 +67,20 @@ body{
 }
 
 #canvas-container{
-    outline: 2px solid pink;
-    
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#field{
+    height: 600px;
+    width: 600px;
+    border: 2px solid yellow;
+    position: absolute;
+}
+
+#soil{
+    border: 2px solid green;
 }
