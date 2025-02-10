@@ -115,3 +115,63 @@ a{
     box-shadow: 0px 4px 8px rgb(45 35 66 /60%), 0px 7px 11px -3px rgb(45 35 66 / 60%), inset 0px -3px 0px rgb(66, 75, 29);
     transform: translate(-1px, -5px);
 }
+
+#options-container{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 80vh;
+    width: 80vw;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#options{
+    background-color: var(--IDEBackground);
+    border: 3px solid var(--borderColor);
+    border-top: 32px solid var(--borderColor);
+    border-radius: 5px;
+    flex: 1;
+}
+
+#options-navbar{
+    position: absolute;
+    height: 32px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.options-button{
+    position: relative;
+    background-color: var(--greenColor);
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    box-shadow: 1px 1px 1px rgb(29, 29, 29);
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 4px;
+}
+
+.options-button:hover{
+    background-color: rgb(138, 160, 43);
+}
+
+.icon{
+    font-size: 22px;
+}
+
+#options-text{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: monospace;
+    font-size: 22px;
+}

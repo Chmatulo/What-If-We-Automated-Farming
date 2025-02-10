@@ -26,12 +26,28 @@
 
             <a href="main.html" id="jouer" class="button">Nouvelle Partie</a>
             <button href="main.html" id="jouer" class="button">Charger une partie</button>
-            <button id="jouer" class="button">Options</button>
+            <button id="jouer" class="button" onclick="optionsUpdate()">Options</button>
             <button id="jouer" class="button">Crédits</button>
-
 
         </div>
 
+        <div id="options-container" style="display: none;">
+
+            <div id="options-navbar">
+
+                <div id="options-text">Options</div>
+
+                <div id="close-button" class="options-button" onclick="optionsUpdate()">
+                    <i class="fa-solid fa-xmark icon"></i>
+                </div>
+
+            </div>
+
+            <div id="options">
+                Options
+            </div>
+
+        </div>
     </div>
 
     <script src="home-menu.js"></script>

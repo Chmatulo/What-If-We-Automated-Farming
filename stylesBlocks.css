@@ -5,8 +5,8 @@
     outline: none;  
     user-select: none;
 
-    left: calc(50vw - 175px);
-    top: 10vh;
+    left: 10vw;
+    top: 15vh;
 
     min-height: 32px;
     min-width: 350px;
@@ -28,7 +28,7 @@
     border: 3px solid var(--borderColor);
     border-top: 32px solid var(--borderColor);
     background-color: var(--IDEBackground);
-    color: #ece9e9;
+    color: var(--textColor);
     border-radius: 5px;
     cursor: text;
     font-family: monospace;
