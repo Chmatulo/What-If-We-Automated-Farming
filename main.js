@@ -187,5 +187,5 @@ let fieldValues = [
 ]
 
 function readData(){
-  console.log(window.dataTEST.age)
+  console.log("Reading globalVar in js3:", supermegaVariable);
 }

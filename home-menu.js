@@ -85,7 +85,8 @@ function createSave(){
     load_button.classList.add("load-editable", "load-button");
     load_button.setAttribute("data-id", "1");
     load_button.onclick = function() {
-        dataTEST.age = 1
+        window.supermegaVariable = 30;
+        console.log("globalVar modified to", supermegaVariable);
     };
     load_button.textContent = "New Save";
     load_container.appendChild(load_button)
