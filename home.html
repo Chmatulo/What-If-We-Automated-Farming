@@ -24,10 +24,32 @@
 
         <div id="container-right" class="sub-container">
 
-            <a href="main.html" id="jouer" class="button">Nouvelle Partie</a>
-            <button href="main.html" id="jouer" class="button">Charger une partie</button>
-            <button id="jouer" class="button" onclick="optionsUpdate()">Options</button>
-            <button id="jouer" class="button">Crédits</button>
+            <div id="right-default" style="display: block;">
+
+                <a href="main.html" id="jouer" class="button">Jouer</a>
+                <button href="main.html" id="jouer" class="button" onclick="updateSaves()">Sauvegardes</button>
+                <button id="jouer" class="button" onclick="optionsUpdate()">Options</button>
+                <button id="jouer" class="button">Crédits</button>
+
+            </div>
+
+            <div id="right-load" style="display: none;">
+
+                <div class="load-navbar">
+
+                    <div id="edit-button" class="load-navbar-button" onclick="updateSaves()">
+                        <i class="fa-solid fa-arrow-left edit-icon"></i>
+                    </div>
+
+                    <span save>Sauvegardes</span>
+
+                    <div id="edit-button" class="load-navbar-button" onclick="createSave()">
+                        <i class="fa-solid fa-plus edit-icon"></i>
+                    </div>
+                </div>
+
+            </div>
+            
 
         </div>
 
@@ -50,6 +72,7 @@
         </div>
     </div>
 
+    <script src="data.js"></script>
     <script src="home-menu.js"></script>
     
 </body>

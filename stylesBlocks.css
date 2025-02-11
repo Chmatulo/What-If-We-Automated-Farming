@@ -90,7 +90,7 @@
 }
 
 .code-button:hover{
-    background-color: rgb(138, 160, 43);
+    background-color: var(--greenColorHover);
 }
 
 .run-button{

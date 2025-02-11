@@ -82,7 +82,7 @@ p[title-3]{
 
 .button{
     all: unset;
-    margin: 1.5vh;
+    margin: 3vh;
     height: 10vh;
     width: 32vh;
 
@@ -94,7 +94,6 @@ p[title-3]{
     transition: 0.15s ease;
     box-shadow: 0px 2px 4px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px rgb(66, 75, 29);
     font-size: 3vh;
-    border: 2px solid rgb(45 35 66 / 40%);
     border-radius: 6px;
     color: #36395a;
     transition: box-shadow 0.15s ease,transform 0.15s ease;
@@ -174,4 +173,105 @@ a{
     transform: translateX(-50%);
     font-family: monospace;
     font-size: 22px;
+}
+
+#right-load{
+    height: 50vh;
+    width: 25vw;
+}
+
+.load-navbar{
+    background-color: rgb(46, 46, 46, 0.3);
+    margin: 0 2vw 0 2vw;
+    padding: 0.5vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+}
+
+.load-navbar-button{
+    background-color: var(--greenColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5vh;
+    width: 5vh;
+    border-radius: 15px;
+    user-select: none;
+}
+
+.load-navbar-button:hover{
+    background-color: var(--greenColorHover);
+}
+
+
+span[save]{
+    font-size: 3.5vh;
+    font-family: monospace;
+    user-select: none;
+}
+
+.load-container{
+    margin: 2vh 2vw 2vh 2vw;
+    height: 5vh;
+    display: flex;
+    align-items: center;
+    padding: 0.5vh;
+    background-color: rgb(46, 46, 46, 0.3);
+    border-radius: 5px;
+}
+
+.load-button{
+    width: 15vw;
+    height: 100%;
+    font-size: 3vh;
+    background-color: var(--greenColor);
+    border: none;
+    border-radius: 5px;
+    color: var(--textColor);
+    user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.load-button:hover{
+    background-color: var(--greenColorHover);
+}
+
+.edit-button{
+    background-color: var(--greenColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5vh;
+    width: 5vh;
+    border-radius: 15px;
+    margin-left: 0.5vw;
+    user-select: none;
+}
+
+.edit-button:hover{
+    background-color: var(--greenColorHover);
+}
+
+.edit-icon{
+    font-size: 3vh;
+}
+
+
+
+.button-test {
+    font-size: 16px;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+.editable {
+    border: 1px solid #000;
+    background: #fff;
+    padding: 8px;
+    min-width: 100px;
+    display: inline-block;
+    text-align: center;
 }

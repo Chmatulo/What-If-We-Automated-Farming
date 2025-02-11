@@ -185,3 +185,7 @@ let fieldValues = [
   [1, 1, 1, 1, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 1]
 ]
+
+function readData(){
+  console.log(window.dataTEST.age)
+}
