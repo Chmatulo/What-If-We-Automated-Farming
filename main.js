@@ -137,6 +137,14 @@ function draw(){
       field_context.putImageData(soilTexture, x*cellSize, y*cellSize);
     }
   }
+
+  for (let y = 1 ; y < 8 ; y++){
+    for (let x = 1 ; x < 8 ; x++){
+      let soilType = fieldValues[y-1][x-1]
+      var soilTexture = soil_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
+      field_context.putImageData(soilTexture, x*cellSize, y*cellSize);
+    }
+  }
 }
 
 // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
@@ -145,6 +153,13 @@ let soilTextures = [
   [2*cellSize, 1*cellSize],
   [2*cellSize, 2*cellSize],
   [2*cellSize, 3*cellSize]
+]
+
+// 0 = "wheat" 1 = "carrot" 2 = "golden_apple"
+let plantTextures = [
+  [3*cellSize, 0],
+  [4*cellSize, 0],
+  [5*cellSize, 0]
 ]
 
 function drawField(){
@@ -185,6 +200,20 @@ let fieldValues = [
   [1, 1, 1, 1, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 1]
 ]
+
+// 0 = "nothing" 1 = "wheat" 2 = "carrot" 3 ="golden_apple"
+
+let plantValues = [
+  [0, 0, 0, 1, 1, 1, 1],
+  [1, 1, 1, 1, 3, 1, 1],
+  [1, 1, 1, 1, 1, 0, 1],
+  [1, 1, 1, 2, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1]
+]
+
+let dronePos = [3, 3]
 
 function readData(){
   console.log("Reading globalVar in js3:", supermegaVariable);
