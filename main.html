@@ -3,21 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAME</title>
+    <title>What if we Automated farming ?</title>
 
-    <link rel="icon" href="data/img/main-logo.png">
+    <link href="data/img/main-logo.png" rel="icon">
+
+    <script src="https://kit.fontawesome.com/71cb158392.js" crossorigin="anonymous"></script>
+
+    <link href="styles.css" rel="stylesheet">
+    <link href="stylesHome.css" rel="stylesheet">
+    <link href="stylesBlocks.css" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.27.1/full/pyodide.js"></script>
     <script src="https://kit.fontawesome.com/71cb158392.js" crossorigin="anonymous"></script>
-
-    <link href="variables.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
-    <link href="stylesBlocks.css" rel="stylesheet">
 </head>
 <body>
-    
 
-    <div id="main-container">
+    <div id="main-home-container" class="main-container">
+
+        <div id="container-left" class="sub-container">
+            <p title-1>What if we</p> 
+            <p title-2>Aut<i class="fa-solid fa-gear gear"></i>mated</p>   
+            <p title-3>farming ?</p>
+        </div>
+
+        <div id="container-right" class="sub-container">
+
+            <div id="right-default" style="display: block;">
+
+                <button id="jouer" class="button" onclick="changeScene()">Jouer</button>
+                <button href="main.html" id="jouer" class="button" onclick="updateSaves()">Sauvegardes</button>
+                <button id="jouer" class="button" onclick="menuUpdate()">Options</button>
+                <button id="jouer" class="button">Crédits</button>
+
+            </div>
+
+            <div id="right-load" style="display: none;">
+
+                <div class="load-navbar">
+
+                    <div id="edit-button" class="load-navbar-button" onclick="updateSaves()">
+                        <i class="fa-solid fa-arrow-left edit-icon"></i>
+                    </div>
+
+                    <span save>Sauvegardes</span>
+
+                    <div id="edit-button" class="load-navbar-button" onclick="createSave()">
+                        <i class="fa-solid fa-plus edit-icon"></i>
+                    </div>
+                </div>
+
+            </div>
+            
+
+        </div>
+
+    </div>
+
+    <div id="main-game-container" class="main-container">
 
         <div id="navbar">
             <div id="navbar-left" class="navbar-child">
@@ -25,7 +67,8 @@
             </div>
 
             <div id="navbar-right" class="navbar-child">
-                <i id="settings" class="fa-solid fa-gear navbarhover"></i>
+                <i id="home" class="fa-solid fa-house navbarhover" onclick="changeScene()"></i>
+                <i id="settings" class="fa-solid fa-gear navbarhover" onclick="menuUpdate()"></i>
                 <i id="unlock" class="fa-solid fa-unlock navbarhover"></i>
                 <i id="addIDE" class="fa-regular fa-square-plus navbarhover" onclick="createIDE()"></i>
             </div>
@@ -37,12 +80,30 @@
             <canvas id="soil" style="display: none;"></canvas>
         </div>
 
-<button onclick="readData()">DATA</button>
+    </div>
+
+    <div id="options-container" style="display: none;">
+
+        <div id="options-navbar">
+
+            <div id="options-text">Options</div>
+
+            <div id="close-button" class="options-button" onclick="menuUpdate()">
+                <i class="fa-solid fa-xmark icon"></i>
+            </div>
+
+        </div>
+
+        <div id="options">
+            Options
+            <button onclick="changeScene()">DATA</button>
+        </div>
 
     </div>
 
-    <script src="data.js"></script>
     <script src="main.js"></script>
+    <script src="menu.js"></script>
     <script src="block-loader.js"></script>
+    
 </body>
 </html>

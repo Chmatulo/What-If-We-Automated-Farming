@@ -30,7 +30,7 @@ function createIDE(){
   let offsetX = 0;
   let offsetY = 0;
 
-  let main_container = document.getElementById("main-container")
+  let main_container = document.getElementById("main-game-container")
 
   // Main Container
   let IDE_Container = document.createElement('div');
@@ -295,20 +295,92 @@ return inputString
 
 createIDE()
 
-/*
-let personne = {}
-personne.name = "Pierre"
-personne.age = 18
+// Create saves
 
-console.log(personne.name)
+var saveNumber = 0
 
+function createSave(){
 
-function save(){
-    localStorage.setItem("user", JSON.stringify(personne));
+    if (saveNumber <= 4){
+
+    saveNumber++
+
+    const right_load = document.getElementById("right-load");
+
+    let load_container = document.createElement("div");
+    load_container.classList.add("load-container")
+
+    let load_button = document.createElement("button");
+    load_button.classList.add("load-editable", "load-button");
+    load_button.setAttribute("data-id", "1");
+    load_button.onclick = function() {
+        window.supermegaVariable = 30;
+        console.log("globalVar modified to", supermegaVariable);
+    };
+    load_button.textContent = "New Save";
+    load_container.appendChild(load_button)
+
+    let edit_button = document.createElement("div");
+    edit_button.classList.add("edit-button");
+    edit_button.onclick = function() {
+        load_button.contentEditable = true;
+        load_button.focus();
+        let range = document.createRange();
+        let selection = window.getSelection();
+    
+            range.selectNodeContents(load_button); // Selects all content inside
+            range.collapse(false); // Moves the cursor to the end
+
+            selection.removeAllRanges(); // Clear existing selection
+            selection.addRange(range); // Apply new selection
+
+        load_button.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                load_button.contentEditable = false;
+                event.preventDefault(); 
+            }
+        });
+    
+        load_button.addEventListener("blur", function() {
+            load_button.contentEditable = false;
+        });
+    };
+    load_container.appendChild(edit_button)
+
+    let edit_icon = document.createElement("i");
+    edit_icon.classList.add("fa-solid", "fa-pen", "edit-icon");
+    edit_button.appendChild(edit_icon)
+
+    let delete_button = document.createElement("div");
+    delete_button.classList.add("edit-button")
+    delete_button.onclick = function() {
+        saveNumber = saveNumber - 1 
+        load_container.remove();
+    };
+    load_container.appendChild(delete_button)
+
+    let delete_icon = document.createElement("i");
+    delete_icon.classList.add("fa-solid", "fa-trash", "edit-icon");
+    delete_button.appendChild(delete_icon)
+
+    right_load.appendChild(load_container)
+    }
 }
 
-function load(){
-    let storedUser = JSON.parse(localStorage.getItem("user"));
-    console.log(storedUser.name)
+
+function enableEditing() {
+    let buttonText = document.getElementById("editableButton");
+    buttonText.contentEditable = true;
+    buttonText.focus();
+
+    buttonText.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            buttonText.contentEditable = false;
+            event.preventDefault(); 
+        }
+    });
+
+    buttonText.addEventListener("blur", function() {
+        buttonText.contentEditable = false;
+    });
 }
-*/

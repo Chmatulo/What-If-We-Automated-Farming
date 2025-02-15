@@ -1,3 +1,12 @@
+:root {
+    --background: rgb(123, 141, 151);
+    --textColor: rgb(235, 238, 241);
+    --greenColor: rgb(100, 115, 34);
+    --borderColor: rgb(86, 86, 86);
+    --IDEBackground: rgb(46, 46, 46);
+    --greenColorHover: rgb(138, 160, 43);
+}
+
 *{
     margin: 0;
     padding: 0;
@@ -6,15 +15,35 @@
 body{
     background-color: var(--background);
     color: var(--textColor);
+    overflow: hidden;
 }
 
-#main-container{
+.main-container{
+    position: absolute;
     width: 100vw;
     height: 100vh;
-    position: relative;
     display: flex;
     flex-direction: column;
+    transition: 1.2s;
+    transition-timing-function: ease-in-out;
+    overflow: hidden;
 }
+
+#main-game-container{
+    position: absolute;
+    transform: scale(0.3);
+    filter: blur(10px);
+}
+
+#main-home-container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    z-index: 10;
+}
+
+
 
 #navbar{
     height: 5vh;
