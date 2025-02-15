@@ -78,6 +78,34 @@ function send(){
 
 
 
+var gameObject = {
+
+  dronePosition : [3, 3],
+
+  // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
+  soilValues : [
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 3, 1, 1],
+    [1, 1, 1, 1, 1, 0, 1],
+    [1, 1, 1, 2, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1]
+  ],
+
+  // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
+  plantValues : [
+    [0, 0, 0, 1, 1, 3, 1],
+    [1, 1, 1, 1, 2, 1, 1],
+    [1, 1, 1, 1, 1, 0, 1],
+    [1, 1, 1, 2, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1]
+  ]
+
+}
+
 
 const field = document.getElementById("field");
 const field_context = field.getContext("2d");
@@ -108,8 +136,8 @@ window.addEventListener("mouseup", () => {
   isDragging = false;
 });
 
-const soil = document.getElementById("soil");
-const soil_context = soil.getContext("2d");
+const textureSheet = document.getElementById("textureSheet");
+const textureSheet_context = textureSheet.getContext("2d");
 
   // Create an Image object
   const img = new Image();
@@ -117,9 +145,9 @@ const soil_context = soil.getContext("2d");
 
   // Draw the image when it loads
   img.onload = function () {
-    soil.height = img.height;
-    soil.width = img.width;
-    soil_context.drawImage(img, 0,0, img.width, img.height);// (x, y, width, height)
+    textureSheet.height = img.height;
+    textureSheet.width = img.width;
+    textureSheet_context.drawImage(img, 0,0, img.width, img.height);// (x, y, width, height)
 
     draw()
   };
@@ -132,19 +160,21 @@ function draw(){
 
   for (let y = 1 ; y < 8 ; y++){
     for (let x = 1 ; x < 8 ; x++){
-      let soilType = fieldValues[y-1][x-1]
-      var soilTexture = soil_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
+
+      // Drawing soil
+      let soilType = gameObject.soilValues[y-1][x-1]
+      let soilTexture = textureSheet_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
       field_context.putImageData(soilTexture, x*cellSize, y*cellSize);
+
+      // Drawing Plants
+      let plantType = gameObject.plantValues[y-1][x-1]
+      if (plantTextures[plantType][0] >= 0){
+        let plantTexture = textureSheet_context.getImageData(plantTextures[plantType][0], plantTextures[plantType][1], cellSize, cellSize);
+        field_context.putImageData(plantTexture, x*cellSize, y*cellSize);
+      }
     }
   }
 
-  for (let y = 1 ; y < 8 ; y++){
-    for (let x = 1 ; x < 8 ; x++){
-      let soilType = fieldValues[y-1][x-1]
-      var soilTexture = soil_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
-      field_context.putImageData(soilTexture, x*cellSize, y*cellSize);
-    }
-  }
 }
 
 // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
@@ -155,29 +185,32 @@ let soilTextures = [
   [2*cellSize, 3*cellSize]
 ]
 
-// 0 = "wheat" 1 = "carrot" 2 = "golden_apple"
+// 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
 let plantTextures = [
+  [-1, -1]
+  [2*cellSize, 0],
   [3*cellSize, 0],
   [4*cellSize, 0],
   [5*cellSize, 0]
+  
 ]
 
 function drawField(){
 
-  let topLeftCorner = soil_context.getImageData(32, 0, cellSize, cellSize);
-  let topRightCorner = soil_context.getImageData(32, 64, cellSize, cellSize);
-  let bottomRightCorner = soil_context.getImageData(32, 96, cellSize, cellSize);
-  let bottomLeftCorner = soil_context.getImageData(32, 32, cellSize, cellSize);
+  let topLeftCorner = textureSheet_context.getImageData(32, 0, cellSize, cellSize);
+  let topRightCorner = textureSheet_context.getImageData(32, 64, cellSize, cellSize);
+  let bottomRightCorner = textureSheet_context.getImageData(32, 96, cellSize, cellSize);
+  let bottomLeftCorner = textureSheet_context.getImageData(32, 32, cellSize, cellSize);
 
   field_context.putImageData(topLeftCorner, 0, 0);
   field_context.putImageData(topRightCorner, 256, 0);
   field_context.putImageData(bottomRightCorner, 256, 256);
   field_context.putImageData(bottomLeftCorner, 0, 256);
 
-  let topBorder = soil_context.getImageData(0, 0, cellSize, cellSize);
-  let rightBorder = soil_context.getImageData(0, 64, cellSize, cellSize);
-  let bottomBorder = soil_context.getImageData(0, 96, cellSize, cellSize);
-  let leftBorder = soil_context.getImageData(0, 32, cellSize, cellSize);
+  let topBorder = textureSheet_context.getImageData(0, 0, cellSize, cellSize);
+  let rightBorder = textureSheet_context.getImageData(0, 64, cellSize, cellSize);
+  let bottomBorder = textureSheet_context.getImageData(0, 96, cellSize, cellSize);
+  let leftBorder = textureSheet_context.getImageData(0, 32, cellSize, cellSize);
 
   for (let i = 1 ; i < 8 ; i++){
     field_context.putImageData(topBorder, cellSize * i, 0);
@@ -201,11 +234,10 @@ let fieldValues = [
   [1, 1, 1, 1, 1, 1, 1]
 ]
 
-// 0 = "nothing" 1 = "wheat" 2 = "carrot" 3 ="golden_apple"
 
 let plantValues = [
   [0, 0, 0, 1, 1, 1, 1],
-  [1, 1, 1, 1, 3, 1, 1],
+  [1, 1, 1, 1, 2, 1, 1],
   [1, 1, 1, 1, 1, 0, 1],
   [1, 1, 1, 2, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 1],
@@ -215,6 +247,5 @@ let plantValues = [
 
 let dronePos = [3, 3]
 
-function readData(){
-  console.log("Reading globalVar in js3:", supermegaVariable);
-}
+
+console.log(gameObject)
