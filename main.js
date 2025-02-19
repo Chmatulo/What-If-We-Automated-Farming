@@ -80,7 +80,7 @@ function send(){
 
 var gameObject = {
 
-  dronePosition : [3, 3],
+  dronePosition : [3, 3, 0],
 
   // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
   soilValues : [
@@ -95,13 +95,13 @@ var gameObject = {
 
   // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
   plantValues : [
-    [0, 0, 0, 1, 1, 3, 1],
-    [1, 1, 1, 1, 2, 1, 1],
-    [1, 1, 1, 1, 1, 0, 1],
-    [1, 1, 1, 2, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1]
+    [0, 1, 2, 3, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 3, 3, 3, 0, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0]
   ]
 
 }
@@ -155,23 +155,38 @@ const textureSheet_context = textureSheet.getContext("2d");
 let cellSize = 32
 
 function draw(){
+  
+
+  field_context.clearRect(0, 0, field.width, field.height);
 
   drawField()
 
-  for (let y = 1 ; y < 8 ; y++){
+  for (let y = 1 ; y < 8 ; y++){  
     for (let x = 1 ; x < 8 ; x++){
 
       // Drawing soil
       let soilType = gameObject.soilValues[y-1][x-1]
-      let soilTexture = textureSheet_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
-      field_context.putImageData(soilTexture, x*cellSize, y*cellSize);
+      let finalTexture = textureSheet_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
 
       // Drawing Plants
       let plantType = gameObject.plantValues[y-1][x-1]
       if (plantTextures[plantType][0] >= 0){
+
         let plantTexture = textureSheet_context.getImageData(plantTextures[plantType][0], plantTextures[plantType][1], cellSize, cellSize);
-        field_context.putImageData(plantTexture, x*cellSize, y*cellSize);
+        //field_context.putImageData(plantTexture, x*cellSize, y*cellSize);
+
+        for (let xImg = 0 ; xImg < (cellSize * cellSize * 4) ; xImg = xImg + 4){
+          if (plantTexture.data[xImg] != 0 || plantTexture.data[xImg+1] != 0 || plantTexture.data[xImg+2] != 0){
+            finalTexture.data[xImg] = plantTexture.data[xImg]
+            finalTexture.data[xImg + 1] = plantTexture.data[xImg + 1]
+            finalTexture.data[xImg + 2] = plantTexture.data[xImg + 2]
+            finalTexture.data[xImg + 3] = plantTexture.data[xImg + 3]
+          }
+        }
+
       }
+      field_context.putImageData(finalTexture, x*cellSize, y*cellSize);
+      drawDrone()
     }
   }
 
@@ -188,10 +203,10 @@ let soilTextures = [
 // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
 let plantTextures = [
   [-1, -1]
-  [2*cellSize, 0],
-  [3*cellSize, 0],
+  [6*cellSize, 0],
+  [3*cellSize, 0 * cellSize],
   [4*cellSize, 0],
-  [5*cellSize, 0]
+  [5 * cellSize, 0]
   
 ]
 
@@ -218,34 +233,28 @@ function drawField(){
     field_context.putImageData(bottomBorder, cellSize * i, 8*cellSize);
     field_context.putImageData(leftBorder, 0, cellSize * i);
   }
-
   
 }
 
-// 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
+function drawDrone(){
+  let droneTexture = textureSheet_context.getImageData(7*cellSize, gameObject.dronePosition[2]*cellSize, cellSize, cellSize); 
+  let finalTexture = field_context.getImageData(gameObject.dronePosition[0] * cellSize, gameObject.dronePosition[1] * cellSize, cellSize, cellSize)
 
-let fieldValues = [
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 3, 1, 1],
-  [1, 1, 1, 1, 1, 0, 1],
-  [1, 1, 1, 2, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1]
-]
+  for (let xImg = 0 ; xImg < (cellSize * cellSize * 4) ; xImg = xImg + 4){
+    if (droneTexture.data[xImg] != 0 || droneTexture.data[xImg+1] != 0 || droneTexture.data[xImg+2] != 0){
+      finalTexture.data[xImg] = droneTexture.data[xImg]
+      finalTexture.data[xImg + 1] = droneTexture.data[xImg + 1]
+      finalTexture.data[xImg + 2] = droneTexture.data[xImg + 2]
+      finalTexture.data[xImg + 3] = droneTexture.data[xImg + 3]
+    }
+  }
 
+  field_context.putImageData(finalTexture, gameObject.dronePosition[0]*cellSize, gameObject.dronePosition[1]*cellSize);
+  gameObject.dronePosition[2]++
+  gameObject.dronePosition[2] = gameObject.dronePosition[2] % 4
+}
 
-let plantValues = [
-  [0, 0, 0, 1, 1, 1, 1],
-  [1, 1, 1, 1, 2, 1, 1],
-  [1, 1, 1, 1, 1, 0, 1],
-  [1, 1, 1, 2, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1]
-]
-
-let dronePos = [3, 3]
+setInterval(draw, 500)
 
 
 console.log(gameObject)
