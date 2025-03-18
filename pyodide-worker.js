@@ -36,6 +36,11 @@ self.onmessage = async (event) => {
     self.postMessage({ type: "progress", data: message });
   });
 
+  pyodide.globals.set("moveto", (direction) => {
+    self.postMessage({ type: "moveto", data: direction });
+  });
+
+
   pyodide.globals.set("checkVar", checkVar);
 
   try {
@@ -55,6 +60,7 @@ self.onmessage = async (event) => {
   } finally {
     //Supression globales
     pyodide.globals.delete("ping");
+    pyodide.globals.delete("moveto");
     pyodide.globals.delete("checkVar");
     }
 

@@ -91,6 +91,7 @@
 
 .code-button:hover{
     background-color: var(--greenColorHover);
+    cursor: pointer;
 }
 
 .run-button{

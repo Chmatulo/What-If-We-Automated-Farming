@@ -7,7 +7,6 @@
 
     <link href="data/img/main-logo.png" rel="icon">
 
-    <script src="https://kit.fontawesome.com/71cb158392.js" crossorigin="anonymous"></script>
 
     <link href="styles.css" rel="stylesheet">
     <link href="stylesHome.css" rel="stylesheet">
@@ -63,14 +62,18 @@
 
         <div id="navbar">
             <div id="navbar-left" class="navbar-child">
-                a
+                <div class="items-container"><img class="items" src="data/textures/wheat-item.png">0</div>
+                <div class="items-container"><img class="items" src="data/textures/carrot-item.png">0</div>
+                <div class="items-container"><img class="items" src="data/textures/golden-apple-item.png">0</div>
+                <div class="items-container"><img class="items" src="data/textures/money-item.png">0</div>
             </div>
 
             <div id="navbar-right" class="navbar-child">
-                <i id="home" class="fa-solid fa-house navbarhover" onclick="changeScene()"></i>
-                <i id="settings" class="fa-solid fa-gear navbarhover" onclick="menuUpdate()"></i>
-                <i id="unlock" class="fa-solid fa-unlock navbarhover"></i>
-                <i id="addIDE" class="fa-regular fa-square-plus navbarhover" onclick="createIDE()"></i>
+                <div class="navbar-hover-background"><i id="home" class="fa-solid fa-house navbarhover" onclick="changeScene()"></i></div>
+                <div class="navbar-hover-background"><i id="settings" class="fa-solid fa-gear navbarhover" onclick="menuUpdate()"></i></div>
+                <div class="navbar-hover-background"><i id="unlock" class="fa-solid fa-unlock navbarhover"></i></div>
+                <div class="navbar-hover-background"><i id="addIDE" class="fa-regular fa-square-plus navbarhover" onclick="createIDE()"></i></div>
+                <div class="navbar-hover-background"><i id="explanations" class="fa-solid fa-question navbarhover"></i></div>
             </div>
 
         </div>

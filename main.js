@@ -13,6 +13,8 @@ function runWorker(){
     const { type, data } = event.data;
 
     if (receivingAllowed){
+
+      console.log(type, data)
       
     if (type === "progress") {
       console.log(data)
@@ -20,12 +22,32 @@ function runWorker(){
       console.log(data)
     } else if (type == "codeState"){
       codeRunning = data
-    }
-  } else {
-    console.log("fin")
-  }
-} 
+    } else if (type == "moveto"){
 
+      switch(data) {
+        case "North":
+          gameObject.dronePosition[1] = (gameObject.dronePosition[1] - 1) % 7
+          break;
+        case "South":
+          gameObject.dronePosition[1] = gameObject.dronePosition[1] + 1
+          break;
+        case "East":
+          gameObject.dronePosition[0] = gameObject.dronePosition[0] + 1
+          break;
+        case "West":
+          gameObject.dronePosition[0] = gameObject.dronePosition[0] - 1
+            break;
+        default:
+          console.log("error")
+      }
+
+      console.log("moved")
+
+    } else {
+    console.log("fin")
+    }
+  } 
+}
   worker.onerror = (error) => {
     console.error("Worker error:", error);
   };
@@ -80,7 +102,7 @@ function send(){
 
 var gameObject = {
 
-  dronePosition : [3, 3, 0],
+  dronePosition : [2, 1, 0],
 
   // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
   soilValues : [
@@ -160,35 +182,8 @@ function draw(){
   field_context.clearRect(0, 0, field.width, field.height);
 
   drawField()
-
-  for (let y = 1 ; y < 8 ; y++){  
-    for (let x = 1 ; x < 8 ; x++){
-
-      // Drawing soil
-      let soilType = gameObject.soilValues[y-1][x-1]
-      let finalTexture = textureSheet_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
-
-      // Drawing Plants
-      let plantType = gameObject.plantValues[y-1][x-1]
-      if (plantTextures[plantType][0] >= 0){
-
-        let plantTexture = textureSheet_context.getImageData(plantTextures[plantType][0], plantTextures[plantType][1], cellSize, cellSize);
-        //field_context.putImageData(plantTexture, x*cellSize, y*cellSize);
-
-        for (let xImg = 0 ; xImg < (cellSize * cellSize * 4) ; xImg = xImg + 4){
-          if (plantTexture.data[xImg] != 0 || plantTexture.data[xImg+1] != 0 || plantTexture.data[xImg+2] != 0){
-            finalTexture.data[xImg] = plantTexture.data[xImg]
-            finalTexture.data[xImg + 1] = plantTexture.data[xImg + 1]
-            finalTexture.data[xImg + 2] = plantTexture.data[xImg + 2]
-            finalTexture.data[xImg + 3] = plantTexture.data[xImg + 3]
-          }
-        }
-
-      }
-      field_context.putImageData(finalTexture, x*cellSize, y*cellSize);
-      drawDrone()
-    }
-  }
+  drawPlant()
+  drawDrone()
 
 }
 
@@ -236,9 +231,40 @@ function drawField(){
   
 }
 
+function drawPlant(){
+
+  for (let y = 1 ; y < 8 ; y++){  
+    for (let x = 1 ; x < 8 ; x++){
+
+      // Drawing soil
+      let soilType = gameObject.soilValues[y-1][x-1]
+      let finalTexture = textureSheet_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
+
+      // Drawing Plants
+      let plantType = gameObject.plantValues[y-1][x-1]
+      if (plantTextures[plantType][0] >= 0){
+
+        let plantTexture = textureSheet_context.getImageData(plantTextures[plantType][0], plantTextures[plantType][1], cellSize, cellSize);
+        //field_context.putImageData(plantTexture, x*cellSize, y*cellSize);
+
+        for (let xImg = 0 ; xImg < (cellSize * cellSize * 4) ; xImg = xImg + 4){
+          if (plantTexture.data[xImg] != 0 || plantTexture.data[xImg+1] != 0 || plantTexture.data[xImg+2] != 0){
+            finalTexture.data[xImg] = plantTexture.data[xImg]
+            finalTexture.data[xImg + 1] = plantTexture.data[xImg + 1]
+            finalTexture.data[xImg + 2] = plantTexture.data[xImg + 2]
+            finalTexture.data[xImg + 3] = plantTexture.data[xImg + 3]
+          }
+        }
+
+      }
+      field_context.putImageData(finalTexture, x*cellSize, y*cellSize);
+    }
+  }
+}
+
 function drawDrone(){
   let droneTexture = textureSheet_context.getImageData(7*cellSize, gameObject.dronePosition[2]*cellSize, cellSize, cellSize); 
-  let finalTexture = field_context.getImageData(gameObject.dronePosition[0] * cellSize, gameObject.dronePosition[1] * cellSize, cellSize, cellSize)
+  let finalTexture = field_context.getImageData(gameObject.dronePosition[0] * cellSize, gameObject.dronePosition[1] * cellSize - 10, cellSize, cellSize)
 
   for (let xImg = 0 ; xImg < (cellSize * cellSize * 4) ; xImg = xImg + 4){
     if (droneTexture.data[xImg] != 0 || droneTexture.data[xImg+1] != 0 || droneTexture.data[xImg+2] != 0){
@@ -249,12 +275,12 @@ function drawDrone(){
     }
   }
 
-  field_context.putImageData(finalTexture, gameObject.dronePosition[0]*cellSize, gameObject.dronePosition[1]*cellSize);
+  field_context.putImageData(finalTexture, gameObject.dronePosition[0]*cellSize, gameObject.dronePosition[1]*cellSize - 10);
   gameObject.dronePosition[2]++
   gameObject.dronePosition[2] = gameObject.dronePosition[2] % 4
 }
 
-setInterval(draw, 500)
+setInterval(draw, 75)
 
 
 console.log(gameObject)
