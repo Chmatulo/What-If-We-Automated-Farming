@@ -16,7 +16,8 @@ loadPyodideAndPackages(); // lancer le chargement
 
 var codeRunning = false
 
-var gameObject = {} // créeation objet gameObject
+// création objet gameObject
+var gameObject = {};
 
 // fonction recevoir message du main.js
 self.onmessage = async (event) => {
@@ -31,13 +32,82 @@ self.onmessage = async (event) => {
     return;
   }
 
+  const delay = (ms) => {
+    const start = Date.now();
+    while (Date.now() - start < ms);
+};
+
   // Fonction globales Pyodide (Py -> JS)
   pyodide.globals.set("ping", (message) => {
     self.postMessage({ type: "progress", data: message });
   });
 
-  pyodide.globals.set("moveto", (direction) => {
-    self.postMessage({ type: "moveto", data: direction });
+  pyodide.globals.set("update", () => {
+    self.postMessage({ type: "gameObject", data: gameObject });
+  });
+
+  pyodide.globals.set("move", (direction) => {
+
+    switch(direction) {
+
+      case "North":
+      gameObject.dronePosition[1] = gameObject.dronePosition[1] - 1 
+        if (gameObject.dronePosition[1] === 0){
+           gameObject.dronePosition[1] = 7
+          }
+        break;
+
+      case "South":
+        gameObject.dronePosition[1] = gameObject.dronePosition[1] % 7 + 1
+        break;
+
+      case "East":
+        gameObject.dronePosition[0] = gameObject.dronePosition[0] % 7 + 1
+        break;
+
+      case "West":
+        gameObject.dronePosition[0] = gameObject.dronePosition[0] - 1 
+        if (gameObject.dronePosition[0] === 0){
+           gameObject.dronePosition[0] = 7
+          }
+          break;
+      default:
+        console.log("error")
+    }
+
+    self.postMessage({ type: "gameObject", data: gameObject });
+    self.postMessage({ type: "move", data: direction });
+    delay(1000)
+  });
+
+  pyodide.globals.set("till", () => {
+    gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
+    self.postMessage({ type: "gameObject", data: gameObject });
+  });
+
+  pyodide.globals.set("plant", (seed) => {
+
+    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 ){
+
+    switch (seed) {
+      case "wheat":
+        gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
+        break;
+      case "carrot":
+        break;
+      case "Papayas":
+        break;
+      default:
+        console.log(`Sorry, we are out of ${seed}s.`);
+    }
+  }
+    self.postMessage({ type: "gameObject", data: gameObject });
+  });
+
+  pyodide.globals.set("add", (number) => {
+
+    gameObject.money += number
+    self.postMessage({ type: "gameObject", data: gameObject });
   });
 
 
@@ -60,22 +130,28 @@ self.onmessage = async (event) => {
   } finally {
     //Supression globales
     pyodide.globals.delete("ping");
-    pyodide.globals.delete("moveto");
+    pyodide.globals.delete("move");
     pyodide.globals.delete("checkVar");
     }
 
   } else if (type == "gameObject"){
     gameObject = JSON.parse(JSON.stringify(data));
-    console.log(gameObject.bite)
+    console.log(gameObject, "via Webworker")
   } 
 
 
 };
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function moveFn(direction) {
+  console.log("a")
+  await sleep(3000);  // Waits for 3 seconds
+}
 
 // fonction custom
-
-var money = 10;
 
 const checkVar = () => {
   return money > 5;

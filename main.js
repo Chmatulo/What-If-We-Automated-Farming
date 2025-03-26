@@ -1,20 +1,22 @@
-
+// Variables Web Worker etat
 let worker = null;
 var receivingAllowed = true;
 let codeRunning = false;
 
+
+// Fonction lancer le worker
 function runWorker(){
   if (!worker){
     worker = new Worker("pyodide-worker.js");
   }
 
+// Recevoir message
   worker.onmessage = (event) => {
    
     const { type, data } = event.data;
 
     if (receivingAllowed){
 
-      console.log(type, data)
       
     if (type === "progress") {
       console.log(data)
@@ -22,27 +24,15 @@ function runWorker(){
       console.log(data)
     } else if (type == "codeState"){
       codeRunning = data
-    } else if (type == "moveto"){
+    } else if (type == "gameObject"){ // Recevoir changement gameObject
 
-      switch(data) {
-        case "North":
-          gameObject.dronePosition[1] = (gameObject.dronePosition[1] - 1) % 7
-          break;
-        case "South":
-          gameObject.dronePosition[1] = gameObject.dronePosition[1] + 1
-          break;
-        case "East":
-          gameObject.dronePosition[0] = gameObject.dronePosition[0] + 1
-          break;
-        case "West":
-          gameObject.dronePosition[0] = gameObject.dronePosition[0] - 1
-            break;
-        default:
-          console.log("error")
-      }
+      gameObject = JSON.parse(JSON.stringify(data));
+      
+      updateAll()
 
-      console.log("moved")
-
+    } else if (type == "move"){
+      direction = data
+      console.log("moved", direction)
     } else {
     console.log("fin")
     }
@@ -71,10 +61,11 @@ function stopWorker(){
   runWorker()
 
 }
+
+
 function runCode(code){
 
   receivingAllowed = true;
-
 
     if (worker && !codeRunning){
       console.log("running code")
@@ -87,47 +78,41 @@ function runCode(code){
 
 }
 
-var objectTest = {
-  title : "titre",
-  age : 1,
-  bite : "longue"
-}
-
-function send(){
-  console.log("envoyé")
-  worker.postMessage({type : "gameObject", data : objectTest })
-}
-
-
-
 var gameObject = {
 
-  dronePosition : [2, 1, 0],
+  dronePosition : [1, 1, 0],
 
   // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
   soilValues : [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 3, 1, 1],
-    [1, 1, 1, 1, 1, 0, 1],
-    [1, 1, 1, 2, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1]
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0]
   ],
 
   // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
   plantValues : [
-    [0, 1, 2, 3, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 3, 3, 3, 0, 1, 0],
-    [0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0]
-  ]
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0]
+  ],
+
+  money: 20,
 
 }
 
+
+function updateAll(){
+  document.getElementById("money").innerHTML = gameObject.money
+  console.log(gameObject, "till")
+}
 
 const field = document.getElementById("field");
 const field_context = field.getContext("2d");
@@ -163,7 +148,7 @@ const textureSheet_context = textureSheet.getContext("2d");
 
   // Create an Image object
   const img = new Image();
-  img.src = "/data/textures/textures.png"; // Replace with your image path
+  img.src = "data/textures/textures.png"; // Replace with your image path
 
   // Draw the image when it loads
   img.onload = function () {
@@ -245,7 +230,6 @@ function drawPlant(){
       if (plantTextures[plantType][0] >= 0){
 
         let plantTexture = textureSheet_context.getImageData(plantTextures[plantType][0], plantTextures[plantType][1], cellSize, cellSize);
-        //field_context.putImageData(plantTexture, x*cellSize, y*cellSize);
 
         for (let xImg = 0 ; xImg < (cellSize * cellSize * 4) ; xImg = xImg + 4){
           if (plantTexture.data[xImg] != 0 || plantTexture.data[xImg+1] != 0 || plantTexture.data[xImg+2] != 0){
@@ -282,5 +266,12 @@ function drawDrone(){
 
 setInterval(draw, 75)
 
+function save(){
+  localStorage.setItem("gameObject1", JSON.stringify(gameObject));
+}
 
-console.log(gameObject)
+function load(){
+  let gameObjectLoaded = JSON.parse(localStorage.getItem("gameObject1"));
+  gameObject = gameObjectLoaded;
+  worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
+}
