@@ -295,15 +295,35 @@ return inputString
 
 createIDE()
 
-// Create saves
 
-var saveNumber = 0
+
+// Create saves
+var loadingSaves = true
+var savesNumber = JSON.parse(localStorage.getItem("savesNumber"));
+
+if (!savesNumber){
+  localStorage.setItem("savesNumber", 1);
+}
+
+savesNumber = JSON.parse(localStorage.getItem("savesNumber"));
+
+console.log(savesNumber)
+
+for (let k = 0; k < savesNumber ; k++){
+  createSave()
+}
+
+loadingSaves = false
 
 function createSave(){
 
-    if (saveNumber <= 4){
+    if (savesNumber <= 4){
 
-    saveNumber++
+    if (!loadingSaves){
+      savesNumber++
+    }
+
+    localStorage.setItem("savesNumber", savesNumber);
 
     const right_load = document.getElementById("right-load");
 
@@ -354,7 +374,7 @@ function createSave(){
     let delete_button = document.createElement("div");
     delete_button.classList.add("edit-button")
     delete_button.onclick = function() {
-        saveNumber = saveNumber - 1 
+        savesNumber = savesNumber - 1 
         load_container.remove();
     };
     load_container.appendChild(delete_button)

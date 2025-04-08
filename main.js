@@ -1,21 +1,23 @@
-// Variables Web Worker etat
-let worker = null;
-var receivingAllowed = true;
-let codeRunning = false;
+// Variables Web Worker état
+let game_worker, plant_worker = null;
+var game_receivingAllowed, plant_receivingAllowed = true;
+let game_codeRunning, plant_codeRunning = false;
 
 
 // Fonction lancer le worker
 function runWorker(){
-  if (!worker){
-    worker = new Worker("pyodide-worker.js");
+  if (!game_worker){
+    game_worker = new Worker("game-worker.js");
   }
 
-// Recevoir message
-  worker.onmessage = (event) => {
+
+
+// Recevoir message game Worker
+  game_worker.onmessage = (event) => {
    
     const { type, data } = event.data;
 
-    if (receivingAllowed){
+    if (game_receivingAllowed){
 
       
     if (type === "progress") {
@@ -23,23 +25,60 @@ function runWorker(){
     } else if (type === "result") {
       console.log(data)
     } else if (type == "codeState"){
-      codeRunning = data
+      game_codeRunning = data
     } else if (type == "gameObject"){ // Recevoir changement gameObject
 
       gameObject = JSON.parse(JSON.stringify(data));
-      
-      updateAll()
 
     } else if (type == "move"){
-      direction = data
-      console.log("moved", direction)
+      gameObject.dronePosition = data
+    } else if (type === "plant") {
+
+      plant_worker.postMessage({ type: "gameObject", data: gameObject });
+      plant_worker.postMessage({ type: "plant", data: data });
+  
     } else {
     console.log("fin")
     }
+
+    updateAll()
   } 
 }
-  worker.onerror = (error) => {
-    console.error("Worker error:", error);
+
+// Console.log erreurs game_worker
+game_worker.onerror = (error) => {
+    console.error("Game Worker error:", error);
+  };
+
+
+ // Plant WebWorker  
+
+  if (!plant_worker){
+    plant_worker = new Worker("plant-worker.js");
+  }
+
+  // Recevoir message plant Worker
+ plant_worker.onmessage = (event) => {
+   
+    const { type, data } = event.data;
+
+    if (plant_receivingAllowed){
+      
+    if (type === "plants") {
+
+        gameObject.plantValues = JSON.parse(JSON.stringify(data));
+        game_worker.postMessage({ type: "gameObject", data: gameObject });
+      
+    } else {
+    console.log("fin")
+    }
+
+  } 
+}
+
+// Console.log erreurs plant_worker
+plant_worker.onerror = (error) => {
+    console.error("Plant Worker error:", error);
   };
 
 }
@@ -47,15 +86,22 @@ function runWorker(){
 runWorker()
 
 function stopWorker(){
-  codeRunning = false;
-  receivingAllowed = false;
+  game_codeRunning = false;
+  game_receivingAllowed = false;
 
-  if (worker){
-    worker.terminate()
-    worker = null;
-    console.log("Worker Terminated")
+  plant_codeRunning = false;
+  plant_receivingAllowed = false;
+
+  if (game_worker || plant_worker){
+    game_worker.terminate()
+    game_worker = null;
+
+    plant_worker.terminate()
+    plant_worker = null;
+
+    console.log("Workers Terminated")
   } else {
-    console.log("No worker to terminate")
+    console.log("No workers to terminate")
   }
 
   runWorker()
@@ -65,14 +111,18 @@ function stopWorker(){
 
 function runCode(code){
 
-  receivingAllowed = true;
+  game_receivingAllowed = true;
 
-    if (worker && !codeRunning){
+if (!game_codeRunning){
+  console.log("game worker not running")
+}
+
+    if (game_worker && !game_codeRunning){
       console.log("running code")
-      codeRunning = true;
-      worker.postMessage({ type: "code", data : code });
+      game_codeRunning = true;
+      game_worker.postMessage({ type: "code", data : code });
     } else {
-      console.log("No worker, restarting")
+      console.log("No worker, restarting", game_worker, plant_worker)
       runWorker()
     }
 
@@ -82,7 +132,7 @@ var gameObject = {
 
   dronePosition : [1, 1, 0],
 
-  // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
+  // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 = "tilled_wet"
   soilValues : [
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
@@ -95,23 +145,22 @@ var gameObject = {
 
   // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
   plantValues : [
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0]
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
   ],
 
-  money: 20,
+  money: 0,
 
 }
 
 
 function updateAll(){
   document.getElementById("money").innerHTML = gameObject.money
-  console.log(gameObject, "till")
 }
 
 const field = document.getElementById("field");
@@ -226,10 +275,11 @@ function drawPlant(){
       let finalTexture = textureSheet_context.getImageData(soilTextures[soilType][0], soilTextures[soilType][1], cellSize, cellSize);
 
       // Drawing Plants
-      let plantType = gameObject.plantValues[y-1][x-1]
+      let plantType = gameObject.plantValues[y-1][x-1][0]
+      let plantGrowth = gameObject.plantValues[y-1][x-1][1]
       if (plantTextures[plantType][0] >= 0){
 
-        let plantTexture = textureSheet_context.getImageData(plantTextures[plantType][0], plantTextures[plantType][1], cellSize, cellSize);
+        let plantTexture = textureSheet_context.getImageData(plantTextures[plantType][0], plantTextures[plantType][1] + plantGrowth * 32, cellSize, cellSize);
 
         for (let xImg = 0 ; xImg < (cellSize * cellSize * 4) ; xImg = xImg + 4){
           if (plantTexture.data[xImg] != 0 || plantTexture.data[xImg+1] != 0 || plantTexture.data[xImg+2] != 0){
@@ -273,5 +323,6 @@ function save(){
 function load(){
   let gameObjectLoaded = JSON.parse(localStorage.getItem("gameObject1"));
   gameObject = gameObjectLoaded;
-  worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
+  game_worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
+  plant_worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
 }

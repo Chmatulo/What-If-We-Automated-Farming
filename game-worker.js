@@ -8,6 +8,7 @@ async function loadPyodideAndPackages() {
   pyodide = await loadPyodide();
   pyodideReady = true;
   console.log("Pyodide loaded");
+  self.postMessage({ type: "test", data: "loaded" })
 }
 
 loadPyodideAndPackages(); // lancer le chargement
@@ -17,7 +18,36 @@ loadPyodideAndPackages(); // lancer le chargement
 var codeRunning = false
 
 // création objet gameObject
-var gameObject = {};
+var gameObject = {
+
+  dronePosition : [1, 1, 0],
+
+  // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 = "tilled_wet"
+  soilValues : [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0]
+  ],
+
+  // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
+  plantValues : [
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
+  ],
+
+  money: 0,
+
+}
+
 
 // fonction recevoir message du main.js
 self.onmessage = async (event) => {
@@ -75,39 +105,58 @@ self.onmessage = async (event) => {
         console.log("error")
     }
 
-    self.postMessage({ type: "gameObject", data: gameObject });
-    self.postMessage({ type: "move", data: direction });
+    self.postMessage({ type: "move", data: gameObject.dronePosition });
     delay(1000)
   });
 
   pyodide.globals.set("till", () => {
     gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
     self.postMessage({ type: "gameObject", data: gameObject });
+    delay(1000)
+  });
+
+  pyodide.globals.set("canTill", () => {
+    return (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0) 
   });
 
   pyodide.globals.set("plant", (seed) => {
 
-    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 ){
+    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0 ){
 
     switch (seed) {
       case "wheat":
-        gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
+        self.postMessage({ type: "plant", data: seed });
+        console.log("planting wheat")
         break;
       case "carrot":
+        gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
         break;
-      case "Papayas":
+      case "apple":
+        gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 3
         break;
       default:
         console.log(`Sorry, we are out of ${seed}s.`);
     }
   }
     self.postMessage({ type: "gameObject", data: gameObject });
+    delay(1000)
+  });
+
+  pyodide.globals.set("canPlant", () => {
+    return (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0) 
   });
 
   pyodide.globals.set("add", (number) => {
 
     gameObject.money += number
     self.postMessage({ type: "gameObject", data: gameObject });
+  });
+
+  pyodide.globals.set("getPos", () => {
+    let posArr = []
+    posArr[0] = gameObject.dronePosition[0]
+    posArr[1] = gameObject.dronePosition[1]
+    return posArr
   });
 
 
@@ -135,8 +184,8 @@ self.onmessage = async (event) => {
     }
 
   } else if (type == "gameObject"){
+    console.log("Received GameObject Update")
     gameObject = JSON.parse(JSON.stringify(data));
-    console.log(gameObject, "via Webworker")
   } 
 
 
