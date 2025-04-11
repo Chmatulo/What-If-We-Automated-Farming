@@ -1,36 +1,22 @@
 const options_menu = document.getElementById('options-container')
-
-let isDragging2 = false;
-let offsetX2, offsetY2;
-
-// Mouse down: Start dragging
-options_menu.addEventListener("mousedown", (e) => {
-  isDragging2 = true;
-  offsetX2 = e.clientX - options_menu.offsetLeft;
-  offsetY2 = e.clientY - options_menu.offsetTop;
-});
-
-// Mouse move: Update position if dragging
-window.addEventListener("mousemove", (e) => {
-  if (isDragging2) {
-    options_menu.style.left = e.clientX - offsetX2 + "px";
-    options_menu.style.top = e.clientY - offsetY2 + "px";
-  }
-});
-
-// Mouse up: Stop dragging
-window.addEventListener("mouseup", () => {
-  isDragging2 = false;
-});
+const explanation_menu = document.getElementById('explanation-container')
 
 var options_menu_bool = false
 var load_menu_bool = false
+var explanation_menu_bool = false
 
-function menuUpdate(){
-    options_menu_bool = !options_menu_bool
+function menuUpdate(menu){
 
-    let game_container = document.getElementById("main-game-container")
-    let home_container = document.getElementById("main-home-container")
+  options_menu.style.display = "none"
+  explanation_menu.style.display = "none"
+
+  game_container.style.pointerEvents = "auto"
+  home_container.style.pointerEvents = "auto"
+
+  home_container.style.filter = "blur(0px)"
+  if (sceneVar % 2 == 1){
+    game_container.style.filter = "blur(0px)"
+  }
 
     if (options_menu_bool){
 
@@ -49,11 +35,6 @@ function menuUpdate(){
 
     } else {
 
-      if (sceneVar % 2 == 1){
-          game_container.style.filter = "blur(0px)"
-      }
-
-        home_container.style.filter = "blur(0px)"
 
         setTimeout(() => {
             game_container.style.transition= "1.2s"
@@ -125,4 +106,22 @@ function changeScene(){
   }
 
   sceneVar++
+}
+
+
+var explanation_bool = false
+
+function explanationUpdate(){
+
+  if (explanation_bool){
+    explanation_menu.style.display = "none"
+    console.log("not active")
+  } else {
+    explanation_menu.style.display = "block"
+    console.log("active")
+  }
+
+
+  explanation_bool = !explanation_bool
+
 }

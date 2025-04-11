@@ -70,10 +70,10 @@
 
             <div id="navbar-right" class="navbar-child">
                 <div class="navbar-hover-background"><i id="home" class="fa-solid fa-house navbarhover" onclick="changeScene()"></i></div>
-                <div class="navbar-hover-background"><i id="settings" class="fa-solid fa-gear navbarhover" onclick="menuUpdate()"></i></div>
+                <div class="navbar-hover-background"><i id="settings" class="fa-solid fa-gear navbarhover" onclick="menuUpdate('settings')"></i></div>
                 <div class="navbar-hover-background"><i id="unlock" class="fa-solid fa-unlock navbarhover"></i></div>
                 <div class="navbar-hover-background"><i id="addIDE" class="fa-regular fa-square-plus navbarhover" onclick="createIDE()"></i></div>
-                <div class="navbar-hover-background"><i id="explanations" class="fa-solid fa-question navbarhover"></i></div>
+                <div class="navbar-hover-background"><i id="explanations" class="fa-solid fa-question navbarhover" onclick="menuUpdate('menu')"></i></div>
             </div>
 
         </div>
@@ -102,6 +102,186 @@
             <button onclick="changeScene()">DATA</button>
             <button onclick="save()">Save</button>
             <button onclick="load()">Load</button>
+        </div>
+
+    </div>
+
+    <div id="explanation-container" style="display: none;">
+
+        <div id="explanation-navbar">
+
+            <div id="explanation-text">Explications</div>
+
+            <div id="close-button" class="options-button" onclick="menuUpdate()">
+                <i class="fa-solid fa-xmark icon"></i>
+            </div>
+        </div>
+
+        <div id="explanation">
+            
+            Bienvenue dans What if we Automated Farming ! Le but du jeu est de programmer le drone pour automatiser la récolte du champ. Dans cette section, nous allons voir comment le contrôler.
+
+            <br><br>
+
+Pour commencer, toutes les fonctions usuelles du language de programmation Python peuvent être utilisées telles que :
+
+<br><br>
+
+    if "condition": <br>
+    while "condition": <br>
+    for k in range(x): <br>
+    def: <br>
+    etc.. <br>
+
+    <br>
+
+Ensuite nous avons les fonctions spécifiques au jeu.
+
+<br><br>
+
+<span class="explanation-title">1. Se déplacer</span>
+
+<br><br>
+
+Pour déplacer le drone, nous utilisons la commande suivante : 
+
+    <br><br>
+
+    move("Direction") en remplaçant "Direction" par "North", "South", "East" ou "West" 
+    
+    <br><br>
+
+
+<span class="explanation-title">2.  Récolter</span>
+
+<br><br>
+
+Pour récolter une plant une fois grandie, nous utilisons la commande suivante:
+
+<br><br>
+
+    harvest()
+
+    <br><br>
+
+De plus, il existe une commande qui retourne True ou False selon si on peut récolter ou non la plante. Nous utilisons :
+
+<br><br>
+
+    canHarvest()
+
+    <br><br>
+
+    <span class="explanation-title">3. Bêcher</span>
+
+<br><br>
+
+Avant de pouvoir planter une graine, il faut bêcher la terre avec la commande suivante :
+
+<br><br>
+
+    till()
+
+    <br><br>
+
+De plus, il existe une commande qui retourne True ou False selon la possibilité de bêcher la terre. Nous utilisons :
+
+<br><br>
+
+    canTill()
+
+    <br><br>
+
+<span class="explanation-title">4. Planter</span>
+
+<br><br>
+
+Pour planter une graine, nous utilisons la commande suivante :
+
+<br><br>
+
+    plant("graine") en remplaçant "graine" par "wheat", "carrot" ou "apple"
+
+    <br><br>
+
+De plus, il existe une commande qui retourne True ou False selon la possibilité de planter une graine. Nous utilisons :
+
+<br><br>
+
+    canPlant()
+
+    <br><br>
+
+<span class="explanation-title">5. Arroser</span>
+
+
+<br><br>
+
+Arroser permet d'accélerer la pousse de la plante. Nous utilisons la commande suivante : 
+
+<br><br>
+
+    water()
+
+    <br><br>
+
+<span class="explanation-title">6. Vendre</span>
+
+<br><br>
+
+Une fois les plantes récoltées et qu'elles se trouvent dans l'inventaire, la commande suivante permet de les vendre sur le marché global :
+
+<br><br>
+
+    sell("plante") en remplaçant "plante" par "wheat", "carrot" ou "apple"
+
+    <br><br>
+
+<span class="explanation-title">7. Acheter</span>
+
+<br><br>
+
+Avec l'argent gagné, il est possible d'acheter d'autres graines potentiellement meilleures. Nous utilisons la commande suivante :
+
+<br><br>
+
+    buy("graine") en remplaçant "graine" par "wheat", "carrot" ou "apple"
+
+    <br><br>
+
+De plus, il existe une commande qui retourne True ou False selon la possibilité d'acheter une graine. Nous utilisons :
+
+<br><br>
+
+    canBuy("graine") en remplaçant "graine" par "wheat", "carrot" ou "apple"
+
+    <br><br>
+
+<span class="explanation-title">8. Nombre d'items</span>
+
+<br><br>
+
+Il existe une commande qui retourne le nombre d'items. Nous utilisons la commande suivante : 
+
+<br><br>
+
+    getNumber("items") en remplaçant "item" par "money", "wheat", "carrot" ou "apple"
+
+    <br><br>
+
+<span class="explanation-title">9. Obtenir sa position</span>
+
+<br><br>
+
+La commande suivante retourne les coordonnées du drone. Nous utilisons :
+
+<br><br>
+
+    getPos()
+
+
+
+
         </div>
 
     </div>

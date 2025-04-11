@@ -263,3 +263,54 @@ span[save]{
     display: inline-block;
     text-align: center;
 }
+
+#explanation-container{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 80vh;
+    width: 80vw;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+#explanation-navbar{
+    height: 32px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+
+    background-color: rgb(46, 46, 46, 0.8);
+    user-select: none;
+}
+
+#explanation-text{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: monospace;
+    font-size: 22px;
+}
+
+#explanation{
+    border-radius: 5px;
+    flex: 1;
+    background-color: rgb(46, 46, 46, 0.8);
+    margin-top: 1vh;
+    padding: 1vh;
+    user-select: none;
+    font-size: 2vh;
+    font-family: monospace;
+    font-weight: 800;
+    height: 70vh;
+    overflow-y: scroll;
+}
+
+.explanation-title{
+    font-size: 3vh;
+    color: var(--greenColorHover);
+}
