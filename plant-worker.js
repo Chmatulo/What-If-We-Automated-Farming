@@ -13,7 +13,6 @@ class Plant {
   async grow(luck) {
       this.growthInterval = setInterval(() => {
           if (this.stage < 3) {
-            console.log("coords :", this.x, this.y, this.stage)
               if (Math.floor(Math.random() * luck) == 1){
                 this.stage++;
                 gameObject.plantValues[this.y-1][this.x-1][1] = this.stage;
@@ -23,6 +22,7 @@ class Plant {
               clearInterval(this.growthInterval); // Stop when fully grown
               console.log("Final state :", gameObject)
           }
+
       }, 1000); // Change phase every 3 seconds
   }
 }
@@ -39,7 +39,8 @@ self.onmessage = (event) => {
         switch (data) {
             case "wheat":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 1
-                var myPlant = new Plant("Wheat", 5);
+                self.postMessage({ type: "plants", data: gameObject.plantValues });
+                var myPlant = new Plant("wheat", 5);
               break;
             case "carrot":
 

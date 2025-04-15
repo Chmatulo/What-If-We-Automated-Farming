@@ -1,11 +1,14 @@
 const options_menu = document.getElementById('options-container')
 const explanation_menu = document.getElementById('explanation-container')
 
+const game_container = document.getElementById('main-game-container')
+const home_container = document.getElementById('main-home-container')
+
 var options_menu_bool = false
 var load_menu_bool = false
 var explanation_menu_bool = false
 
-function menuUpdate(menu){
+function menuToggle(menu){
 
   options_menu.style.display = "none"
   explanation_menu.style.display = "none"
@@ -18,43 +21,73 @@ function menuUpdate(menu){
     game_container.style.filter = "blur(0px)"
   }
 
+  // Détecter le cas lorsqu'on veut ouvrir le menu d'options avec echap
+  if(!options_menu_bool && !load_menu_bool && !explanation_menu_bool && menu == "escape"){
+    menu = "settings"
+  }
+
+  options_menu_bool = false
+  load_menu_bool = false
+  explanation_menu_bool = false
+
+  switch(menu) {
+
+    case "settings":
+
+    options_menu_bool = true
+
     if (options_menu_bool){
 
-        game_container.style.transition= "0.6s"
-        home_container.style.transition= "0.6s"
+      game_container.style.transition= "0.6s"
+      home_container.style.transition= "0.6s"
 
-        game_container.style.filter = "blur(10px)"
-        home_container.style.filter = "blur(10px)"
+      game_container.style.filter = "blur(10px)"
+      home_container.style.filter = "blur(10px)"
 
-        game_container.style.pointerEvents = "none"
-        home_container.style.pointerEvents = "none"
+      game_container.style.pointerEvents = "none"
+      home_container.style.pointerEvents = "none"
 
-        setTimeout(() => {
-            options_menu.style.display = "flex"
-        }, 100);
+      setTimeout(() => {
+          options_menu.style.display = "flex"
+      }, 100);
 
-    } else {
+  } else {
 
+      setTimeout(() => {
+          game_container.style.transition= "1.2s"
+          home_container.style.transition= "1.2s"
+          options_menu.style.display = "none"
 
-        setTimeout(() => {
-            game_container.style.transition= "1.2s"
-            home_container.style.transition= "1.2s"
-            options_menu.style.display = "none"
+          game_container.style.pointerEvents = "auto"
+          home_container.style.pointerEvents = "auto"
+      }, 100);
 
-            game_container.style.pointerEvents = "auto"
-            home_container.style.pointerEvents = "auto"
-        }, 100);
+  }
+      break;
 
-    }
+    case "explanations":
+      explanation_menu_bool = true
+      explanation_menu.style.display = "block"
+
+      break;
+
+    case "loading":
+      explanation_menu_bool = true
+      explanation_menu.style.display = "block"
+
+      break;
+
+    default:
+  }
+
 }
-
 
 document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
         if (load_menu_bool){
             updateSaves()
         } else {
-            menuUpdate()
+            menuToggle("escape")
         }
     }
   });
@@ -106,22 +139,4 @@ function changeScene(){
   }
 
   sceneVar++
-}
-
-
-var explanation_bool = false
-
-function explanationUpdate(){
-
-  if (explanation_bool){
-    explanation_menu.style.display = "none"
-    console.log("not active")
-  } else {
-    explanation_menu.style.display = "block"
-    console.log("active")
-  }
-
-
-  explanation_bool = !explanation_bool
-
 }
