@@ -41,17 +41,23 @@ self.onmessage = (event) => {
 
         switch (data) {
             case "wheat":
-                console.log("planting wheat")
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 1
                 self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 1, 0] });
-                var myPlant = new Plant(1, 5);
+                var myPlant = new Plant(1, 2);
               break;
+
             case "carrot":
+                gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
+                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 2, 0] });
+                var myPlant = new Plant(2, 5);
+                break;
 
-              break;
             case "apple":
+                gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
+                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 2, 0] });
+                var myPlant = new Plant(3, 10);
+                break;
 
-              break;
             default:
              // console.log(`Sorry, we are out of ${data}.`);
           }

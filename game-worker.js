@@ -132,10 +132,10 @@ self.onmessage = async (event) => {
         self.postMessage({ type: "plant", data: seed });
         break;
       case "carrot":
-        gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
+        self.postMessage({ type: "plant", data: seed });
         break;
       case "apple":
-        gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 3
+        self.postMessage({ type: "plant", data: seed });
         break;
       default:
         console.log(`Sorry, we are out of ${seed}s.`);

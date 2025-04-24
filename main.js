@@ -103,7 +103,6 @@ function runWorker(){
         gameObject.plantValues[array[1]-1][array[0]-1][1] = array[3];
         game_worker.postMessage({ type: "gameObject", data: gameObject });
       } else if (type === "test"){
-        console.log("Message received from plant worker")
       } else {
         console.log("fin");
       }
