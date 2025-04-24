@@ -136,3 +136,20 @@ function changeScene(){
 
   sceneVar++
 }
+
+var hoverBox = document.getElementById("hoverBox");
+var items = document.querySelectorAll('.items-container');
+
+
+items.forEach(item => {
+  item.addEventListener('mousemove', (e) => {
+    hoverBox.style.display = 'block';
+    hoverBox.textContent = item.getAttribute('data-name');
+    hoverBox.style.left = e.pageX + 10 + 'px';
+    hoverBox.style.top = e.pageY + 10 + 'px';
+  });
+
+  item.addEventListener('mouseleave', () => {
+    hoverBox.style.display = 'none';
+  });
+});

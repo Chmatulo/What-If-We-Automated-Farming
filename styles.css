@@ -158,3 +158,24 @@ body{
 .orange{
     color: #f5b00f;
 }
+
+#hoverBox {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+    font-family: monospace;
+  }
+
+#carrot-seed{
+    transform: scale(2);
+}
+
+#apple-seed{
+    transform: scale(1.3);
+}

@@ -62,13 +62,13 @@
 
         <div id="navbar">
             <div id="navbar-left" class="navbar-child">
-                <div class="items-container"><img class="items" src="data/textures/money-item.png"><div id="money">0</div></div>
-                <div class="items-container"><img class="items" src="data/textures/wheat-item.png"><div id="wheatSeeds">0</div></div>
-                <div class="items-container"><img class="items" src="data/textures/wheat-item.png"><div id="wheat">0</div></div>
-                <div class="items-container"><img class="items" src="data/textures/carrot-item.png"><div id="carrotSeeds">0</div></div>
-                <div class="items-container"><img class="items" src="data/textures/carrot-item.png"><div id="carrot">0</div></div>
-                <div class="items-container"><img class="items" src="data/textures/golden-apple-item.png"><div id="appleSeeds">0</div></div> 
-                <div class="items-container"><img class="items" src="data/textures/golden-apple-item.png"><div id="apple">0</div></div>
+                <div class="items-container" data-name="Money"><img class="items" src="data/textures/money-item.png"><div id="money">0</div></div>
+                <div class="items-container" data-name="Wheat Seed"><img class="items" src="data/textures/wheat-seed.png"><div id="wheatSeeds">0</div></div>
+                <div class="items-container" data-name="Wheat"><img class="items" src="data/textures/wheat-item.png"><div id="wheat">0</div></div>
+                <div class="items-container" data-name="Carrot Seed"><img class="items" src="data/textures/carrot-seed.png" id="carrot-seed"><div id="carrotSeeds">0</div></div>
+                <div class="items-container" data-name="Carrot"><img class="items" src="data/textures/carrot-item.png"><div id="carrot">0</div></div>
+                <div class="items-container" data-name=" Golden Apple Tree Seed"><img class="items" src="data/textures/golden-apple-seed.png" id="apple-seed"><div id="appleSeeds">0</div></div> 
+                <div class="items-container" data-name="Golden Apple"><img class="items" src="data/textures/golden-apple-item.png"><div id="apple">0</div></div>
             </div>
 
             <div id="navbar-right" class="navbar-child">
@@ -78,6 +78,8 @@
                 <div class="navbar-hover-background"><i id="addIDE" class="fa-regular fa-square-plus navbarhover" onclick="createIDE()"></i></div>
                 <div class="navbar-hover-background"><i id="explanations" class="fa-solid fa-question navbarhover" onclick="menuToggle('explanations')"></i></div>
             </div>
+
+            <div id="hoverBox"></div>
 
         </div>
 

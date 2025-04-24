@@ -139,14 +139,24 @@ self.onmessage = async (event) => {
         self.postMessage({ type: "plant", data: seed });
         break;
       case "carrot":
-        self.postMessage({ type: "plant", data: seed });
+        if (gameObject.carrotSeeds > 0){
+          gameObject.carrotSeeds = gameObject.carrotSeeds - 1
+          self.postMessage({ type: "plant", data: seed });
+        }
+
         break;
       case "apple":
-        self.postMessage({ type: "plant", data: seed });
+        if (gameObject.appleSeeds > 0){
+          gameObject.appleSeeds = gameObject.appleSeeds - 1
+          self.postMessage({ type: "plant", data: seed });
+        }
+
         break;
       default:
         console.log(`Sorry, we are out of ${seed}s.`);
     }
+
+    self.postMessage({ type: "seedUpdate", data: [gameObject.carrotSeeds, gameObject.appleSeeds] });
   }
     delay(gameObject.plantDelay)
   });

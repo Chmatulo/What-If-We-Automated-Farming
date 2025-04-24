@@ -30,7 +30,7 @@ var gameObject = {
   apple: 5,
 
   wheatSeeds: "∞",
-  carrotSeeds: 1,
+  carrotSeeds: 3,
   appleSeeds: 2,
 
   tillDelay: 1000,
@@ -77,10 +77,14 @@ function runWorker(){
       } else if (type === "plant") {
         plant_worker.postMessage({ type: "gameObject", data: gameObject });
         plant_worker.postMessage({ type: "plant", data: data });
+      } else if (type === "seedUpdate"){
+        gameObject.carrotSeeds = data[0]
+        gameObject.appleSeeds = data[1]
       } else {
         console.log("fin");
       }
 
+      game_worker.postMessage({ type: "gameObject", data: gameObject });
       updateAll();
     }
   };
