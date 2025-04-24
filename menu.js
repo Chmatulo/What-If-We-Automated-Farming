@@ -153,3 +153,32 @@ items.forEach(item => {
     hoverBox.style.display = 'none';
   });
 });
+
+var boutons = document.querySelectorAll('.navbar-hover-background'); 
+let hoverTimeout;
+let mouseX = 0, mouseY = 0;
+
+boutons.forEach(bouton => {
+  bouton.addEventListener('mousemove', (e) => {
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+    if (hoverBox.style.display === 'block') {
+      hoverBox.style.left = mouseX + 10 + 'px';
+      hoverBox.style.top = mouseY + 10 + 'px';
+    }
+  });
+
+  bouton.addEventListener('mouseenter', () => {
+    hoverTimeout = setTimeout(() => {
+      hoverBox.style.left = mouseX + 10 + 'px';
+      hoverBox.style.top = mouseY + 10 + 'px';
+      hoverBox.textContent = bouton.getAttribute('data-name');
+      hoverBox.style.display = 'block';
+    }, 1000); // 1 second delay
+  });
+
+  bouton.addEventListener('mouseleave', () => {
+    clearTimeout(hoverTimeout);
+    hoverBox.style.display = 'none';
+  });
+});
