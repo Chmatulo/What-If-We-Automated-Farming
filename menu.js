@@ -1,5 +1,6 @@
 const options_menu = document.getElementById('options-container')
 const explanation_menu = document.getElementById('explanation-container')
+const upgrade_menu = document.getElementById('upgrade-container')
 
 const game_container = document.getElementById('main-game-container')
 const home_container = document.getElementById('main-home-container')
@@ -7,11 +8,13 @@ const home_container = document.getElementById('main-home-container')
 var options_menu_bool = false
 var load_menu_bool = false
 var explanation_menu_bool = false
+var upgrade_menu_bool = false
 
 function menuToggle(menu){
 
   options_menu.style.display = "none"
   explanation_menu.style.display = "none"
+  upgrade_menu.style.display = "none"
 
   game_container.style.pointerEvents = "auto"
   home_container.style.pointerEvents = "auto"
@@ -22,21 +25,20 @@ function menuToggle(menu){
   }
 
   // Détecter le cas lorsqu'on veut ouvrir le menu d'options avec echap
-  if(!options_menu_bool && !load_menu_bool && !explanation_menu_bool && menu == "escape"){
+  if(!options_menu_bool && !load_menu_bool && !explanation_menu_bool && !upgrade_menu_bool && menu == "escape"){
     menu = "settings"
   }
 
   options_menu_bool = false
   load_menu_bool = false
   explanation_menu_bool = false
+  upgrade_menu_bool = false
 
   switch(menu) {
 
     case "settings":
 
     options_menu_bool = true
-
-    if (options_menu_bool){
 
       game_container.style.transition= "0.6s"
       home_container.style.transition= "0.6s"
@@ -51,18 +53,6 @@ function menuToggle(menu){
           options_menu.style.display = "flex"
       }, 100);
 
-  } else {
-
-      setTimeout(() => {
-          game_container.style.transition= "1.2s"
-          home_container.style.transition= "1.2s"
-          options_menu.style.display = "none"
-
-          game_container.style.pointerEvents = "auto"
-          home_container.style.pointerEvents = "auto"
-      }, 100);
-
-  }
       break;
 
     case "explanations":
@@ -71,10 +61,16 @@ function menuToggle(menu){
 
       break;
 
+    case "upgrade":
+      upgrade_menu_bool = true
+      upgrade_menu.style.display = "block"
+
+      break;
+
     case "loading":
       explanation_menu_bool = true
       explanation_menu.style.display = "block"
-
+  
       break;
 
     default:

@@ -1,3 +1,37 @@
+var gameObject = {
+
+  dronePosition : [1, 1, 0],
+
+  // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 = "tilled_wet"
+  soilValues : [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0]
+  ],
+
+  // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
+  plantValues : [
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
+  ],
+
+  money: 100,
+
+  tillDelay: 1000,
+  plantDelay: 1000,
+  moveDelay: 1000,
+
+}
+
 // Variables Web Worker état
 let game_worker, plant_worker = null;
 var game_receivingAllowed, plant_receivingAllowed = true;
@@ -6,82 +40,83 @@ let game_codeRunning, plant_codeRunning = false;
 
 // Fonction lancer le worker
 function runWorker(){
-  if (!game_worker){
+
+  // Game Worker
+  if (!game_worker) {
     game_worker = new Worker("game-worker.js");
+    console.log("game worker created")
   }
 
-
-
-// Recevoir message game Worker
   game_worker.onmessage = (event) => {
-   
     const { type, data } = event.data;
 
     if (game_receivingAllowed){
+      if (type === "soilUpdate") {
+        let array = JSON.parse(JSON.stringify(data));
+        gameObject.soilValues[array[1]-1][array[0]-1] = array[2];
 
-      
-    if (type === "progress") {
-      console.log(data)
-    } else if (type === "result") {
-      console.log(data)
-    } else if (type == "codeState"){
-      game_codeRunning = data
-    } else if (type == "gameObject"){ // Recevoir changement gameObject
+      } else if (type === "plantUpdate") {
+        let array = JSON.parse(JSON.stringify(data));
+        gameObject.plantValues[array[1]-1][array[0]-1][0] = array[2];
+        gameObject.plantValues[array[1]-1][array[0]-1][1] = array[3];
+        game_worker.postMessage({ type: "gameObject", data: gameObject });
 
-      gameObject = JSON.parse(JSON.stringify(data));
+      } else if (type == "codeState"){
+        game_codeRunning = data;
+      } else if (type == "gameObject"){
+        gameObject = JSON.parse(JSON.stringify(data));
+      } else if (type == "move"){
+        gameObject.dronePosition = data;
+      } else if (type === "plant") {
+        plant_worker.postMessage({ type: "gameObject", data: gameObject });
+        plant_worker.postMessage({ type: "plant", data: data });
+      } else {
+        console.log("fin");
+      }
 
-    } else if (type == "move"){
-      gameObject.dronePosition = data
-    } else if (type === "plant") {
-
-      plant_worker.postMessage({ type: "gameObject", data: gameObject });
-      plant_worker.postMessage({ type: "plant", data: data });
-  
-    } else {
-    console.log("fin")
+      updateAll();
     }
+  };
 
-    updateAll()
-  } 
-}
-
-// Console.log erreurs game_worker
-game_worker.onerror = (error) => {
+  game_worker.onerror = (error) => {
     console.error("Game Worker error:", error);
   };
 
+  game_worker.postMessage({ type: "gameObject", data: gameObject });
 
- // Plant WebWorker  
-
-  if (!plant_worker){
+  // Plant Worker
+  if (!plant_worker) {
     plant_worker = new Worker("plant-worker.js");
+    console.log("Plant worker created")
   }
 
-  // Recevoir message plant Worker
- plant_worker.onmessage = (event) => {
-   
+  plant_worker.onmessage = (event) => {
     const { type, data } = event.data;
 
     if (plant_receivingAllowed){
-      
-    if (type === "plants") {
-
-        gameObject.plantValues = JSON.parse(JSON.stringify(data));
+      if (type === "gameObject"){
+        plant_worker.postMessage({ type: "gameObject", data: gameObject });
+      } else if (type === "plantUpdate") {
+        console.log("Plant updated!");
+        let array = JSON.parse(JSON.stringify(data));
+        gameObject.plantValues[array[1]-1][array[0]-1][0] = array[2];
+        gameObject.plantValues[array[1]-1][array[0]-1][1] = array[3];
         game_worker.postMessage({ type: "gameObject", data: gameObject });
-      
-    } else {
-    console.log("fin")
+      } else if (type === "test"){
+        console.log("Message received from plant worker")
+      } else {
+        console.log("fin");
+      }
     }
+  };
 
-  } 
-}
-
-// Console.log erreurs plant_worker
-plant_worker.onerror = (error) => {
+  plant_worker.onerror = (error) => {
     console.error("Plant Worker error:", error);
   };
 
+  plant_worker.postMessage({ type: "gameObject", data: gameObject });
 }
+
 
 runWorker()
 
@@ -128,40 +163,11 @@ if (!game_codeRunning){
 
 }
 
-var gameObject = {
-
-  dronePosition : [1, 1, 0],
-
-  // 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 = "tilled_wet"
-  soilValues : [
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0]
-  ],
-
-  // 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
-  plantValues : [
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
-  ],
-
-  money: 0,
-
-}
-
-
 function updateAll(){
   document.getElementById("money").innerHTML = gameObject.money
 }
+
+updateAll()
 
 const field = document.getElementById("field");
 const field_context = field.getContext("2d");

@@ -27,7 +27,7 @@ var gameObject = {
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],  
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0]
@@ -44,7 +44,11 @@ var gameObject = {
     [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
   ],
 
-  money: 0,
+  money: 100,
+
+  tillDelay: 1000,
+  plantDelay: 1000,
+  moveDelay: 1000,
 
 }
 
@@ -106,13 +110,13 @@ self.onmessage = async (event) => {
     }
 
     self.postMessage({ type: "move", data: gameObject.dronePosition });
-    delay(1000)
+    delay(gameObject.moveDelay)
   });
 
   pyodide.globals.set("till", () => {
     gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
-    self.postMessage({ type: "gameObject", data: gameObject });
-    delay(1000)
+    self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 1] });
+    delay(gameObject.tillDelay)
   });
 
   pyodide.globals.set("canTill", () => {
@@ -126,7 +130,6 @@ self.onmessage = async (event) => {
     switch (seed) {
       case "wheat":
         self.postMessage({ type: "plant", data: seed });
-        console.log("planting wheat")
         break;
       case "carrot":
         gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
@@ -138,8 +141,7 @@ self.onmessage = async (event) => {
         console.log(`Sorry, we are out of ${seed}s.`);
     }
   }
-    self.postMessage({ type: "gameObject", data: gameObject });
-    delay(1000)
+    delay(gameObject.plantDelay)
   });
 
   pyodide.globals.set("canPlant", () => {
@@ -149,6 +151,7 @@ self.onmessage = async (event) => {
   pyodide.globals.set("add", (number) => {
 
     gameObject.money += number
+    console.log("added")  
     self.postMessage({ type: "gameObject", data: gameObject });
   });
 
@@ -158,9 +161,6 @@ self.onmessage = async (event) => {
     posArr[1] = gameObject.dronePosition[1]
     return posArr
   });
-
-
-  pyodide.globals.set("checkVar", checkVar);
 
   try {
     // Execution du code Python
@@ -180,7 +180,6 @@ self.onmessage = async (event) => {
     //Supression globales
     pyodide.globals.delete("ping");
     pyodide.globals.delete("move");
-    pyodide.globals.delete("checkVar");
     }
 
   } else if (type == "gameObject"){
@@ -189,19 +188,4 @@ self.onmessage = async (event) => {
   } 
 
 
-};
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function moveFn(direction) {
-  console.log("a")
-  await sleep(3000);  // Waits for 3 seconds
-}
-
-// fonction custom
-
-const checkVar = () => {
-  return money > 5;
 };
