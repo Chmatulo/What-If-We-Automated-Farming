@@ -25,6 +25,13 @@ var gameObject = {
   ],
 
   money: 100,
+  wheat: 3,
+  carrot: 4,
+  apple: 5,
+
+  wheatSeeds: "∞",
+  carrotSeeds: 1,
+  appleSeeds: 2,
 
   tillDelay: 1000,
   plantDelay: 1000,
@@ -164,6 +171,14 @@ if (!game_codeRunning){
 
 function updateAll(){
   document.getElementById("money").innerHTML = gameObject.money
+
+  document.getElementById("wheat").innerHTML = gameObject.wheat
+  document.getElementById("carrot").innerHTML = gameObject.carrot
+  document.getElementById("apple").innerHTML = gameObject.apple
+
+  document.getElementById("wheatSeeds").innerHTML = gameObject.wheatSeeds
+  document.getElementById("carrotSeeds").innerHTML = gameObject.carrotSeeds
+  document.getElementById("appleSeeds").innerHTML = gameObject.appleSeeds
 }
 
 updateAll()

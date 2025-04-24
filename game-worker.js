@@ -45,6 +45,13 @@ var gameObject = {
   ],
 
   money: 100,
+  wheat: 0,
+  carrot: 0,
+  apple: 0,
+
+  wheatSeeds: "∞",
+  carrotSeeds: 0,
+  appleSeeds: 0,
 
   tillDelay: 1000,
   plantDelay: 1000,

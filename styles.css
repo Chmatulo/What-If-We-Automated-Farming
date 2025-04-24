@@ -139,11 +139,16 @@ body{
     font-weight: bold;
     height: 8vh;
     width: 3vw;
+    margin: 0.5vw;
 }
 
 .items{
     margin-bottom: 0.6vh;
     height: 5vh;
+}
+
+#wheatSeeds{
+    transform: scale(1.5);
 }
 
 .yellow{
