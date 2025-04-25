@@ -33,6 +33,10 @@ var gameObject = {
   carrotSeeds: 1000,
   appleSeeds: 1000,
 
+  tillLevel: 9,
+  plantLevel: 1,
+  moveLevel: 1,
+
   tillDelay: 1000,
   plantDelay: 1000,
   moveDelay: 1000,
@@ -173,8 +177,11 @@ if (!game_codeRunning){
 
 }
 
+const baseCost = 50
+const growthRate = 1.5
+
 function updateAll(){
-  document.getElementById("money").innerHTML = gameObject.money
+  document.getElementById("money").innerHTML = gameObject.money + " CHF"
 
   document.getElementById("wheat").innerHTML = gameObject.wheat
   document.getElementById("carrot").innerHTML = gameObject.carrot
@@ -183,6 +190,46 @@ function updateAll(){
   document.getElementById("wheatSeeds").innerHTML = gameObject.wheatSeeds
   document.getElementById("carrotSeeds").innerHTML = gameObject.carrotSeeds
   document.getElementById("appleSeeds").innerHTML = gameObject.appleSeeds
+
+  let levels = document.getElementsByClassName("upgrade-level")
+  levels[0].innerHTML = "Niveau : " + gameObject.tillLevel
+  levels[1].innerHTML = "Niveau : " + gameObject.plantLevel
+  levels[2].innerHTML = "Niveau : " + gameObject.moveLevel
+
+  let prices = document.getElementsByClassName("upgrade-cost")
+
+  let tillUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.tillLevel - 1)))
+  let plantUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.plantLevel - 1)))
+  let moveUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.moveLevel - 1)))
+
+  prices[0].innerHTML = "Coût : " + tillUpgradeCost + " CHF"
+  prices[1].innerHTML = "Coût : " + plantUpgradeCost + " CHF"
+  prices[2].innerHTML = "Coût : " + moveUpgradeCost + " CHF"
+
+  let logos = document.getElementsByClassName("upgrade-logo")
+  if (tillUpgradeCost <= gameObject.money){
+    logos[0].style.color = "rgb(138, 160, 43)"
+    logos[0].classList.add("upgrade-logo-available")
+  } else {
+    logos[0].style.color = "rgb(46, 46, 46)"
+    logos[0].classList.remove("upgrade-logo-available")
+  }
+
+  if (plantUpgradeCost <= gameObject.money){
+    logos[1].style.color = "rgb(138, 160, 43)"
+    logos[1].classList.add("upgrade-logo-available")
+  } else {
+    logos[1].style.color = "rgb(46, 46, 46)"
+    logos[1].classList.remove("upgrade-logo-available")
+  }
+
+  if (moveUpgradeCost <= gameObject.money){
+    logos[2].style.color = "rgb(138, 160, 43)"
+    logos[2].classList.add("upgrade-logo-available")
+  } else {
+    logos[2].style.color = "rgb(46, 46, 46)"
+    logos[2].classList.remove("upgrade-logo-available")
+  }
 }
 
 updateAll()

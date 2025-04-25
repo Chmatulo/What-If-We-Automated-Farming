@@ -375,6 +375,7 @@ function createSave(){
     delete_button.classList.add("edit-button")
     delete_button.onclick = function() {
         savesNumber = savesNumber - 1 
+        localStorage.setItem("savesNumber", savesNumber);
         load_container.remove();
     };
     load_container.appendChild(delete_button)
