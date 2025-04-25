@@ -1,5 +1,6 @@
 // création objets
 var gameObject = {};
+var allPlants = [];
 
 class Plant {
   constructor(type, luck) {
@@ -11,20 +12,36 @@ class Plant {
   }
 
   async grow(luck) {
-      this.growthInterval = setInterval(() => {
-          if (this.stage < 3) {
-              if (Math.floor(Math.random() * luck) == 0){
-                this.stage++;
-                gameObject.plantValues[this.y-1][this.x-1][1] = this.stage;
-                self.postMessage({ type: "plantUpdate", data: [this.x , this.y , this.type, this.stage] });
-              }
-          } else {
-              clearInterval(this.growthInterval); // Stop when fully grown
-          }
+    this.growthInterval = setInterval(() => {
+      if (this.stage < 3) {
+        if (Math.floor(Math.random() * luck) === 0) {
+          this.stage++;
+          gameObject.plantValues[this.y - 1][this.x - 1][1] = this.stage;
+          self.postMessage({ type: "plantUpdate", data: [this.x, this.y, this.type, this.stage] });
+        }
+      } else {
+        clearInterval(this.growthInterval);
+        this.growthInterval = null;
+  
+        // Remove this plant from the allPlants array
+        const index = allPlants.indexOf(this);
+        if (index !== -1) {
+          allPlants.splice(index, 1);
+        }
+      }
+    }, 1000);
+  }
 
-      }, 1000); // Change phase every second
+  stopGrowth() {
+    if (this.growthInterval) {
+      clearInterval(this.growthInterval);
+    }
   }
 }
+
+function stopAllPlantGrowth() {
+    allPlants.forEach(plant => plant.stopGrowth());
+  }
 
 self.onmessage = (event) => {
    
@@ -62,6 +79,12 @@ self.onmessage = (event) => {
              // console.log(`Sorry, we are out of ${data}.`);
           }
 
+          allPlants.push(myPlant);
+
+    } else if (type === "stopGrowing"){
+
+        stopAllPlantGrowth();
+        
     } else {
     console.log("fin")
     }

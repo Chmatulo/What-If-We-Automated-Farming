@@ -30,8 +30,8 @@ var gameObject = {
   apple: 5,
 
   wheatSeeds: "∞",
-  carrotSeeds: 3,
-  appleSeeds: 2,
+  carrotSeeds: 1000,
+  appleSeeds: 1000,
 
   tillDelay: 1000,
   plantDelay: 1000,
@@ -349,4 +349,8 @@ function load(){
   gameObject = gameObjectLoaded;
   game_worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
   plant_worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
+}
+
+function stopGrowing(){
+  plant_worker.postMessage({ type: "stopGrowing", data : "" });
 }
