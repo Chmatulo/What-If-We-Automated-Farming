@@ -89,6 +89,8 @@ self.onmessage = async (event) => {
 
   pyodide.globals.set("move", (direction) => {
 
+    delay(gameObject.moveDelay)
+
     switch(direction) {
 
       case "North":
@@ -117,13 +119,12 @@ self.onmessage = async (event) => {
     }
 
     self.postMessage({ type: "move", data: gameObject.dronePosition });
-    delay(gameObject.moveDelay)
   });
 
   pyodide.globals.set("till", () => {
+    delay(gameObject.tillDelay)
     gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
     self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 1] });
-    delay(gameObject.tillDelay)
   });
 
   pyodide.globals.set("canTill", () => {
@@ -131,6 +132,8 @@ self.onmessage = async (event) => {
   });
 
   pyodide.globals.set("plant", (seed) => {
+
+    delay(gameObject.plantDelay)
 
     if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0 ){
 
@@ -158,7 +161,6 @@ self.onmessage = async (event) => {
 
     self.postMessage({ type: "seedUpdate", data: [gameObject.carrotSeeds, gameObject.appleSeeds] });
   }
-    delay(gameObject.plantDelay)
   });
 
   pyodide.globals.set("canPlant", () => {

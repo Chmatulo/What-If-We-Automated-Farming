@@ -33,7 +33,7 @@ var gameObject = {
   carrotSeeds: 1000,
   appleSeeds: 1000,
 
-  tillLevel: 9,
+  tillLevel: 1,
   plantLevel: 1,
   moveLevel: 1,
 
@@ -138,17 +138,11 @@ function stopWorker(){
   game_codeRunning = false;
   game_receivingAllowed = false;
 
-  plant_codeRunning = false;
-  plant_receivingAllowed = false;
-
-  if (game_worker || plant_worker){
+  if (game_worker){
     game_worker.terminate()
     game_worker = null;
 
-    plant_worker.terminate()
-    plant_worker = null;
-
-    console.log("Workers Terminated")
+    console.log("Worker Terminated")
   } else {
     console.log("No workers to terminate")
   }
@@ -192,6 +186,7 @@ function updateAll(){
   document.getElementById("appleSeeds").innerHTML = gameObject.appleSeeds
 
   let levels = document.getElementsByClassName("upgrade-level")
+
   levels[0].innerHTML = "Niveau : " + gameObject.tillLevel
   levels[1].innerHTML = "Niveau : " + gameObject.plantLevel
   levels[2].innerHTML = "Niveau : " + gameObject.moveLevel
@@ -230,6 +225,62 @@ function updateAll(){
     logos[2].style.color = "rgb(46, 46, 46)"
     logos[2].classList.remove("upgrade-logo-available")
   }
+
+  if (gameObject.tillLevel == 10){
+
+    levels[0].innerHTML = "Niveau Maximum"
+    prices[0].innerHTML = "Coût : Aucun "
+    logos[0].style.color = "rgb(46, 46, 46)"
+    logos[0].classList.remove("upgrade-logo-available")
+
+  } 
+
+  if (gameObject.plantLevel == 10){
+
+    levels[1].innerHTML = "Niveau Maximum"
+    prices[1].innerHTML = "Coût : Aucun "
+    logos[1].style.color = "rgb(46, 46, 46)"
+    logos[1].classList.remove("upgrade-logo-available")
+
+  } 
+  
+  if (gameObject.moveLevel == 10){
+
+    levels[2].innerHTML = "Niveau Maximum"
+    prices[2].innerHTML = "Coût : Aucun "
+    logos[2].style.color = "rgb(46, 46, 46)"
+    logos[2].classList.remove("upgrade-logo-available")
+
+  }
+}
+
+function upgrade(upgradeOption){
+
+  let tillUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.tillLevel - 1)))
+  let plantUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.plantLevel - 1)))
+  let moveUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.moveLevel - 1)))
+
+  if (upgradeOption === "till" && tillUpgradeCost <= gameObject.money && gameObject.tillLevel < 10){
+
+    gameObject.money = gameObject.money - tillUpgradeCost
+    gameObject.tillLevel = gameObject.tillLevel + 1
+    gameObject.tillDelay = gameObject.tillDelay - 100 
+
+  } else if (upgradeOption === 'plant' && plantUpgradeCost <= gameObject.money && gameObject.plantLevel < 10){
+
+    gameObject.money = gameObject.money - plantUpgradeCost
+    gameObject.plantLevel = gameObject.plantLevel + 1
+    gameObject.plantDelay = gameObject.plantDelay - 100 
+
+  } else if (upgradeOption === 'move' && moveUpgradeCost <= gameObject.money && gameObject.moveLevel < 10){
+
+    gameObject.money = gameObject.money - moveUpgradeCost
+    gameObject.moveLevel = gameObject.moveLevel + 1
+    gameObject.moveDelay = gameObject.moveDelay - 100 
+
+  }
+  game_worker.postMessage({ type: "gameObject", data: gameObject });
+  updateAll()
 }
 
 updateAll()
