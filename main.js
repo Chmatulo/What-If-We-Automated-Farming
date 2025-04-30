@@ -24,20 +24,22 @@ var gameObject = {
     [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
   ],
 
-  money: 1000,
-  wheat: 3,
-  carrot: 4,
-  apple: 5,
+  money: 0,
+  wheat: 0,
+  carrot: 0,
+  apple: 0,
 
   wheatSeeds: "∞",
-  carrotSeeds: 1000,
-  appleSeeds: 1000,
+  carrotSeeds: 0,
+  appleSeeds: 0,
 
   tillLevel: 1,
+  harvestLevel: 1,
   plantLevel: 1,
   moveLevel: 1,
 
   tillDelay: 1000,
+  harvestDelay: 1000,
   plantDelay: 1000,
   moveDelay: 1000,
 
@@ -76,6 +78,7 @@ function runWorker(){
         game_codeRunning = data;
       } else if (type == "gameObject"){
         gameObject = JSON.parse(JSON.stringify(data));
+        console.log(gameObject.money)
       } else if (type == "move"){
         gameObject.dronePosition = data;
       } else if (type === "plant") {
@@ -103,7 +106,6 @@ function runWorker(){
       } else {
         console.log("fin");
       }
-
       game_worker.postMessage({ type: "gameObject", data: gameObject });
       updateAll();
     }
@@ -202,9 +204,9 @@ const growthRate = 1.5
 function updateAll(){
   document.getElementById("money").innerHTML = formatNumber(gameObject.money) + " CHF"
 
-  document.getElementById("wheat").innerHTML = gameObject.wheat
-  document.getElementById("carrot").innerHTML = gameObject.carrot
-  document.getElementById("apple").innerHTML = gameObject.apple
+  document.getElementById("wheat").innerHTML = formatNumber(gameObject.wheat)
+  document.getElementById("carrot").innerHTML = formatNumber(gameObject.carrot)
+  document.getElementById("apple").innerHTML = formatNumber(gameObject.apple)
 
   document.getElementById("wheatSeeds").innerHTML = formatNumber(gameObject.wheatSeeds)
   document.getElementById("carrotSeeds").innerHTML = formatNumber(gameObject.carrotSeeds)
@@ -213,18 +215,21 @@ function updateAll(){
   let levels = document.getElementsByClassName("upgrade-level")
 
   levels[0].innerHTML = "Niveau : " + gameObject.tillLevel
-  levels[1].innerHTML = "Niveau : " + gameObject.plantLevel
-  levels[2].innerHTML = "Niveau : " + gameObject.moveLevel
+  levels[1].innerHTML = "Niveau : " + gameObject.harvestLevel
+  levels[2].innerHTML = "Niveau : " + gameObject.plantLevel
+  levels[3].innerHTML = "Niveau : " + gameObject.moveLevel
 
   let prices = document.getElementsByClassName("upgrade-cost")
 
   let tillUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.tillLevel - 1)))
+  let harvestUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.harvestLevel - 1)))
   let plantUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.plantLevel - 1)))
   let moveUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.moveLevel - 1)))
 
   prices[0].innerHTML = "Coût : " + tillUpgradeCost + " CHF"
-  prices[1].innerHTML = "Coût : " + plantUpgradeCost + " CHF"
-  prices[2].innerHTML = "Coût : " + moveUpgradeCost + " CHF"
+  prices[1].innerHTML = "Coût : " + harvestUpgradeCost + " CHF"
+  prices[2].innerHTML = "Coût : " + plantUpgradeCost + " CHF"
+  prices[3].innerHTML = "Coût : " + moveUpgradeCost + " CHF"
 
   let logos = document.getElementsByClassName("upgrade-logo")
   if (tillUpgradeCost <= gameObject.money){
@@ -235,7 +240,7 @@ function updateAll(){
     logos[0].classList.remove("upgrade-logo-available")
   }
 
-  if (plantUpgradeCost <= gameObject.money){
+  if (harvestUpgradeCost <= gameObject.money){
     logos[1].style.color = "rgb(138, 160, 43)"
     logos[1].classList.add("upgrade-logo-available")
   } else {
@@ -243,12 +248,20 @@ function updateAll(){
     logos[1].classList.remove("upgrade-logo-available")
   }
 
-  if (moveUpgradeCost <= gameObject.money){
+  if (plantUpgradeCost <= gameObject.money){
     logos[2].style.color = "rgb(138, 160, 43)"
     logos[2].classList.add("upgrade-logo-available")
   } else {
     logos[2].style.color = "rgb(86, 86, 86)"
     logos[2].classList.remove("upgrade-logo-available")
+  }
+
+  if (moveUpgradeCost <= gameObject.money){
+    logos[3].style.color = "rgb(138, 160, 43)"
+    logos[3].classList.add("upgrade-logo-available")
+  } else {
+    logos[3].style.color = "rgb(86, 86, 86)"
+    logos[3].classList.remove("upgrade-logo-available")
   }
 
   if (gameObject.tillLevel == 10){
@@ -260,7 +273,7 @@ function updateAll(){
 
   } 
 
-  if (gameObject.plantLevel == 10){
+  if (gameObject.harvestLevel == 10){
 
     levels[1].innerHTML = "Niveau Maximum"
     prices[1].innerHTML = "Coût : Aucun "
@@ -268,13 +281,22 @@ function updateAll(){
     logos[1].classList.remove("upgrade-logo-available")
 
   } 
-  
-  if (gameObject.moveLevel == 10){
+
+  if (gameObject.plantLevel == 10){
 
     levels[2].innerHTML = "Niveau Maximum"
     prices[2].innerHTML = "Coût : Aucun "
     logos[2].style.color = "rgb(86, 86, 86)"
     logos[2].classList.remove("upgrade-logo-available")
+
+  } 
+  
+  if (gameObject.moveLevel == 10){
+
+    levels[3].innerHTML = "Niveau Maximum"
+    prices[3].innerHTML = "Coût : Aucun "
+    logos[3].style.color = "rgb(86, 86, 86)"
+    logos[3].classList.remove("upgrade-logo-available")
 
   }
 }
@@ -282,6 +304,7 @@ function updateAll(){
 function upgrade(upgradeOption){
 
   let tillUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.tillLevel - 1)))
+  let harvestUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.harvestLevel - 1)))
   let plantUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.plantLevel - 1)))
   let moveUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.moveLevel - 1)))
 
@@ -290,6 +313,12 @@ function upgrade(upgradeOption){
     gameObject.money = gameObject.money - tillUpgradeCost
     gameObject.tillLevel = gameObject.tillLevel + 1
     gameObject.tillDelay = gameObject.tillDelay - 100 
+
+  } else if (upgradeOption === 'harvest' && harvestUpgradeCost <= gameObject.money && gameObject.harvestLevel < 10){
+
+    gameObject.money = gameObject.money - harvestUpgradeCost
+    gameObject.harvestLevel = gameObject.harvestLevel + 1
+    gameObject.harvestDelay = gameObject.harvestDelay - 100 
 
   } else if (upgradeOption === 'plant' && plantUpgradeCost <= gameObject.money && gameObject.plantLevel < 10){
 
@@ -477,53 +506,3 @@ function load(){
 function stopGrowing(){
   plant_worker.postMessage({ type: "stopGrowing", data : "" });
 }
-
-
-
-function transformPythonToAsync(rawCode, commandNames) {
-  const lines = rawCode.split('\n');
-  const asyncLines = lines.map(line => {
-    const trimmed = line.trim();
-
-    // Skip empty lines or comments
-    if (!trimmed || trimmed.startsWith("#")) return line;
-
-    // Detect matching command calls (e.g. test(), plant("wheat"), etc.)
-    for (const cmd of commandNames) {
-      const callPattern = new RegExp(`^${cmd}\\s*\\(`);
-      if (callPattern.test(trimmed)) {
-        const indentation = line.match(/^\s*/)[0];
-        return `${indentation}await ${trimmed}`;
-      }
-    }
-
-    // Leave control structures / non-command lines alone
-    return line;
-  });
-
-  return `
-import asyncio
-
-async def _user_loop():
-${asyncLines.map(line => '    ' + line).join('\n')}
-
-asyncio.ensure_future(_user_loop())
-`;
-}
-
-const knownCommands = [
-  "test", "harvest", "till", "plant", "move", "canHarvest"
-];
-
-const userCode = `
-while True:
-    test()
-    if canHarvest():
-        harvest()
-    till()
-    plant("wheat")
-    move("East")
-`;
-
-const transformed = transformPythonToAsync(userCode, knownCommands);
-console.log(transformed);

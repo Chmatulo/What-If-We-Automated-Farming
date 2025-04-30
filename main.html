@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>What if we Automated farming ?</title>
 
-    <link href="data/img/main-logo.png" rel="icon">
+    <link href="data/textures/main-logo.png" rel="icon">
 
 
     <link href="styles.css" rel="stylesheet">
@@ -126,11 +126,24 @@
         <div id="upgrade">
 
             <div class="upgrade-box">
-                <div class="upgrade-box-name"> Vitesse de bêchage </div>
+                <div class="upgrade-box-name">  Vitesse de<br> bêchage </div>
 
                 <div class="upgrade-explanation">Réduit le temps nécessaire au drone pour effectuer l'action <span class="yellow">till</span>()</div>
 
                 <i class="fa-solid fa-circle-up upgrade-logo" onclick="upgrade('till')"></i>
+
+                <div class="upgrade-cost"> Coût : 200CHF</div>
+
+                <div class="upgrade-level">Niveau : 1</div>
+
+            </div>
+
+            <div class="upgrade-box">
+                <div class="upgrade-box-name"> Vitesse de <br> récolte </div>
+
+                <div class="upgrade-explanation">Réduit le temps nécessaire au drone pour effectuer l'action <span class="yellow">harvest</span>()</div>
+
+                <i class="fa-solid fa-circle-up upgrade-logo" onclick="upgrade('harvest')"></i>
 
                 <div class="upgrade-cost"> Coût : 200CHF</div>
 
@@ -307,7 +320,7 @@ Avec l'argent gagné, il est possible d'acheter d'autres graines potentiellement
 
 <br><br>
 
-    <span class="yellow">buy</span>("graine") en remplaçant "graine" par "wheat", "carrot" ou "apple"
+    <span class="yellow">buy</span>("graine") en remplaçant "graine" par "carrotSeed" ou "appleSeed"
 
     <br><br>
 
@@ -315,7 +328,7 @@ De plus, il existe une commande qui retourne True ou False selon la possibilité
 
 <br><br>
 
-    <span class="yellow">canBuy</span>("graine") en remplaçant "graine" par "wheat", "carrot" ou "apple"
+    <span class="yellow">canBuy</span>("graine") en remplaçant "graine" par, "carrotSeed" ou "appleSeed"
 
     <br><br>
 
@@ -327,7 +340,7 @@ Il existe une commande qui retourne le nombre d'items. Nous utilisons la command
 
 <br><br>
 
-    <span class="yellow">getNumber</span>("items") en remplaçant "item" par "money", "wheat", "carrot" ou "apple"
+    <span class="yellow">getNumber</span>("item") en remplaçant "item" par "money", "wheat", "wheatSeed", "carrot", "carrotSeed", "apple" ou "appleSeed"
 
     <br><br>
 
@@ -335,14 +348,43 @@ Il existe une commande qui retourne le nombre d'items. Nous utilisons la command
 
 <br><br>
 
-La commande suivante retourne les coordonnées du drone. Nous utilisons :
+La commande suivante retourne les coordonnées du drone sous la forme d'un tableau. Nous utilisons :
 
 <br><br>
 
     <span class="yellow">getPos</span>()
 
+Et nous obtenons le résultat suivant : [x, y]. Pour obtenir la coordonnée voulue, nous utilisons : 
 
+<br><br> 
 
+x = <span class="yellow">getPos</span>()[0] et y = <span class="yellow">getPos</span>()[1] 
+
+<br><br>
+
+ou bien, en ayant déclaré une variable au préalable
+
+<br><br>
+
+pos = <span class="yellow">getPos</span>(), avec x = pos[0] et y = pos[1]
+
+<br><br>
+
+<span class="explanation-title">10. Réinitialiser le champ</span>
+
+<br><br>
+
+La commande suivante permet de supprimer toutes les plantes du champ et de replacer le drone à la position [1,1]
+
+<br><br>
+
+<span class="yellow">clear</span>()
+
+<br><br>
+
+<span style="color: rgb(192, 19, 19);">⚠︎</span> Cette action entraîne la suppression définitive des plantes dans le champ <span style="color: rgb(192, 19, 19);">⚠︎</span>
+
+<br> L'inventaire n'est pas affecté par cette commande
 
         </div>
 

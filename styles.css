@@ -191,7 +191,7 @@ body{
 
 #upgrade{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .upgrade-box{
@@ -200,13 +200,11 @@ body{
     border-radius: 2rem;
     padding: 5%;
     text-align: center;
-    margin-left: 5%;
-    margin-right: 5%;
+    margin: 2vh 5% 2vh 5%;
     font-family: monospace;
 }
 
 .upgrade-box-name{
-    height: 5%;
     font-size: 3vh;
     color: var(--greenColorHover);
 }

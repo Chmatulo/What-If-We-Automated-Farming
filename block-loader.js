@@ -16,7 +16,7 @@ function createIDE(){
   const palette = {};
 
   // Grouper selon couleur
-  const functionKeys = ["ping", "move", "harvest", "plant", "canPlant", "canHarvest", "harvest", "canTill", "till"];
+  const functionKeys = ["move", "harvest", "plant", "canPlant", "canHarvest", "harvest", "canTill", "till", "buy", "canBuy", "getNumber", "sell", "clear"];
   const nativeToolKeys = ["def", "if", "else", "for", "in", "while", "and", "return", "break", "print"];
 
 
