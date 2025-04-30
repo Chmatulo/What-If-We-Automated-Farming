@@ -142,6 +142,7 @@ body{
     height: 8vh;
     width: 3vw;
     margin: 0.5vw;
+    text-align: center;
 }
 
 .quantity{

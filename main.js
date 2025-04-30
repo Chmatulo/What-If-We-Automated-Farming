@@ -24,7 +24,7 @@ var gameObject = {
     [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
   ],
 
-  money: 100,
+  money: 1000,
   wheat: 3,
   carrot: 4,
   apple: 5,
@@ -84,6 +84,22 @@ function runWorker(){
       } else if (type === "seedUpdate"){
         gameObject.carrotSeeds = data[0]
         gameObject.appleSeeds = data[1]
+      } else if (type === "harvest"){
+
+        console.log("main side")
+
+        if (data[2] == 1){
+            gameObject.wheat = gameObject.wheat + 1
+        } else if (data[2] == 2){
+            gameObject.carrot = gameObject.carrot + 1
+        } else if (data[2] == 3){
+            gameObject.apple = gameObject.apple + 1
+        }
+
+        gameObject.plantValues[data[1]-1][data[0]-1][0] = 0
+        gameObject.plantValues[data[1]-1][data[0]-1][1] = 0
+        gameObject.soilValues[data[1]-1][data[0]-1] = 0
+
       } else {
         console.log("fin");
       }
@@ -112,14 +128,13 @@ function runWorker(){
       if (type === "gameObject"){
         plant_worker.postMessage({ type: "gameObject", data: gameObject });
       } else if (type === "plantUpdate") {
-        console.log("Plant updated!");
         let array = JSON.parse(JSON.stringify(data));
         gameObject.plantValues[array[1]-1][array[0]-1][0] = array[2];
         gameObject.plantValues[array[1]-1][array[0]-1][1] = array[3];
         game_worker.postMessage({ type: "gameObject", data: gameObject });
       } else if (type === "test"){
       } else {
-        console.log("fin");
+        //console.log("fin");
       }
     }
   };
@@ -171,19 +186,29 @@ if (!game_codeRunning){
 
 }
 
+function formatNumber(num) {
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  } else if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  } else {
+    return num.toString();
+  }
+}
+
 const baseCost = 50
 const growthRate = 1.5
 
 function updateAll(){
-  document.getElementById("money").innerHTML = gameObject.money + " CHF"
+  document.getElementById("money").innerHTML = formatNumber(gameObject.money) + " CHF"
 
   document.getElementById("wheat").innerHTML = gameObject.wheat
   document.getElementById("carrot").innerHTML = gameObject.carrot
   document.getElementById("apple").innerHTML = gameObject.apple
 
-  document.getElementById("wheatSeeds").innerHTML = gameObject.wheatSeeds
-  document.getElementById("carrotSeeds").innerHTML = gameObject.carrotSeeds
-  document.getElementById("appleSeeds").innerHTML = gameObject.appleSeeds
+  document.getElementById("wheatSeeds").innerHTML = formatNumber(gameObject.wheatSeeds)
+  document.getElementById("carrotSeeds").innerHTML = formatNumber(gameObject.carrotSeeds)
+  document.getElementById("appleSeeds").innerHTML = formatNumber(gameObject.appleSeeds)
 
   let levels = document.getElementsByClassName("upgrade-level")
 
@@ -206,7 +231,7 @@ function updateAll(){
     logos[0].style.color = "rgb(138, 160, 43)"
     logos[0].classList.add("upgrade-logo-available")
   } else {
-    logos[0].style.color = "rgb(46, 46, 46)"
+    logos[0].style.color = "rgb(86, 86, 86)"
     logos[0].classList.remove("upgrade-logo-available")
   }
 
@@ -214,7 +239,7 @@ function updateAll(){
     logos[1].style.color = "rgb(138, 160, 43)"
     logos[1].classList.add("upgrade-logo-available")
   } else {
-    logos[1].style.color = "rgb(46, 46, 46)"
+    logos[1].style.color = "rgb(86, 86, 86)"
     logos[1].classList.remove("upgrade-logo-available")
   }
 
@@ -222,7 +247,7 @@ function updateAll(){
     logos[2].style.color = "rgb(138, 160, 43)"
     logos[2].classList.add("upgrade-logo-available")
   } else {
-    logos[2].style.color = "rgb(46, 46, 46)"
+    logos[2].style.color = "rgb(86, 86, 86)"
     logos[2].classList.remove("upgrade-logo-available")
   }
 
@@ -230,7 +255,7 @@ function updateAll(){
 
     levels[0].innerHTML = "Niveau Maximum"
     prices[0].innerHTML = "Coût : Aucun "
-    logos[0].style.color = "rgb(46, 46, 46)"
+    logos[0].style.color = "rgb(86, 86, 86)"
     logos[0].classList.remove("upgrade-logo-available")
 
   } 
@@ -239,7 +264,7 @@ function updateAll(){
 
     levels[1].innerHTML = "Niveau Maximum"
     prices[1].innerHTML = "Coût : Aucun "
-    logos[1].style.color = "rgb(46, 46, 46)"
+    logos[1].style.color = "rgb(86, 86, 86)"
     logos[1].classList.remove("upgrade-logo-available")
 
   } 
@@ -248,7 +273,7 @@ function updateAll(){
 
     levels[2].innerHTML = "Niveau Maximum"
     prices[2].innerHTML = "Coût : Aucun "
-    logos[2].style.color = "rgb(46, 46, 46)"
+    logos[2].style.color = "rgb(86, 86, 86)"
     logos[2].classList.remove("upgrade-logo-available")
 
   }
@@ -452,3 +477,53 @@ function load(){
 function stopGrowing(){
   plant_worker.postMessage({ type: "stopGrowing", data : "" });
 }
+
+
+
+function transformPythonToAsync(rawCode, commandNames) {
+  const lines = rawCode.split('\n');
+  const asyncLines = lines.map(line => {
+    const trimmed = line.trim();
+
+    // Skip empty lines or comments
+    if (!trimmed || trimmed.startsWith("#")) return line;
+
+    // Detect matching command calls (e.g. test(), plant("wheat"), etc.)
+    for (const cmd of commandNames) {
+      const callPattern = new RegExp(`^${cmd}\\s*\\(`);
+      if (callPattern.test(trimmed)) {
+        const indentation = line.match(/^\s*/)[0];
+        return `${indentation}await ${trimmed}`;
+      }
+    }
+
+    // Leave control structures / non-command lines alone
+    return line;
+  });
+
+  return `
+import asyncio
+
+async def _user_loop():
+${asyncLines.map(line => '    ' + line).join('\n')}
+
+asyncio.ensure_future(_user_loop())
+`;
+}
+
+const knownCommands = [
+  "test", "harvest", "till", "plant", "move", "canHarvest"
+];
+
+const userCode = `
+while True:
+    test()
+    if canHarvest():
+        harvest()
+    till()
+    plant("wheat")
+    move("East")
+`;
+
+const transformed = transformPythonToAsync(userCode, knownCommands);
+console.log(transformed);

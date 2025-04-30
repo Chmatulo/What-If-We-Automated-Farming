@@ -50,7 +50,6 @@ self.onmessage = (event) => {
       
     if (type === "gameObject") {
 
-      console.log("game Object recevied plant worker")
       gameObject = JSON.parse(JSON.stringify(data));
       self.postMessage({ type: "test", data: "hello" });
 

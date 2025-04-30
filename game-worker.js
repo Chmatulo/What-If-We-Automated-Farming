@@ -122,12 +122,18 @@ self.onmessage = async (event) => {
   });
 
   pyodide.globals.set("till", () => {
+
     delay(gameObject.tillDelay)
-    gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
-    self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 1] });
+
+    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0){
+      gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
+      console.log("tilled")
+      self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 1] });
+    }
   });
 
   pyodide.globals.set("canTill", () => {
+    console.log("checking till")
     return (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0) 
   });
 
@@ -136,6 +142,8 @@ self.onmessage = async (event) => {
     delay(gameObject.plantDelay)
 
     if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0 ){
+
+    console.log("planting")
 
     switch (seed) {
       case "wheat":
@@ -160,17 +168,39 @@ self.onmessage = async (event) => {
     }
 
     self.postMessage({ type: "seedUpdate", data: [gameObject.carrotSeeds, gameObject.appleSeeds] });
-  }
+    }
   });
 
   pyodide.globals.set("canPlant", () => {
+    console.log("checking plant")
     return (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0) 
   });
+
+  pyodide.globals.set("harvest", () => {
+
+    delay(1000)
+
+    console.log("harvesting")
+
+      if (gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 3){
+        self.postMessage({ type: "harvest", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0]] });
+      }
+
+  });
+
+  pyodide.globals.set("canHarvest", () => {
+    console.log("checking harvest", gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 3, "Plant values :", gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1])
+    return (gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 3)
+  });
+
+  pyodide.globals.set("test", () => {
+    console.log(gameObject.plantValues[0])
+  });
+
 
   pyodide.globals.set("add", (number) => {
 
     gameObject.money += number
-    console.log("added")  
     self.postMessage({ type: "gameObject", data: gameObject });
   });
 
