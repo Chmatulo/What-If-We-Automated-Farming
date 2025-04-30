@@ -209,7 +209,7 @@ self.onmessage = async (event) => {
       gameObject.carrotSeeds = gameObject.carrotSeeds + 1
     } else if (seed == "appleSeed" && gameObject.money >= 10){
       gameObject.money = gameObject.money - 10
-      gameObject.carrotSeeds = gameObject.appleSeeds + 1
+      gameObject.appleSeeds = gameObject.appleSeeds + 1
     }
     self.postMessage({ type: "gameObject", data: gameObject });
   });

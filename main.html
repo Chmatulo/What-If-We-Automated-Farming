@@ -32,7 +32,7 @@
                 <button id="jouer" class="button" onclick="changeScene()">Nouvelle Partie</button>
                 <button href="main.html" id="jouer" class="button" onclick="updateSaves()">Sauvegardes</button>
                 <button id="options-btn" class="button" onclick="menuToggle('settings')">Options</button>
-                <button id="credits-btn" class="button">Crédits</button>
+                <button id="credits-btn" class="button" onclick="menuToggle('credits')">Crédits</button>
 
             </div>
 
@@ -108,6 +108,24 @@
             <button onclick="save()">Save</button>
             <button onclick="load()">Load</button>
             <button onclick="stopGrowing()">Stop Growth</button>
+        </div>
+
+    </div>
+
+    <div id="credits-container" style="display: none;">
+
+        <div id="credits-navbar">
+
+            <div id="credits-text">Crédits</div>
+
+            <div id="close-button" class="options-button" onclick="menuToggle()">
+                <i class="fa-solid fa-xmark icon"></i>
+            </div>
+
+        </div>
+
+        <div id="credits">
+            Crédits
         </div>
 
     </div>

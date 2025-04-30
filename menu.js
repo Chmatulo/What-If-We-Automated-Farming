@@ -1,6 +1,7 @@
 const options_menu = document.getElementById('options-container')
 const explanation_menu = document.getElementById('explanation-container')
 const upgrade_menu = document.getElementById('upgrade-container')
+const credits_menu = document.getElementById('credits-container')
 
 const game_container = document.getElementById('main-game-container')
 const home_container = document.getElementById('main-home-container')
@@ -9,12 +10,14 @@ var options_menu_bool = false
 var load_menu_bool = false
 var explanation_menu_bool = false
 var upgrade_menu_bool = false
+var credits_menu_bool = false
 
 function menuToggle(menu){
 
   options_menu.style.display = "none"
   explanation_menu.style.display = "none"
   upgrade_menu.style.display = "none"
+  credits_menu.style.display = "none"
 
   game_container.style.pointerEvents = "auto"
   home_container.style.pointerEvents = "auto"
@@ -25,7 +28,7 @@ function menuToggle(menu){
   }
 
   // Détecter le cas lorsqu'on veut ouvrir le menu d'options avec echap
-  if(!options_menu_bool && !load_menu_bool && !explanation_menu_bool && !upgrade_menu_bool && menu == "escape"){
+  if(!options_menu_bool && !load_menu_bool && !explanation_menu_bool && !upgrade_menu_bool && !credits_menu_bool && menu == "escape"){
     menu = "settings"
   }
 
@@ -33,6 +36,7 @@ function menuToggle(menu){
   load_menu_bool = false
   explanation_menu_bool = false
   upgrade_menu_bool = false
+  credits_menu_bool = false
 
   switch(menu) {
 
@@ -71,6 +75,23 @@ function menuToggle(menu){
       explanation_menu_bool = true
       explanation_menu.style.display = "block"
   
+      break;
+
+    case "credits":
+      credits_menu_bool = true
+      
+      game_container.style.transition= "0.6s"
+      home_container.style.transition= "0.6s"
+
+      game_container.style.filter = "blur(10px)"
+      home_container.style.filter = "blur(10px)"
+
+      game_container.style.pointerEvents = "none"
+      home_container.style.pointerEvents = "none"
+
+      setTimeout(() => {
+          credits_menu.style.display = "block"
+      }, 100);
       break;
 
     default:
