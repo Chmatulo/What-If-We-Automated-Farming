@@ -103,12 +103,28 @@
         </div>
 
         <div id="options">
-            Options
-            <button onclick="changeScene()">DATA</button>
-            <button onclick="save()">Save</button>
-            <button onclick="load()">Load</button>
-            <button onclick="stopGrowing()">Stop Growth</button>
-            <button onclick="playRandomSound()">Random Sound</button>
+
+            <br>
+
+            <span class="explanation-title">- Audio - </span> 
+
+            <br> <br>
+
+            <label for="music-label" class="audio-label">Musique: </label>
+            <input type="range" id="music-slider" min="0" max="100" value="50" step="1">
+            <span id="music-value">50%</span>
+
+            <br> <br>
+
+            <label for="drone-label" class="audio-label">Drone: </label>
+            <input type="range" id="drone-slider" min="0" max="100" value="50" step="1">
+            <span id="drone-value">50%</span>
+
+            <br> <br>
+
+            <label for="autres-label" class="audio-label">Autres: </label>
+            <input type="range" id="autres-slider" min="0" max="100" value="50" step="1">
+            <span id="autres-value">50%</span>
         </div>
 
     </div>
@@ -226,8 +242,11 @@
 
             <br><br>
 
-            blablabla
+            Les musiques et sons utilisés dans le jeu sont majoritairement libres de droit ou bien génerés par des outils en ligne libres d'accès.
 
+            <br><br>
+
+            Les musiques ont été trouvées sur cette <a class="link" href="https://www.youtube.com/watch?v=BAa5IGydJYo">vidéo</a> de Kharon Gameplay
             <br><br>
 
             <span class="explanation-title">- Code - </span>
@@ -235,6 +254,10 @@
             <br><br>
 
             Le code a été pensé et écrit par moi. On peut retrouver des traces d'utilisation de l'intelligene artificielle comme ChatGPT pour des tâches répétitives comme la génération de tableaux vides ou bien la création de patterns RegExr.
+
+            <br><br>
+
+            Les sons émis par le drone lorsqu'il plante ou récolte une graine proviennent du jeu Minecraft et peuvent être trouvés sur le site <a class="link" href="https://minecraft.fandom.com/wiki/Category:Sound_effects">minecraft.fandom.com</a>
         </div>
 
     </div>

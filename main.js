@@ -43,10 +43,9 @@ var gameObject = {
   plantDelay: 1000,
   moveDelay: 1000,
 
-  musicVolume: 0.5,
-  tillVolume: 0.5,
-  plantVolume: 0.5,
-  miscVolume: 0.5,
+  musicVolume: 0.1,
+  actionVolume: 0.1,
+  miscVolume: 0.1,
 
 }
 
@@ -514,39 +513,139 @@ const plantSoundFiles = [
   'data/sound/Plant/Crop_place6.ogg',
 ];
 
-const tillSounds = tillSoundFiles.map(file => {
-  const audio = new Audio(file);
-  audio.load();
-  return audio;
-});
+const coinSoundFiles = [
+  'data/sound/misc/pickupCoin.wav'
+];
 
-const plantSounds = plantSoundFiles.map(file => {
-  const audio = new Audio(file);
-  audio.load();
-  return audio;
-});
-
-function playSound(type){
-
-if (type == "till"){
-  const randomIndex = Math.floor(Math.random() * tillSounds.length);
-  const selectedSound = tillSounds[randomIndex];
-  selectedSound.currentTime = 0; // reset to beginning
-  selectedSound.volume = gameObject.tillVolume
-  selectedSound.play();
-} else if (type == "plant"){
-  const randomIndex = Math.floor(Math.random() * plantSounds.length);
-  const selectedSound = plantSounds[randomIndex];
-  selectedSound.currentTime = 0; // reset to beginning
-  selectedSound.volume = gameObject.plantVolume
-  selectedSound.play();
-} else if (type == "music"){
+const musicSoundFiles = [
+  'data/sound/Music/Veracruz.mp3',
+  'data/sound/Music/The Colonel.mp3',
+  'data/sound/Music/Take Your Time.mp3',
+  'data/sound/Music/Nat Keefe & Hot Buttered Rum - Cats Searching for the Truth.mp3',
+  'data/sound/Music/Leaning On the Everlasting Arms.mp3',
+  "data/sound/Music/Dude, Where's My Horse_.mp3",
+  'data/sound/Music/Dan Lebowitz - Hickory Hollow.mp3',
+  'data/sound/Music/Covid Come Not Near.mp3',
   
+];
+
+function loadSounds(files) {
+  return files.map(file => {
+    const audio = new Audio(file);
+    audio.load();
+    return audio;
+  });
 }
 
+const tillSounds = loadSounds(tillSoundFiles);
+const plantSounds = loadSounds(plantSoundFiles);
+const coinSounds = loadSounds(coinSoundFiles);
+const musics = loadSounds(musicSoundFiles);
+
+const soundMap = {
+  till: { sounds: tillSounds },
+  plant: { sounds: plantSounds },
+  coin: { sounds: coinSounds },
+  music: { sounds: musics },
+};
+
+let randomizedMusicArray;
+
+function randomizeMusic(){
+    randomizedMusicArray = getShuffledArray(musicSoundFiles.length)
 }
 
+function getShuffledArray(x) {
+  const arr = Array.from({ length: x }, (_, i) => i); // [0, 1, ..., x-1]
 
+  // Fisher-Yates shuffle
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+    [arr[i], arr[j]] = [arr[j], arr[i]]; // swap elements
+  }
+
+  return arr;
+}
+
+var music;
+
+function playMusic(){
+
+  const config = soundMap["music"]
+
+  music = config.sounds[randomizedMusicArray[0]]
+  music.currentTime = 0
+
+  let firstElement = randomizedMusicArray.shift();
+  randomizedMusicArray.push(firstElement);
+
+  music.volume = gameObject.musicVolume
+  music.addEventListener("ended", playMusic);
+  music.play()
+}
+
+randomizeMusic()
+
+
+function playSound(type) {
+
+  const config = soundMap[type];
+
+  if (config && config.sounds.length > 0) {
+
+    const selectedSound = config.sounds[Math.floor(Math.random() * config.sounds.length)];
+    console.log(selectedSound)
+    selectedSound.currentTime = 0;
+
+    let volume;
+
+    switch (type){
+
+      case "till":
+      case "plant":
+          volume = gameObject.actionVolume;
+          break;
+
+      default :
+          volume = gameObject.miscVolume;
+          break;
+    }
+
+    selectedSound.volume = volume;
+    selectedSound.play();
+  }
+}
+
+const musicSlider = document.getElementById('music-slider');
+const musicValue = document.getElementById('music-value');
+musicSlider.value = gameObject.musicVolume * 500
+musicValue.textContent = musicSlider.value + "%";
+
+const miscSlider = document.getElementById('drone-slider');
+const miscValue = document.getElementById('drone-value');
+miscSlider.value = gameObject.miscVolume * 500
+miscValue.textContent = miscSlider.value + "%";
+
+const autresSlider = document.getElementById('autres-slider');
+const autresValue = document.getElementById('autres-value');
+autresSlider.value = gameObject.autresVolume * 500
+autresValue.textContent = autresSlider.value + "%";
+
+musicSlider.addEventListener('input', function() {
+    musicValue.textContent = musicSlider.value + "%";
+    gameObject.musicVolume = musicSlider.value/500
+    music.volume = gameObject.musicVolume
+});
+
+miscSlider.addEventListener('input', function() {
+  miscValue.textContent = miscSlider.value + "%";
+  gameObject.miscVolume = miscSlider.value/500
+});
+
+autresSlider.addEventListener('input', function() {
+  autresValue.textContent = autresSlider.value + "%";
+  gameObject.autresVolume = autresSlider.value/500
+});
 
 
 

@@ -12,7 +12,15 @@ var explanation_menu_bool = false
 var upgrade_menu_bool = false
 var credits_menu_bool = false
 
+var canPlay = false
+
+
 function menuToggle(menu){
+
+  if (!canPlay){
+    canPlay = true
+    playMusic()
+  }
 
   options_menu.style.display = "none"
   explanation_menu.style.display = "none"
@@ -111,6 +119,12 @@ document.addEventListener("keydown", function (event) {
 
 function updateSaves(){
 
+  if (!canPlay){
+    canPlay = true
+    playMusic()
+  }
+
+
     const right_default = document.getElementById("right-default")
     const right_saves = document.getElementById("right-load")
 
@@ -129,6 +143,12 @@ function updateSaves(){
 let sceneVar = 0;
 
 function changeScene(){
+
+  if (!canPlay){
+    canPlay = true
+    playMusic()
+  }
+
 
   let home_container = document.getElementById("main-home-container")
   let game_container = document.getElementById("main-game-container")
