@@ -233,3 +233,17 @@ body{
 .upgrade-level{
     margin-top: 5%;
 }
+
+.link{
+    cursor: pointer;
+    color: rgb(132, 175, 234);
+}
+
+.link:hover{
+    text-decoration: underline;
+}
+
+#steamlink:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}

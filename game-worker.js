@@ -63,6 +63,11 @@ var gameObject = {
   plantDelay: 1000,
   moveDelay: 1000,
 
+  musicVolume: 0.5,
+  tillVolume: 0.5,
+  plantVolume: 0.5,
+  miscVolume: 0.5,
+
 }
 
 

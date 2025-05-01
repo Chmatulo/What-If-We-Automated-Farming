@@ -43,6 +43,11 @@ var gameObject = {
   plantDelay: 1000,
   moveDelay: 1000,
 
+  musicVolume: 0.5,
+  tillVolume: 0.5,
+  plantVolume: 0.5,
+  miscVolume: 0.5,
+
 }
 
 // Variables Web Worker état
@@ -493,15 +498,94 @@ function drawDrone(){
 
 setInterval(draw, 75)
 
-function save(){
-  localStorage.setItem("gameObject1", JSON.stringify(gameObject));
+const tillSoundFiles = [
+  'data/sound/Till/Hoe_till1.ogg',
+  'data/sound/Till/Hoe_till2.ogg',
+  'data/sound/Till/Hoe_till3.ogg',
+  'data/sound/Till/Hoe_till4.ogg',
+];
+
+const plantSoundFiles = [
+  'data/sound/Plant/Crop_place1.ogg',
+  'data/sound/Plant/Crop_place2.ogg',
+  'data/sound/Plant/Crop_place3.ogg',
+  'data/sound/Plant/Crop_place4.ogg',
+  'data/sound/Plant/Crop_place5.ogg',
+  'data/sound/Plant/Crop_place6.ogg',
+];
+
+const tillSounds = tillSoundFiles.map(file => {
+  const audio = new Audio(file);
+  audio.load();
+  return audio;
+});
+
+const plantSounds = plantSoundFiles.map(file => {
+  const audio = new Audio(file);
+  audio.load();
+  return audio;
+});
+
+function playSound(type){
+
+if (type == "till"){
+  const randomIndex = Math.floor(Math.random() * tillSounds.length);
+  const selectedSound = tillSounds[randomIndex];
+  selectedSound.currentTime = 0; // reset to beginning
+  selectedSound.volume = gameObject.tillVolume
+  selectedSound.play();
+} else if (type == "plant"){
+  const randomIndex = Math.floor(Math.random() * plantSounds.length);
+  const selectedSound = plantSounds[randomIndex];
+  selectedSound.currentTime = 0; // reset to beginning
+  selectedSound.volume = gameObject.plantVolume
+  selectedSound.play();
+} else if (type == "music"){
+  
 }
 
-function load(){
-  let gameObjectLoaded = JSON.parse(localStorage.getItem("gameObject1"));
-  gameObject = gameObjectLoaded;
-  game_worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
-  plant_worker.postMessage({ type: "gameObject", data : gameObjectLoaded });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function save(){
+  localStorage.setItem("gameObject1", JSON.stringify(gameObject));
 }
 
 function stopGrowing(){

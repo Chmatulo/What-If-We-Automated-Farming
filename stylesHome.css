@@ -107,6 +107,7 @@ a{
 
     display: flex;
     flex-direction: column;
+    z-index: 100000;
 
 }
 
@@ -369,6 +370,7 @@ span[save]{
 
     display: flex;
     flex-direction: column;
+    z-index: 1000000;
 }
 
 #credits-navbar{
@@ -401,4 +403,5 @@ span[save]{
     font-family: monospace;
     font-weight: 800;
     height: 70vh;
+    overflow-y: scroll;
 }
