@@ -299,43 +299,38 @@ return inputString
 
 }
 
-
+//localStorage.setItem("saveLabels", JSON.stringify(["save 1", "save 2"]));
 // Create saves
-var loadingSaves = true
-var savesNumber = JSON.parse(localStorage.getItem("savesNumber"));
 
-let createdSavesNum = []
+let createdSavesData = []
 
-if (!savesNumber){
-  localStorage.setItem("savesNumber", 1);
+let dataTemp = JSON.parse(localStorage.getItem("saveLabels"))
+
+if (dataTemp != null){
+  createdSavesData = JSON.parse(localStorage.getItem("saveLabels"));
 }
 
-savesNumber = JSON.parse(localStorage.getItem("savesNumber"));
 
-console.log(savesNumber)
-
-for (let k = 0; k < savesNumber ; k++){
-  createSave()
+for (let k = 0; k < createdSavesData.length ; k++){
+  console.log("creating")
+  createSave("loaded", k)
 }
 
-loadingSaves = false
 
-function createSave(){
+function createSave(type, num){
 
-    if (savesNumber <= 4){
-
-    if (!loadingSaves){
-      savesNumber++
-    }
-
-    createdSavesNum.push(savesNumber)
-
-    localStorage.setItem("savesNumber", savesNumber);
+    if (createdSavesData.length <= 5){
 
     const right_load = document.getElementById("right-load");
 
     let load_container = document.createElement("div");
     load_container.classList.add("load-container")
+
+    if (type === "default"){
+      load_container.id = createdSavesData.length
+    } else {
+      load_container.id = num
+    }
 
     let load_button = document.createElement("button");
     load_button.classList.add("load-editable", "load-button");
@@ -345,7 +340,14 @@ function createSave(){
       changeScene()
       load(1)
     };
-    load_button.textContent = "New Save";
+
+    if (type === "default"){
+      load_button.textContent = "New Save";
+      createdSavesData.push("New Save")
+    } else {
+      load_button.textContent = createdSavesData[num];
+    }
+
     load_container.appendChild(load_button)
 
     let edit_button = document.createElement("div");
@@ -362,15 +364,24 @@ function createSave(){
             selection.removeAllRanges(); // Clear existing selection
             selection.addRange(range); // Apply new selection
 
+        function onChange(e) {
+          createdSavesData[load_container.id] = e.target.textContent
+          localStorage.setItem("saveLabels", JSON.stringify(createdSavesData))
+         }
+
+        load_button.addEventListener("input", onChange);
+
         load_button.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 load_button.contentEditable = false;
                 event.preventDefault(); 
+                load_button.removeEventListener("input", onChange);
             }
         });
     
         load_button.addEventListener("blur", function() {
             load_button.contentEditable = false;
+            
         });
     };
     load_container.appendChild(edit_button)
@@ -382,8 +393,9 @@ function createSave(){
     let delete_button = document.createElement("div");
     delete_button.classList.add("edit-button")
     delete_button.onclick = function() {
-        savesNumber = savesNumber - 1 
-        localStorage.setItem("savesNumber", savesNumber);
+
+        createdSavesData.splice(load_container.id, 1)
+        localStorage.setItem("saveLabels", JSON.stringify(createdSavesData))
         load_container.remove();
     };
     load_container.appendChild(delete_button)
@@ -393,6 +405,8 @@ function createSave(){
     delete_button.appendChild(delete_icon)
 
     right_load.appendChild(load_container)
+
+    localStorage.setItem("saveLabels", JSON.stringify(createdSavesData))
     }
 }
 
