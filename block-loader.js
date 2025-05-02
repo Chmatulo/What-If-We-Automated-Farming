@@ -1,9 +1,18 @@
 
 var IDE_number = -1
 
-function createIDE(){
+for (let k = 0 ; k < currentSaveArray.length ; k++){
+  createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3])
+}
+
+function createIDE(name, code, x, y){
 
   IDE_number++
+
+  if (name === "userInput"){
+    name = "code " + IDE_number
+    code = "#Hello"
+  }
 
   const functionColor = '#fddd5c';
   const nativeToolsColor = '#f5b00f';
@@ -27,8 +36,8 @@ function createIDE(){
   nativeToolKeys.forEach(i => palette[i] = nativeToolsColor);
 
   let isDragging = false;
-  let offsetX = 0;
-  let offsetY = 0;
+  let offsetX = x;
+  let offsetY = y;
 
   let main_container = document.getElementById("main-game-container")
 
@@ -51,7 +60,7 @@ function createIDE(){
   // Textarea for code
   let code_input = document.createElement('textarea');
   code_input.classList.add("IDE", "code-input")
-  code_input.value = '# Write your code here:';
+  code_input.value = code;
   code_input.style.color = "transparent"
   code_input.setAttribute('spellcheck', false)
   code_input.addEventListener("input", updateHighlight)
@@ -123,7 +132,7 @@ main_container.addEventListener("mouseup", () => {
   code_highlight.style.color = "white"
   code_highlight.style.userSelect = "none"
   code_highlight.style.paddingLeft = "5px"
-  code_highlight.innerText = '# Write your code here:';
+  code_highlight.innerText = code;
   IDE_Container.appendChild(code_highlight)
 
   // Header IDE
@@ -167,11 +176,8 @@ main_container.addEventListener("mouseup", () => {
   IDE_name.maxLength = 10
   IDE_name.autocomplete = "off"
   IDE_name.classList.add("ide-name")
-  if (IDE_number == 0){
-    IDE_name.value = "main"
-  } else {
-    IDE_name.value = "code " + IDE_number
-  }
+  IDE_name.value = name
+
   center_Header.appendChild(IDE_name)
 
   // Right Header
@@ -293,13 +299,12 @@ return inputString
 
 }
 
-createIDE()
-
-
 
 // Create saves
 var loadingSaves = true
 var savesNumber = JSON.parse(localStorage.getItem("savesNumber"));
+
+let createdSavesNum = []
 
 if (!savesNumber){
   localStorage.setItem("savesNumber", 1);
@@ -323,6 +328,8 @@ function createSave(){
       savesNumber++
     }
 
+    createdSavesNum.push(savesNumber)
+
     localStorage.setItem("savesNumber", savesNumber);
 
     const right_load = document.getElementById("right-load");
@@ -334,8 +341,9 @@ function createSave(){
     load_button.classList.add("load-editable", "load-button");
     load_button.setAttribute("data-id", "1");
     load_button.onclick = function() {
-        window.supermegaVariable = 30;
-        console.log("globalVar modified to", supermegaVariable);
+      updateSaves()
+      changeScene()
+      load(1)
     };
     load_button.textContent = "New Save";
     load_container.appendChild(load_button)

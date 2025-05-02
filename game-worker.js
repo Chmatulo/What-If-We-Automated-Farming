@@ -63,10 +63,9 @@ var gameObject = {
   plantDelay: 1000,
   moveDelay: 1000,
 
-  musicVolume: 0.5,
-  tillVolume: 0.5,
-  plantVolume: 0.5,
-  miscVolume: 0.5,
+  musicVolume: 0,
+  autresVolume: 0.1,
+  droneVolume: 0.125,
 
 }
 
@@ -134,6 +133,7 @@ self.onmessage = async (event) => {
       gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 1
       //console.log("tilled")
       self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 1] });
+      self.postMessage({ type: "playsound", data: "till" });
     }
   });
 
@@ -169,10 +169,11 @@ self.onmessage = async (event) => {
 
         break;
       default:
-        console.log(`Sorry, we are out of ${seed}s.`);
+        //console.log(`Sorry, we are out of ${seed}s.`);
     }
 
     self.postMessage({ type: "seedUpdate", data: [gameObject.carrotSeeds, gameObject.appleSeeds] });
+    self.postMessage({ type: "playsound", data: "plant" });
     }
   });
 
@@ -189,6 +190,7 @@ self.onmessage = async (event) => {
 
       if (gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 3){
         self.postMessage({ type: "harvest", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0]] });
+        self.postMessage({ type: "playsound", data: "plant" });
       }
 
   });
@@ -207,7 +209,7 @@ self.onmessage = async (event) => {
 
   pyodide.globals.set("buy", (seed) => {
 
-    console.log("buying ", seed)
+    //console.log("buying ", seed)
 
     if (seed == "carrotSeed" && gameObject.money >= 3){
       gameObject.money = gameObject.money - 3
@@ -215,13 +217,14 @@ self.onmessage = async (event) => {
     } else if (seed == "appleSeed" && gameObject.money >= 10){
       gameObject.money = gameObject.money - 10
       gameObject.appleSeeds = gameObject.appleSeeds + 1
+      self.postMessage({ type: "playsound", data: "plant" });
     }
     self.postMessage({ type: "gameObject", data: gameObject });
   });
 
   pyodide.globals.set("canBuy", (seed) => {
     
-    console.log("Checking canBuy")
+    //console.log("Checking canBuy")
 
     if (seed == "carrotSeed"){
       return(gameObject.money >= 3)
@@ -255,6 +258,7 @@ self.onmessage = async (event) => {
       [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
     ]
 
+    self.postMessage({ type: "clear", data: "" });
     self.postMessage({ type: "gameObject", data: gameObject });
   });
 
@@ -288,6 +292,7 @@ self.onmessage = async (event) => {
          if (gameObject.wheat > 0){
           gameObject.wheat = gameObject.wheat - 1
           gameObject.money = gameObject.money + 1
+          self.postMessage({ type: "playsound", data: "coin" });
          }
         break;
 
@@ -295,6 +300,7 @@ self.onmessage = async (event) => {
          if (gameObject.carrot > 0){
           gameObject.carrot = gameObject.carrot - 1
           gameObject.money = gameObject.money + 5
+          self.postMessage({ type: "playsound", data: "coin" });
          }
         break;
 
@@ -302,6 +308,7 @@ self.onmessage = async (event) => {
         if (gameObject.apple > 0){
          gameObject.apple = gameObject.apple - 1
          gameObject.money = gameObject.money + 20
+         self.postMessage({ type: "playsound", data: "coin" });
         }
        break;
     }
@@ -322,7 +329,6 @@ self.onmessage = async (event) => {
     // Execution du code Python
     data = "import asyncio\n" + data // ajouter module time
     data = addAwaitSleep(data, functionList)
-    console.log(data)
     codeRunning = true
     self.postMessage({ type: "codeState", data: codeRunning })
     const result = await pyodide.runPythonAsync(data); // Exécuter
@@ -339,13 +345,12 @@ self.onmessage = async (event) => {
     }
 
   } else if (type == "gameObject"){
-    console.log(" gameObject received to game-worker")
+   // console.log(" gameObject received to game-worker")
     gameObject = JSON.parse(JSON.stringify(data));
   } 
 
 
 };
-
 
 function addAwaitSleep(text, functionList) {
   const lines = text.split('\n');

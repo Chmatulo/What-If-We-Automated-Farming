@@ -75,7 +75,7 @@
                 <div class="navbar-hover-background" data-name="Accueil" onclick="changeScene()"><i id="home" class="fa-solid fa-house navbarhover"></i></div>
                 <div class="navbar-hover-background" data-name="Paramètres" onclick="menuToggle('settings')"><i id="settings" class="fa-solid fa-gear navbarhover"></i></div>
                 <div class="navbar-hover-background" data-name="Améliorations" onclick="menuToggle('upgrade')"><i id="unlock" class="fa-solid fa-unlock navbarhover"></i></div>
-                <div class="navbar-hover-background" data-name="Ajouter une zone de code" onclick="createIDE()"><i id="addIDE" class="fa-regular fa-square-plus navbarhover"></i></div>
+                <div class="navbar-hover-background" data-name="Ajouter une zone de code" onclick="createIDE('userInput', 'userInput')"><i id="addIDE" class="fa-regular fa-square-plus navbarhover"></i></div>
                 <div class="navbar-hover-background" data-name="Explications" onclick="menuToggle('explanations')"><i id="explanations" class="fa-solid fa-question navbarhover"></i></div>
             </div>
 
@@ -118,13 +118,18 @@
 
             <label for="drone-label" class="audio-label">Drone: </label>
             <input type="range" id="drone-slider" min="0" max="100" value="50" step="1">
-            <span id="drone-value">50%</span>
-
-            <br> <br>
+            <span id="drone-value">50% </span>
+            <br><br>
 
             <label for="autres-label" class="audio-label">Autres: </label>
             <input type="range" id="autres-slider" min="0" max="100" value="50" step="1">
             <span id="autres-value">50%</span>
+
+            <br><br>
+
+            <button onclick="save(1)">Save</button>
+            <button onclick="load(1)">Load</button>
+            <button onclick="testC()">TEst</button>
         </div>
 
     </div>

@@ -24,14 +24,14 @@ var gameObject = {
     [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
   ],
 
-  money: 0,
-  wheat: 0,
-  carrot: 0,
-  apple: 0,
+  money: 1000,
+  wheat: 1000,
+  carrot: 1000,
+  apple: 1000,
 
   wheatSeeds: "∞",
-  carrotSeeds: 0,
-  appleSeeds: 0,
+  carrotSeeds: 1000,
+  appleSeeds: 1000,
 
   tillLevel: 1,
   harvestLevel: 1,
@@ -43,9 +43,9 @@ var gameObject = {
   plantDelay: 1000,
   moveDelay: 1000,
 
-  musicVolume: 0.1,
-  actionVolume: 0.1,
-  miscVolume: 0.1,
+  musicVolume: 0,
+  autresVolume: 0.125,
+  droneVolume: 0.125,
 
 }
 
@@ -82,7 +82,6 @@ function runWorker(){
         game_codeRunning = data;
       } else if (type == "gameObject"){
         gameObject = JSON.parse(JSON.stringify(data));
-        console.log(gameObject.money)
       } else if (type == "move"){
         gameObject.dronePosition = data;
       } else if (type === "plant") {
@@ -92,8 +91,6 @@ function runWorker(){
         gameObject.carrotSeeds = data[0]
         gameObject.appleSeeds = data[1]
       } else if (type === "harvest"){
-
-        console.log("main side")
 
         if (data[2] == 1){
             gameObject.wheat = gameObject.wheat + 1
@@ -107,7 +104,13 @@ function runWorker(){
         gameObject.plantValues[data[1]-1][data[0]-1][1] = 0
         gameObject.soilValues[data[1]-1][data[0]-1] = 0
 
-      } else {
+      } else if (type == "playsound"){
+        playSound(data)
+      } else if (type === "clear"){
+        plant_worker.postMessage({ type: "stopGrowing", data : "" });
+      } 
+      
+      else {
         console.log("fin");
       }
       game_worker.postMessage({ type: "gameObject", data: gameObject });
@@ -182,7 +185,6 @@ if (!game_codeRunning){
 }
 
     if (game_worker && !game_codeRunning){
-      console.log("running code")
       game_codeRunning = true;
       game_worker.postMessage({ type: "code", data : code });
     } else {
@@ -542,6 +544,19 @@ const plantSounds = loadSounds(plantSoundFiles);
 const coinSounds = loadSounds(coinSoundFiles);
 const musics = loadSounds(musicSoundFiles);
 
+plantSounds.forEach(sound => {
+  sound.volume = gameObject.droneVolume;
+});
+
+tillSounds.forEach(sound => {
+  sound.volume = gameObject.droneVolume;
+});
+
+coinSounds.forEach(sound => {
+  sound.volume = gameObject.autresVolume;
+});
+
+
 const soundMap = {
   till: { sounds: tillSounds },
   plant: { sounds: plantSounds },
@@ -594,24 +609,9 @@ function playSound(type) {
   if (config && config.sounds.length > 0) {
 
     const selectedSound = config.sounds[Math.floor(Math.random() * config.sounds.length)];
-    console.log(selectedSound)
     selectedSound.currentTime = 0;
 
-    let volume;
-
-    switch (type){
-
-      case "till":
-      case "plant":
-          volume = gameObject.actionVolume;
-          break;
-
-      default :
-          volume = gameObject.miscVolume;
-          break;
-    }
-
-    selectedSound.volume = volume;
+   // selectedSound.volume = volume;
     selectedSound.play();
   }
 }
@@ -621,71 +621,151 @@ const musicValue = document.getElementById('music-value');
 musicSlider.value = gameObject.musicVolume * 500
 musicValue.textContent = musicSlider.value + "%";
 
-const miscSlider = document.getElementById('drone-slider');
-const miscValue = document.getElementById('drone-value');
-miscSlider.value = gameObject.miscVolume * 500
-miscValue.textContent = miscSlider.value + "%";
+const droneSlider = document.getElementById('drone-slider');
+const droneValue = document.getElementById('drone-value');
+droneSlider.value = gameObject.droneVolume * 400
+droneValue.textContent = droneSlider.value + "%";
 
 const autresSlider = document.getElementById('autres-slider');
 const autresValue = document.getElementById('autres-value');
-autresSlider.value = gameObject.autresVolume * 500
+autresSlider.value = gameObject.autresVolume * 400
 autresValue.textContent = autresSlider.value + "%";
 
 musicSlider.addEventListener('input', function() {
     musicValue.textContent = musicSlider.value + "%";
-    gameObject.musicVolume = musicSlider.value/500
+    gameObject.musicVolume = musicSlider.value/400
     music.volume = gameObject.musicVolume
 });
 
-miscSlider.addEventListener('input', function() {
-  miscValue.textContent = miscSlider.value + "%";
-  gameObject.miscVolume = miscSlider.value/500
+droneSlider.addEventListener('input', function() {
+  droneValue.textContent = droneSlider.value + "%";
+
+  const volume = parseFloat(droneSlider.value) / 400;
+
+  gameObject.droneVolume = volume
+  
+  plantSounds.forEach(sound => {
+    sound.volume = volume;
+  });
+
+  tillSounds.forEach(sound => {
+    sound.volume = volume;
+  });
+
 });
 
 autresSlider.addEventListener('input', function() {
   autresValue.textContent = autresSlider.value + "%";
-  gameObject.autresVolume = autresSlider.value/500
+
+  const volume = parseFloat(autresSlider.value) / 400;
+
+  gameObject.autresVolume = volume
+
+  coinSounds.forEach(sound => {
+    sound.volume = gameObject.autresVolume;
+  });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+let currentSaveArray = [["main", "#Hello", 0 , 100], ["code 1", "#Hello", 100, 0]]
+let currentSave = -1
 
 function save(){
-  localStorage.setItem("gameObject1", JSON.stringify(gameObject));
+
+  if (currentSave > 0){
+
+  switch (currentSave){
+    case 1 :
+      localStorage.setItem("gameObject1", JSON.stringify(gameObject));
+      localStorage.setItem("saveArray1", JSON.stringify(currentSaveArray));
+      break;
+    
+    case 2 :
+      localStorage.setItem("gameObject2", JSON.stringify(gameObject));
+      break;
+
+    case 3 :
+      localStorage.setItem("gameObject3", JSON.stringify(gameObject));
+      break;
+
+    case 4 :
+      localStorage.setItem("gameObject4", JSON.stringify(gameObject));
+      break;
+
+    case 5 :
+      localStorage.setItem("gameObject5", JSON.stringify(gameObject));
+      break;
+    }
+  }
+
 }
+
+function load(load){
+
+  switch (load){
+    case 1 :
+      gameObject = JSON.parse(localStorage.getItem('gameObject1'));
+      currentSaveArray = JSON.parse(localStorage.getItem('saveArray1'));
+      break;
+     
+    case 2 :
+      gameObject = JSON.parse(localStorage.getItem('gameObject2'));
+      break;
+
+    case 3 :
+      gameObject = JSON.parse(localStorage.getItem('gameObject3'));
+      break;
+
+    case 4 :
+      gameObject = JSON.parse(localStorage.getItem('gameObject4'));
+      break;
+
+    case 5 :
+      gameObject = JSON.parse(localStorage.getItem('gameObject5'));
+      break;
+  }
+
+  game_worker.postMessage({ type: "gameObject", data: gameObject });
+  plant_worker.postMessage({ type: "gameObject", data: gameObject });
+  updateAll()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function testC(){
+  let inputs = document.getElementsByClassName("code-input")
+  console.log(inputs.length)
+  createSave()
+}
+
+
+
+
+
+
+
+
+
 
 function stopGrowing(){
   plant_worker.postMessage({ type: "stopGrowing", data : "" });
