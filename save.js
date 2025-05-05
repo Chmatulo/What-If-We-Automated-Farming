@@ -1,5 +1,27 @@
+// Tableau codes sauvegardés
 let currentSaveArray = [["main", "#Hello", 0 , 100], ["code 1", "#Hello", 100, 0]]
-let currentSave = 1
+let currentSave = 0
+
+// Sons variables par défaut
+
+let storedVolume = localStorage.getItem('volumesArray');
+
+if (storedVolume !== null) {
+  volumesArray = JSON.parse(storedVolume);
+} else {
+  localStorage.setItem('volumesArray', JSON.stringify(volumesArray));
+}
+
+musicSlider.value = volumesArray[0] * 500
+musicValue.textContent = musicSlider.value + "%";
+
+droneSlider.value = volumesArray[1] * 400
+droneValue.textContent = droneSlider.value + "%";
+
+autresSlider.value = volumesArray[2] * 400
+autresValue.textContent = autresSlider.value + "%";
+
+
 
 function save(save){
 
@@ -31,19 +53,6 @@ function save(save){
 
 }
 
-let savedMusicVolume = 0.1
-
-let volumeTemp = Number(localStorage.getItem('musicVolume'));
-
-if (volumeTemp != null){
-  savedMusicVolume = Number(localStorage.getItem('musicVolume'));
-} else {
-  localStorage.setItem('musicVolume', savedMusicVolume.toString());
-}
-
-console.log("music volume",savedMusicVolume)
-
-
 function load(load){
 
   switch (load){
@@ -73,14 +82,8 @@ function load(load){
 
   currentSave = load
 
-  musicSlider.value = savedMusicVolume * 500
-  musicValue.textContent = musicSlider.value + "%";
-
-  updateVolume()
-
   game_worker.postMessage({ type: "gameObject", data: gameObject });
   plant_worker.postMessage({ type: "gameObject", data: gameObject });
+
   updateAll()
 }
-
-load()

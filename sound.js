@@ -44,15 +44,15 @@ const tillSoundFiles = [
   const musics = loadSounds(musicSoundFiles);
   
   plantSounds.forEach(sound => {
-    sound.volume = gameObject.droneVolume;
+    sound.volume = volumesArray[1];
   });
   
   tillSounds.forEach(sound => {
-    sound.volume = gameObject.droneVolume;
+    sound.volume = volumesArray[1];
   });
   
   coinSounds.forEach(sound => {
-    sound.volume = gameObject.autresVolume;
+    sound.volume = volumesArray[2];
   });
   
   
@@ -82,7 +82,7 @@ const tillSoundFiles = [
   }
   
   var music;
-  
+
   function playMusic(){
   
     const config = soundMap["music"]
@@ -93,7 +93,7 @@ const tillSoundFiles = [
     let firstElement = randomizedMusicArray.shift();
     randomizedMusicArray.push(firstElement);
   
-    music.volume = gameObject.musicVolume
+    music.volume = volumesArray[0]
     music.addEventListener("ended", playMusic);
     music.play()
   }
@@ -114,64 +114,25 @@ const tillSoundFiles = [
       selectedSound.play();
     }
   }
-
-
-  
-  const musicSlider = document.getElementById('music-slider');
-  const musicValue = document.getElementById('music-value');
-  musicSlider.value = gameObject.musicVolume * 500
-  musicValue.textContent = musicSlider.value + "%";
-  
-  const droneSlider = document.getElementById('drone-slider');
-  const droneValue = document.getElementById('drone-value');
-  droneSlider.value = gameObject.droneVolume * 400
-  droneValue.textContent = droneSlider.value + "%";
-  
-  const autresSlider = document.getElementById('autres-slider');
-  const autresValue = document.getElementById('autres-value');
-  autresSlider.value = gameObject.autresVolume * 400
-  autresValue.textContent = autresSlider.value + "%";
   
   musicSlider.addEventListener('input', updateVolume) 
-  
   droneSlider.addEventListener('input', updateVolume)
-  
   autresSlider.addEventListener('input', updateVolume)
-
-
 
   function updateVolume(){
 
-    console.log("updating volume")
-
     // Musique
-
     musicValue.textContent = musicSlider.value + "%";
-      gameObject.musicVolume = musicSlider.value/400
-      localStorage.setItem('musicVolume', gameObject.musicVolume.toString());
-      music.volume = gameObject.musicVolume
+    volumesArray[0] = musicSlider.value/500
+    music.volume = volumesArray[0]
 
-      console.log(gameObject.musicVolume)
-      
-    // Autres
-  
-    autresValue.textContent = autresSlider.value + "%";
-  
-    const volume1 = parseFloat(autresSlider.value) / 400;
-
-    gameObject.autresVolume = volume1
-  
-    coinSounds.forEach(sound => {
-      sound.volume = gameObject.autresVolume;
-    });
 
     // Drone
-
     droneValue.textContent = droneSlider.value + "%";
   
     const volume2 = parseFloat(droneSlider.value) / 400;
   
-    gameObject.droneVolume = volume2
+    volumesArray[1] = volume2
     
     plantSounds.forEach(sound => {
       sound.volume = volume2;
@@ -180,6 +141,29 @@ const tillSoundFiles = [
     tillSounds.forEach(sound => {
       sound.volume = volume2;
     });
+    
 
-  }
+    // Autres
+    autresValue.textContent = autresSlider.value + "%";
   
+    const volume1 = parseFloat(autresSlider.value) / 400;
+
+    volumesArray[2] = volume1
+  
+    coinSounds.forEach(sound => {
+      sound.volume = volumesArray[2];
+    });
+
+
+    localStorage.setItem('volumesArray', JSON.stringify(volumesArray))
+    console.log("saving", localStorage.getItem('volumesArray'))
+  }
+
+document.addEventListener('click', startAudioOnce);
+
+function startAudioOnce() {
+
+  playMusic()
+
+  document.removeEventListener('click', startAudioOnce);
+}
