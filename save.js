@@ -1,7 +1,3 @@
-// Tableau codes sauvegardés
-let currentSaveArray = [["main", "#Hello", 0 , 100], ["code 1", "#Hello", 100, 0]]
-let currentSave = 0
-
 // Sons variables par défaut
 
 let storedVolume = localStorage.getItem('volumesArray');
@@ -25,10 +21,11 @@ autresValue.textContent = autresSlider.value + "%";
 
 function save(save){
 
-  if (currentSave > 0){
+  if (currentSave >= 0){
 
   switch (save){
     case 1 :
+      console.log("saving")
       localStorage.setItem("gameObject1", JSON.stringify(gameObject));
       localStorage.setItem("saveArray1", JSON.stringify(currentSaveArray));
       break;
@@ -60,7 +57,6 @@ function load(load){
       console.log("loaded 1")
       gameObject = JSON.parse(localStorage.getItem('gameObject1'));
       currentSaveArray = JSON.parse(localStorage.getItem('saveArray1'));
-      console.log(gameObject)
       break;
      
     case 2 :
@@ -84,6 +80,13 @@ function load(load){
 
   game_worker.postMessage({ type: "gameObject", data: gameObject });
   plant_worker.postMessage({ type: "gameObject", data: gameObject });
+
+  console.log(currentSaveArray)
+
+  clearCodeBlocks()
+  for (let k = 0 ; k < currentSaveArray.length ; k++){
+    createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3])
+  }
 
   updateAll()
 }

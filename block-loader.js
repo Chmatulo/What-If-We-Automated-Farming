@@ -84,7 +84,9 @@ function createIDE(name, code, x, y){
 });
 
 code_input.addEventListener("input", (event) => {
+
   const textcontent = code_input.value;
+  currentSaveArray[0][1] = textcontent
 
   let newText = highlightKeywords(textcontent, keywords)
 
@@ -300,6 +302,11 @@ return inputString
 
   stop_button.addEventListener("click", stopWorker);
 
+}
+
+function clearCodeBlocks(){
+  let codeBlocks = document.getElementsByClassName("IDE-container")
+  Array.from(codeBlocks).forEach(el => el.remove());
 }
 
 //localStorage.setItem("saveLabels", JSON.stringify(["n", "", "", "", ""]));

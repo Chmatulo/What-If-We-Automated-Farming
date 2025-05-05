@@ -156,7 +156,6 @@ const tillSoundFiles = [
 
 
     localStorage.setItem('volumesArray', JSON.stringify(volumesArray))
-    console.log("saving", localStorage.getItem('volumesArray'))
   }
 
 document.addEventListener('click', startAudioOnce);
