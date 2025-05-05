@@ -36,8 +36,8 @@ function createIDE(name, code, x, y){
   nativeToolKeys.forEach(i => palette[i] = nativeToolsColor);
 
   let isDragging = false;
-  let offsetX = x;
-  let offsetY = y;
+  let offsetX = 0;
+  let offsetY = 0;
 
   let main_container = document.getElementById("main-game-container")
 
@@ -100,6 +100,9 @@ if (span.parentElement.tagName === "SPAN") {
 
   });
 });
+
+IDE_Container.style.left = x
+IDE_Container.style.top = y
 
 main_container.addEventListener("mousemove", (event) => {
   if (isDragging) {
@@ -299,10 +302,10 @@ return inputString
 
 }
 
-//localStorage.setItem("saveLabels", JSON.stringify(["save 1", "save 2"]));
+//localStorage.setItem("saveLabels", JSON.stringify(["n", "", "", "", ""]));
 // Create saves
 
-let createdSavesData = []
+let createdSavesData = ["n", "", "", "", ""]
 
 let dataTemp = JSON.parse(localStorage.getItem("saveLabels"))
 
@@ -310,16 +313,36 @@ if (dataTemp != null){
   createdSavesData = JSON.parse(localStorage.getItem("saveLabels"));
 }
 
+console.log(createdSavesData)
 
-for (let k = 0; k < createdSavesData.length ; k++){
-  console.log("creating")
-  createSave("loaded", k)
+
+for (let k = 0; k < 5 ; k++){
+  if (createdSavesData[k] != ""){
+    createSave("loaded", k)
+  }
+}
+
+function canCreateSave(){
+  for (let k = 0; k < 5 ; k++){
+    if (createdSavesData[k] === ""){
+      return true
+    }
+  }
+  return false
+}
+
+function firstAvailable(){
+  for (let k = 0; k < 5 ; k++){
+    if (createdSavesData[k] === ""){
+      return k
+    }
+  }
 }
 
 
 function createSave(type, num){
 
-    if (createdSavesData.length <= 5){
+    if (canCreateSave() || type === "loaded"){
 
     const right_load = document.getElementById("right-load");
 
@@ -327,7 +350,7 @@ function createSave(type, num){
     load_container.classList.add("load-container")
 
     if (type === "default"){
-      load_container.id = createdSavesData.length
+      load_container.id = firstAvailable()
     } else {
       load_container.id = num
     }
@@ -338,12 +361,12 @@ function createSave(type, num){
     load_button.onclick = function() {
       updateSaves()
       changeScene()
-      load(1)
+      load(load_container.id + 1)
     };
 
     if (type === "default"){
       load_button.textContent = "New Save";
-      createdSavesData.push("New Save")
+      createdSavesData[firstAvailable()] = "New Save"
     } else {
       load_button.textContent = createdSavesData[num];
     }
@@ -371,11 +394,15 @@ function createSave(type, num){
 
         load_button.addEventListener("input", onChange);
 
-        load_button.addEventListener("keypress", function(event) {
+        load_button.addEventListener("keydown", function(event) {
             if (event.key === "Enter") {
                 load_button.contentEditable = false;
                 event.preventDefault(); 
                 load_button.removeEventListener("input", onChange);
+            }
+
+            if (event.code === "Space") {
+              event.preventDefault();
             }
         });
     
@@ -394,7 +421,8 @@ function createSave(type, num){
     delete_button.classList.add("edit-button")
     delete_button.onclick = function() {
 
-        createdSavesData.splice(load_container.id, 1)
+        createdSavesData[load_container.id] = ""
+        console.log(createdSavesData)
         localStorage.setItem("saveLabels", JSON.stringify(createdSavesData))
         load_container.remove();
     };
@@ -407,6 +435,7 @@ function createSave(type, num){
     right_load.appendChild(load_container)
 
     localStorage.setItem("saveLabels", JSON.stringify(createdSavesData))
+    console.log(createdSavesData)
     }
 }
 
