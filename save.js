@@ -19,31 +19,37 @@ autresValue.textContent = autresSlider.value + "%";
 
 
 
-function save(save){
+function save(){
 
   if (currentSave >= 0){
 
-  switch (save){
+    console.log("saving ", currentSave)
+
+  switch (currentSave){
     case 1 :
-      console.log("saving")
+      console.log("saving 1")
       localStorage.setItem("gameObject1", JSON.stringify(gameObject));
       localStorage.setItem("saveArray1", JSON.stringify(currentSaveArray));
       break;
     
     case 2 :
       localStorage.setItem("gameObject2", JSON.stringify(gameObject));
+      localStorage.setItem("saveArray2", JSON.stringify(currentSaveArray));
       break;
 
     case 3 :
       localStorage.setItem("gameObject3", JSON.stringify(gameObject));
+      localStorage.setItem("saveArray3", JSON.stringify(currentSaveArray));
       break;
 
     case 4 :
       localStorage.setItem("gameObject4", JSON.stringify(gameObject));
+      localStorage.setItem("saveArray4", JSON.stringify(currentSaveArray));
       break;
 
     case 5 :
       localStorage.setItem("gameObject5", JSON.stringify(gameObject));
+      localStorage.setItem("saveArray5", JSON.stringify(currentSaveArray));
       break;
     }
   }
@@ -52,27 +58,32 @@ function save(save){
 
 function load(load){
 
+  console.log("loading ", load)
+
   switch (load){
     case 1 :
-      console.log("loaded 1")
       gameObject = JSON.parse(localStorage.getItem('gameObject1'));
       currentSaveArray = JSON.parse(localStorage.getItem('saveArray1'));
       break;
      
     case 2 :
       gameObject = JSON.parse(localStorage.getItem('gameObject2'));
+      currentSaveArray = JSON.parse(localStorage.getItem('saveArray2'));
       break;
 
     case 3 :
       gameObject = JSON.parse(localStorage.getItem('gameObject3'));
+      currentSaveArray = JSON.parse(localStorage.getItem('saveArray3'));
       break;
 
     case 4 :
       gameObject = JSON.parse(localStorage.getItem('gameObject4'));
+      currentSaveArray = JSON.parse(localStorage.getItem('saveArray4'));
       break;
 
     case 5 :
       gameObject = JSON.parse(localStorage.getItem('gameObject5'));
+      currentSaveArray = JSON.parse(localStorage.getItem('saveArray5'));
       break;
   }
 

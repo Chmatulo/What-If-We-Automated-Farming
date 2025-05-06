@@ -59,5 +59,16 @@ const defaultGameObject = {
   const autresValue = document.getElementById('autres-value');
 
 // Tableau codes + positions sauvegardés
-let currentSaveArray = [["maina", "#Hello", 0 , 100], ["code 1", "#Hello", 100, 0]]
+let currentSaveArray = [[0, "main", "#Write your code here:", 124 , 128, 350, 200]]
 let currentSave = 0 // Numéro de la sauvegarde actuelle
+
+// Sauvegardes par defaut
+
+for (let i = 1; i <= 5; i++) {
+  if (localStorage.getItem(`gameObject${i}`) === null) {
+    localStorage.setItem(`gameObject${i}`, JSON.stringify(defaultGameObject));
+  }
+  if (localStorage.getItem(`saveArray${i}`) === null) {
+    localStorage.setItem(`saveArray${i}`, JSON.stringify(currentSaveArray));
+  }
+}

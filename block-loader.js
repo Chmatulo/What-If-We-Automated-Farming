@@ -2,10 +2,17 @@
 var IDE_number = -1
 
 for (let k = 0 ; k < currentSaveArray.length ; k++){
-  createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3])
+  createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3], currentSaveArray[k][4], currentSaveArray[k][5], currentSaveArray[k][6])
 }
 
-function createIDE(name, code, x, y){
+function createIDEUser(){
+  let id = currentSaveArray.length
+  currentSaveArray.push([id, "code " + id, "#Write your code here:", 124, 128, 350, 200])
+  createIDE(id, "code " + id, "#Write your code here:", 124, 128, 350, 200)
+  console.log(currentSaveArray)
+}
+
+function createIDE(id, name, code, x, y, w, h){
 
   IDE_number++
 
@@ -19,8 +26,8 @@ function createIDE(name, code, x, y){
   const numbersColor = '#fac039';
   const commentColor = '#9b9b9b';
 
-  let beforeWidth = 350;
-  let beforeHeight = 200;
+  let beforeWidth = w;
+  let beforeHeight = h;
 
   const palette = {};
 
@@ -43,7 +50,18 @@ function createIDE(name, code, x, y){
 
   // Main Container
   let IDE_Container = document.createElement('div');
+  IDE_Container.id = id
   IDE_Container.classList.add("IDE-container")
+  IDE_Container.style.height = h + "px"
+  IDE_Container.style.width = w + "px"
+
+  addResizeListener(IDE_Container, function (e) {
+      currentSaveArray[IDE_Container.id][5] = e.contentRect.width
+      currentSaveArray[IDE_Container.id][6] = e.contentRect.height
+      console.log(currentSaveArray)
+  });
+
+
   IDE_Container.addEventListener("mousedown", (event) => {
     // Check if the click is outside the content area but not on the resize corner
     const rect = IDE_Container.getBoundingClientRect();
@@ -86,7 +104,7 @@ function createIDE(name, code, x, y){
 code_input.addEventListener("input", (event) => {
 
   const textcontent = code_input.value;
-  currentSaveArray[0][1] = textcontent
+  currentSaveArray[IDE_Container.id][2] = textcontent
 
   let newText = highlightKeywords(textcontent, keywords)
 
@@ -183,6 +201,10 @@ main_container.addEventListener("mouseup", () => {
   IDE_name.classList.add("ide-name")
   IDE_name.value = name
 
+  IDE_name.addEventListener('input', function (event) {
+    currentSaveArray[IDE_Container.id][1] = IDE_name.value
+  });
+
   center_Header.appendChild(IDE_name)
 
   // Right Header
@@ -229,6 +251,8 @@ main_container.addEventListener("mouseup", () => {
   let close_button = document.createElement('div');
   close_button.classList.add("code-button", "close-button")
   close_button.addEventListener("click", function () {
+      currentSaveArray.splice(IDE_Container.id, 1)
+      reorganize()
       IDE_Container.remove();
   });
   right_Header.appendChild(close_button)
@@ -304,9 +328,26 @@ return inputString
 
 }
 
+function reorganize(){
+  for (let i = 0 ; i < currentSaveArray.length ; i++){
+    currentSaveArray[i][0] = i
+  }
+  console.log(currentSaveArray)
+}
+
 function clearCodeBlocks(){
   let codeBlocks = document.getElementsByClassName("IDE-container")
   Array.from(codeBlocks).forEach(el => el.remove());
+}
+
+function addResizeListener(el, callback) {
+  const observer = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      callback(entry); // Call it like a regular event handler
+    }
+  });
+  observer.observe(el);
+  return observer; // return in case you want to disconnect later
 }
 
 //localStorage.setItem("saveLabels", JSON.stringify(["n", "", "", "", ""]));
@@ -319,8 +360,6 @@ let dataTemp = JSON.parse(localStorage.getItem("saveLabels"))
 if (dataTemp != null){
   createdSavesData = JSON.parse(localStorage.getItem("saveLabels"));
 }
-
-console.log(createdSavesData)
 
 
 for (let k = 0; k < 5 ; k++){
@@ -368,7 +407,7 @@ function createSave(type, num){
     load_button.onclick = function() {
       updateSaves()
       changeScene()
-      load(load_container.id + 1)
+      load(+load_container.id + 1)
     };
 
     if (type === "default"){
@@ -429,7 +468,6 @@ function createSave(type, num){
     delete_button.onclick = function() {
 
         createdSavesData[load_container.id] = ""
-        console.log(createdSavesData)
         localStorage.setItem("saveLabels", JSON.stringify(createdSavesData))
         load_container.remove();
     };
@@ -442,7 +480,6 @@ function createSave(type, num){
     right_load.appendChild(load_container)
 
     localStorage.setItem("saveLabels", JSON.stringify(createdSavesData))
-    console.log(createdSavesData)
     }
 }
 
