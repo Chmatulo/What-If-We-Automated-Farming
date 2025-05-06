@@ -1,25 +1,21 @@
 
 var IDE_number = -1
 
-for (let k = 0 ; k < currentSaveArray.length ; k++){
-  createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3], currentSaveArray[k][4], currentSaveArray[k][5], currentSaveArray[k][6])
+function loadCreateIDE(){
+  for (let k = 0 ; k < currentSaveArray.length ; k++){
+    createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3], currentSaveArray[k][4], currentSaveArray[k][5], currentSaveArray[k][6])
+  }
 }
+
+loadCreateIDE()
 
 function createIDEUser(){
   let id = currentSaveArray.length
   currentSaveArray.push([id, "code " + id, "#Write your code here:", 124, 128, 350, 200])
   createIDE(id, "code " + id, "#Write your code here:", 124, 128, 350, 200)
-  console.log(currentSaveArray)
 }
 
 function createIDE(id, name, code, x, y, w, h){
-
-  IDE_number++
-
-  if (name === "userInput"){
-    name = "code " + IDE_number
-    code = "#Hello"
-  }
 
   const functionColor = '#fddd5c';
   const nativeToolsColor = '#f5b00f';
@@ -56,9 +52,9 @@ function createIDE(id, name, code, x, y, w, h){
   IDE_Container.style.width = w + "px"
 
   addResizeListener(IDE_Container, function (e) {
+    console.log("loading resize", currentSaveArray[IDE_Container.id][5])
       currentSaveArray[IDE_Container.id][5] = e.contentRect.width
       currentSaveArray[IDE_Container.id][6] = e.contentRect.height
-      console.log(currentSaveArray)
   });
 
 
@@ -121,14 +117,19 @@ if (span.parentElement.tagName === "SPAN") {
   });
 });
 
-IDE_Container.style.left = x
-IDE_Container.style.top = y
+
+IDE_Container.style.left = x + "px"
+IDE_Container.style.top = y + "px"
 
 main_container.addEventListener("mousemove", (event) => {
   if (isDragging) {
     // Update the textarea's position
     IDE_Container.style.left = event.clientX - offsetX + "px";
     IDE_Container.style.top = event.clientY - offsetY + "px";
+
+    currentSaveArray[IDE_Container.id][3] = event.clientX - offsetX
+    currentSaveArray[IDE_Container.id][4] = event.clientY - offsetY
+
   }
 
   code_highlight.style.height = code_input.style.height
@@ -332,7 +333,6 @@ function reorganize(){
   for (let i = 0 ; i < currentSaveArray.length ; i++){
     currentSaveArray[i][0] = i
   }
-  console.log(currentSaveArray)
 }
 
 function clearCodeBlocks(){
@@ -353,7 +353,7 @@ function addResizeListener(el, callback) {
 //localStorage.setItem("saveLabels", JSON.stringify(["n", "", "", "", ""]));
 // Create saves
 
-let createdSavesData = ["n", "", "", "", ""]
+let createdSavesData = ["", "", "", "", ""]
 
 let dataTemp = JSON.parse(localStorage.getItem("saveLabels"))
 

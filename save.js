@@ -95,9 +95,7 @@ function load(load){
   console.log(currentSaveArray)
 
   clearCodeBlocks()
-  for (let k = 0 ; k < currentSaveArray.length ; k++){
-    createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3])
-  }
+  loadCreateIDE()
 
   updateAll()
 }
