@@ -54,6 +54,17 @@ function menuToggle(menu){
       game_container.style.pointerEvents = "none"
       home_container.style.pointerEvents = "none"
 
+      if (sceneVar%2 == 1 ){
+        document.getElementById("saveAs").style.display = "inline"
+        if (currentSave === 0){
+          document.getElementById("saveCurrent").style.display = "none"
+        } else {
+          document.getElementById("saveCurrent").style.display = "inline"
+        }
+      } else {
+        document.getElementById("saveAs").style.display = "none"
+      }
+
       setTimeout(() => {
           options_menu.style.display = "flex"
       }, 100);
@@ -139,6 +150,8 @@ function changeScene(){
     game_container.style.transform = "scale(1)"
     game_container.style.filter = "blur(0px)"
 
+    document.getElementById("saveSectionOptions").style.display = "block"
+
     setTimeout(() => {
       home_container.style.display = "none"
     }, 1300);
@@ -146,6 +159,8 @@ function changeScene(){
     home_container.style.transition= "0s"
     home_container.style.display = "flex"
     home_container.style.transform = "scale(10)"
+
+    document.getElementById("saveSectionOptions").style.display = "none"
 
     setTimeout(() => {
       home_container.style.transition= "1.2s"

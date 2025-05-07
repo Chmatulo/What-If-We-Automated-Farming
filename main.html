@@ -29,7 +29,7 @@
 
             <div id="right-default" style="display: block;">
 
-                <button id="jouer" class="button" onclick="changeScene()">Nouvelle Partie</button>
+                <button id="jouer" class="button" onclick="load(0)">Nouvelle Partie</button>
                 <button href="main.html" id="jouer" class="button" onclick="updateSaves()">Sauvegardes</button>
                 <button id="options-btn" class="button" onclick="menuToggle('settings')">Options</button>
                 <button id="credits-btn" class="button" onclick="menuToggle('credits')">Crédits</button>
@@ -125,12 +125,25 @@
             <input type="range" id="autres-slider" min="0" max="100" value="50" step="1">
             <span id="autres-value">50%</span>
 
-            <br><br>
+            <br><br><br>
 
-            <button onclick="save()">Save</button>
-            <button onclick="load()">Load</button>
-            <button onclick="testC()">Test</button>
-            <button onclick="clearCodeBlocks()">Delete All</button>
+            <div id="saveSectionOptions" style="display: none;">
+
+                <span class="explanation-title">- Sauvegardes - </span> 
+
+                <br><br><br>
+
+                <div id="saveButtonsContainer">
+                
+                    <div id="defaultSaveButtons">
+                        <button onclick="save()" class="saveButton" id="saveCurrent">Sauvegarder</button>
+                        <button onclick="saveAs()" class="saveButton" id="saveAs">Sauvegarder sous</button>
+                    </div>
+        
+                </div>
+
+            </div>
+
         </div>
 
     </div>

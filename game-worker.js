@@ -87,9 +87,10 @@ self.onmessage = async (event) => {
 
   // Fonction globales Pyodide (Python -> JavaScript)
 
-  pyodide.globals.set("move", (direction) => {
+  pyodide.globals.set("move", async (direction) => {
 
     delay(gameObject.moveDelay)
+    console.log("moving")
 
     switch(direction) {
 
@@ -122,6 +123,8 @@ self.onmessage = async (event) => {
   });
 
   pyodide.globals.set("till", () => {
+
+    console.log("tilling")
 
     delay(gameObject.tillDelay)
 
@@ -324,9 +327,11 @@ self.onmessage = async (event) => {
   try {
     // Execution du code Python
     data = "import asyncio\n" + data // ajouter module time
-    data = addAwaitSleep(data, functionList)
+    data = addAwaitForFunctions(data, functionList)
+    data = addAwaitToFunctionCalls(data)
     codeRunning = true
     self.postMessage({ type: "codeState", data: codeRunning })
+    console.log(data)
     const result = await pyodide.runPythonAsync(data); // Exécuter
     codeRunning = false
     self.postMessage({ type: "codeState", data: codeRunning })
@@ -348,7 +353,7 @@ self.onmessage = async (event) => {
 
 };
 
-function addAwaitSleep(text, functionList) {
+function addAwaitForFunctions(text, functionList) {
   const lines = text.split('\n');
   let transformedLines = [];
   let previousIndentation = '';
@@ -361,14 +366,28 @@ function addAwaitSleep(text, functionList) {
       // Check if the line contains a function call and is in the list of functions
       const functionName = trimmedLine.split('(')[0].trim();
       if (functionList.includes(functionName) && trimmedLine.includes('(') && trimmedLine.includes(')')) {
-          transformedLines.push(line); // Add the function call line
-          transformedLines.push(`${indentation}await asyncio.sleep(0)`); // Add await line with correct indentation
+          transformedLines.push(`${indentation}await ${trimmedLine}`); // Add await to function calls
       } else {
           transformedLines.push(line); // For non-function call lines, just add the line
       }
   });
 
+  // Add async to the test function and modify the call
+  transformedLines = transformedLines.map(line => {
+      if (line.trim().startsWith('def test')) {
+          return line.replace('def test', 'async def test'); // Make test() async
+      }
+      return line;
+  });
+
   return transformedLines.join('\n');
 }
 
-const functionList = ['harvest', 'plant', 'move']; // List of functions to detect
+const functionList = ['move', 'harvest', 'plant']; // List of functions that should be awaited
+
+function addAwaitToFunctionCalls(code) {
+  return code.replace(
+    /(?<![\w.]\s*|await\s*)(\b\w+)\s*\(([^)]*)\)/g,
+    (match, fnName, args) => `await ${fnName}(${args})`
+  );
+}

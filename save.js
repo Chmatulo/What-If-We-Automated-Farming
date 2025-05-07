@@ -27,7 +27,6 @@ function save(){
 
   switch (currentSave){
     case 1 :
-      console.log("saving 1")
       localStorage.setItem("gameObject1", JSON.stringify(gameObject));
       localStorage.setItem("saveArray1", JSON.stringify(currentSaveArray));
       break;
@@ -61,6 +60,11 @@ function load(load){
   console.log("loading ", load)
 
   switch (load){
+    case 0 : 
+      gameObject = defaultGameObject
+      currentSaveArray = defaultCurrentSave
+      changeScene()
+      break;
     case 1 :
       gameObject = JSON.parse(localStorage.getItem('gameObject1'));
       currentSaveArray = JSON.parse(localStorage.getItem('saveArray1'));
@@ -92,7 +96,6 @@ function load(load){
   game_worker.postMessage({ type: "gameObject", data: gameObject });
   plant_worker.postMessage({ type: "gameObject", data: gameObject });
 
-  console.log(currentSaveArray)
 
   clearCodeBlocks()
   loadCreateIDE()

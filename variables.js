@@ -59,7 +59,8 @@ const defaultGameObject = {
   const autresValue = document.getElementById('autres-value');
 
 // Tableau codes + positions sauvegardés
-let currentSaveArray = [[0, "main", "#Write your code here:", 124 , 128, 350, 200]]
+const defaultCurrentSave = [[0, "main", "#Write your code here:", 124 , 128, 350, 200]]
+let currentSaveArray = defaultCurrentSave
 let currentSave = 0 // Numéro de la sauvegarde actuelle
 
 // Sauvegardes par defaut

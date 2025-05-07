@@ -7,8 +7,6 @@ function loadCreateIDE(){
   }
 }
 
-loadCreateIDE()
-
 function createIDEUser(){
   let id = currentSaveArray.length
   currentSaveArray.push([id, "code " + id, "#Write your code here:", 124, 128, 350, 200])
@@ -52,7 +50,6 @@ function createIDE(id, name, code, x, y, w, h){
   IDE_Container.style.width = w + "px"
 
   addResizeListener(IDE_Container, function (e) {
-    console.log("loading resize", currentSaveArray[IDE_Container.id][5])
       currentSaveArray[IDE_Container.id][5] = e.contentRect.width
       currentSaveArray[IDE_Container.id][6] = e.contentRect.height
   });
@@ -499,4 +496,32 @@ function enableEditing() {
     buttonText.addEventListener("blur", function() {
         buttonText.contentEditable = false;
     });
+}
+
+function saveAs(){
+
+    const saveButtons = document.querySelectorAll(".saveButton");
+    saveButtons.forEach(button => button.remove());
+
+    let saveButtonsContainer = document.getElementById("saveButtonsContainer")
+
+    document.getElementById("saveAs").style.display = "none"
+    document.getElementById("saveCurrent").style.display = "none"
+
+    let saveLabels = JSON.parse(localStorage.getItem("saveLabels"));
+
+    let numberOfSaves = 0
+
+    for (let i = 0 ; i < saveLabels.length ; i++){
+      if (saveLabels[i] != ""){
+        numberOfSaves++
+      }
+    }
+
+    for (let k = 0 ; k < numberOfSaves ; k++){
+      let saveButton = document.createElement("div");
+      saveButton.innerText = "Sauvegarder Sous"
+      saveButton.classList.add("saveButton")
+      saveButtonsContainer.appendChild(saveButton)
+    }
 }
