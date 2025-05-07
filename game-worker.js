@@ -350,7 +350,7 @@ self.onmessage = async (event) => {
   } else if (type == "gameObject"){
    // console.log(" gameObject received to game-worker")
     gameObject = JSON.parse(JSON.stringify(data));
-  } 
+  }
 
 
 };

@@ -3,11 +3,11 @@ var gameObject = {};
 var allPlants = [];
 
 class Plant {
-  constructor(type, luck) {
+  constructor(type, luck, stage, x, y) {
       this.type = type;
-      this.x = gameObject.dronePosition[0]
-      this.y = gameObject.dronePosition[1]
-      this.stage = 0; // 0 = Seed, 1 = Sprout, etc.
+      this.x = x
+      this.y = y
+      this.stage = stage; // 0 = Seed, 1 = Sprout, etc.
       this.grow(luck); // Start growing immediately
   }
 
@@ -59,19 +59,19 @@ self.onmessage = (event) => {
             case "wheat":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 1
                 self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 1, 0] });
-                var myPlant = new Plant(1, 2);
+                var myPlant = new Plant(1, 2, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
               break;
 
             case "carrot":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
                 self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 2, 0] });
-                var myPlant = new Plant(2, 5);
+                var myPlant = new Plant(2, 5, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
                 break;
 
             case "apple":
-                gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
-                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 2, 0] });
-                var myPlant = new Plant(3, 10);
+                gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 3
+                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 3, 0] });
+                var myPlant = new Plant(3, 10, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
                 break;
 
             default:
@@ -84,6 +84,23 @@ self.onmessage = (event) => {
 
         stopAllPlantGrowth();
         
+    } else if (type === "firstTimeLoading"){
+      gameObject = JSON.parse(JSON.stringify(data));
+
+      for (let y = 0; y < gameObject.plantValues.length; y++) {
+        for (let x = 0; x < gameObject.plantValues[y].length; x++) {
+          let plant = gameObject.plantValues[y][x][0];
+          let stage = gameObject.plantValues[y][x][1]
+
+          if (plant > 0){
+            console.log(x,y)
+            var myPlant = new Plant(plant, 5, stage, x+1, y+1);
+            //self.postMessage({ type: "plantUpdate", data: [y+1 , x+1 , 2, 0] });
+          }
+
+        }
+      }
+      
     } else {
     console.log("fin")
     }

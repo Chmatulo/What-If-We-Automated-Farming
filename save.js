@@ -94,7 +94,7 @@ function load(load){
   currentSave = load
 
   game_worker.postMessage({ type: "gameObject", data: gameObject });
-  plant_worker.postMessage({ type: "gameObject", data: gameObject });
+  plant_worker.postMessage({ type: "firstTimeLoading", data: gameObject });
 
 
   clearCodeBlocks()
