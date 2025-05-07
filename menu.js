@@ -147,6 +147,8 @@ let sceneVar = 0;
 
 function changeScene(){
 
+  stopWorker()
+
   let home_container = document.getElementById("main-home-container")
   let game_container = document.getElementById("main-game-container")
 

@@ -122,7 +122,7 @@ self.onmessage = async (event) => {
     self.postMessage({ type: "move", data: gameObject.dronePosition });
   });
 
-  pyodide.globals.set("till", () => {
+  pyodide.globals.set("till", async () => {
 
     console.log("tilling")
 
@@ -141,7 +141,9 @@ self.onmessage = async (event) => {
     return (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0) 
   });
 
-  pyodide.globals.set("plant", (seed) => {
+  pyodide.globals.set("plant", async (seed) => {
+
+    console.log("planting")
 
     delay(gameObject.plantDelay)
 
@@ -356,32 +358,32 @@ self.onmessage = async (event) => {
 function addAwaitForFunctions(text, functionList) {
   const lines = text.split('\n');
   let transformedLines = [];
-  let previousIndentation = '';
 
   lines.forEach(line => {
-      // Extract indentation and trim the line
       const indentation = line.match(/^(\s*)/)[0];
       const trimmedLine = line.trim();
 
       // Check if the line contains a function call and is in the list of functions
       const functionName = trimmedLine.split('(')[0].trim();
-      if (functionList.includes(functionName) && trimmedLine.includes('(') && trimmedLine.includes(')')) {
-          transformedLines.push(`${indentation}await ${trimmedLine}`); // Add await to function calls
+      if (
+          functionList.includes(functionName) &&
+          trimmedLine.includes('(') &&
+          trimmedLine.includes(')')
+      ) {
+          transformedLines.push(`${indentation}await ${trimmedLine}`);
       } else {
-          transformedLines.push(line); // For non-function call lines, just add the line
+          transformedLines.push(line);
       }
   });
 
-  // Add async to the test function and modify the call
+  // Add async to all function definitions
   transformedLines = transformedLines.map(line => {
-      if (line.trim().startsWith('def test')) {
-          return line.replace('def test', 'async def test'); // Make test() async
-      }
-      return line;
+      return line.replace(/^(\s*)def /, '$1async def ');
   });
 
   return transformedLines.join('\n');
 }
+
 
 const functionList = ['move', 'harvest', 'plant']; // List of functions that should be awaited
 
