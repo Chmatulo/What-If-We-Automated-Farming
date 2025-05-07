@@ -350,19 +350,19 @@ function addResizeListener(el, callback) {
 //localStorage.setItem("saveLabels", JSON.stringify(["n", "", "", "", ""]));
 // Create saves
 
-let createdSavesData = ["", "", "", "", ""]
+function loadSaveLabels(){
 
-let dataTemp = JSON.parse(localStorage.getItem("saveLabels"))
+document.querySelectorAll('.load-container').forEach(el => el.remove());
 
-if (dataTemp != null){
-  createdSavesData = JSON.parse(localStorage.getItem("saveLabels"));
-}
+createdSavesData = JSON.parse(localStorage.getItem("saveLabels"));
+console.log(createdSavesData)
 
-
-for (let k = 0; k < 5 ; k++){
-  if (createdSavesData[k] != ""){
-    createSave("loaded", k)
+  for (let k = 0; k < 5 ; k++){
+    if (createdSavesData[k] != ""){
+      createSave("loaded", k)
+    }
   }
+
 }
 
 function canCreateSave(){
@@ -500,28 +500,63 @@ function enableEditing() {
 
 function saveAs(){
 
-    const saveButtons = document.querySelectorAll(".saveButton");
-    saveButtons.forEach(button => button.remove());
-
-    let saveButtonsContainer = document.getElementById("saveButtonsContainer")
+  const saveButtons = document.querySelectorAll(".saveButtonLoad");
+  saveButtons.forEach(button => button.remove());
 
     document.getElementById("saveAs").style.display = "none"
     document.getElementById("saveCurrent").style.display = "none"
+    document.getElementById("createSaveMenu").style.display = "flex"
 
-    let saveLabels = JSON.parse(localStorage.getItem("saveLabels"));
+    loadMenuSaves()
+}
 
-    let numberOfSaves = 0
+function loadMenuSaves(){
 
-    for (let i = 0 ; i < saveLabels.length ; i++){
-      if (saveLabels[i] != ""){
-        numberOfSaves++
-      }
-    }
+  let saveButtonsContainer = document.getElementById("loadingSaves");
+  let saveLabels = JSON.parse(localStorage.getItem("saveLabels"));
 
-    for (let k = 0 ; k < numberOfSaves ; k++){
+  for (let i = 0; i < saveLabels.length; i++) {
+    if (saveLabels[i] !== "") {
+
+      console.log("creating", i)
+  
       let saveButton = document.createElement("div");
-      saveButton.innerText = "Sauvegarder Sous"
-      saveButton.classList.add("saveButton")
-      saveButtonsContainer.appendChild(saveButton)
+      saveButton.innerText = saveLabels[i];
+      saveButton.classList.add("saveButtonLoad");
+      saveButton.onclick = function (event) {
+        save("specific", i + 1);
+      };
+  
+      saveButtonsContainer.appendChild(saveButton);
     }
+  }
+}
+
+function addNewSaveMenu(){
+  
+  let saveButtonsContainer = document.getElementById("loadingSaves");
+  let saveLabels = JSON.parse(localStorage.getItem("saveLabels"));
+
+  for (let i = 0; i < saveLabels.length; i++) {
+    if (saveLabels[i] == "") {
+
+      console.log("creating", i)
+  
+      let saveButton = document.createElement("div");
+      saveButton.innerText = "New Save";
+      saveButton.classList.add("saveButtonLoad");
+      saveLabels[i] = "New Save"
+      localStorage.setItem("saveLabels", JSON.stringify(saveLabels))
+      saveButton.onclick = function () {
+        save("specific", i + 1);
+      };
+
+      saveButtonsContainer.appendChild(saveButton);
+      console.log(saveLabels)
+
+      break;
+    }
+  }
+
+
 }

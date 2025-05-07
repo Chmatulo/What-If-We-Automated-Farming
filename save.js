@@ -19,11 +19,13 @@ autresValue.textContent = autresSlider.value + "%";
 
 
 
-function save(){
+function save(type, num){
 
-  if (currentSave >= 0){
+  if (type === "specific"){
+    currentSave = num
+  }
 
-    console.log("saving ", currentSave)
+  console.log("saving ", currentSave)
 
   switch (currentSave){
     case 1 :
@@ -51,18 +53,16 @@ function save(){
       localStorage.setItem("saveArray5", JSON.stringify(currentSaveArray));
       break;
     }
-  }
-
 }
 
 function load(load){
 
-  console.log("loading ", load)
+  //console.log("loading ", load)
 
   switch (load){
     case 0 : 
-      gameObject = defaultGameObject
-      currentSaveArray = defaultCurrentSave
+      gameObject = structuredClone(defaultGameObject);
+      currentSaveArray = structuredClone(defaultCurrentSave);
       changeScene()
       break;
     case 1 :

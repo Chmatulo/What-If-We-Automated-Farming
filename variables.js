@@ -45,7 +45,7 @@ const defaultGameObject = {
   
   }
   
-  var gameObject = defaultGameObject // Objet Jeu
+  let gameObject = structuredClone(defaultGameObject); // Objet Jeu
 
   let volumesArray = [0.1, 0.125, 0.125]; // Volumes (Musique, Actions, Autres)
 
@@ -60,8 +60,16 @@ const defaultGameObject = {
 
 // Tableau codes + positions sauvegardés
 const defaultCurrentSave = [[0, "main", "#Write your code here:", 124 , 128, 350, 200]]
-let currentSaveArray = defaultCurrentSave
+let currentSaveArray = structuredClone(defaultCurrentSave);
 let currentSave = 0 // Numéro de la sauvegarde actuelle
+
+// Labels sauvegardes
+
+const defaultSaveLabels = ["", "", "", "", ""]
+let createdSavesData = structuredClone(defaultSaveLabels);
+if (localStorage.getItem(`saveLabels`) === null) {
+  localStorage.setItem(`saveLabels`, JSON.stringify(defaultSaveLabels));
+}
 
 // Sauvegardes par defaut
 

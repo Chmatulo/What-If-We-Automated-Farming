@@ -143,3 +143,51 @@
     display: flex;
     justify-content: center;
 }
+
+.saveButtonLoad {
+    height: 6vh;
+    width: 17vw;
+    border-radius: 8px;
+    background-color: var(--greenColor);
+    color: var(--textColor);
+    font-family: monospace;
+    font-size: 1.6vw;
+    transition: 0.1s;
+    margin: 1vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saveButtonLoad:hover{
+    background-color: var(--greenColorHover);
+    transform: translateY(-2px);
+}
+
+.createSaveMenu{
+    height: 6vh;
+    width: 6vh;
+    border-radius: 8px;
+    background-color: var(--greenColor);
+    color: var(--textColor);
+    font-family: monospace;
+    font-size: 3vw;
+    transition: 0.1s;
+    margin: 1vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.createSaveMenu:hover{
+    background-color: var(--greenColorHover);
+    transform: translateY(-2px);
+}
+
+#loadingSaves{
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+}

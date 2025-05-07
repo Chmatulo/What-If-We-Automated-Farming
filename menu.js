@@ -45,6 +45,9 @@ function menuToggle(menu){
 
     options_menu_bool = true
 
+    const saveButtons = document.querySelectorAll(".saveButtonLoad");
+    saveButtons.forEach(button => button.remove());
+
       game_container.style.transition= "0.6s"
       home_container.style.transition= "0.6s"
 
@@ -53,6 +56,7 @@ function menuToggle(menu){
 
       game_container.style.pointerEvents = "none"
       home_container.style.pointerEvents = "none"
+      document.getElementById("createSaveMenu").style.display = "none"
 
       if (sceneVar%2 == 1 ){
         document.getElementById("saveAs").style.display = "inline"
@@ -135,7 +139,8 @@ function updateSaves(){
         right_saves.style.display = "none"
         right_default.style.display = "block"
     }
-    
+
+    loadSaveLabels()
   }
   
 let sceneVar = 0;

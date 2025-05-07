@@ -133,11 +133,17 @@
 
                 <br><br><br>
 
-                <div id="saveButtonsContainer">
+                <div id="saveButtonsContainer" style="display: flex; flex-direction: column;">
                 
                     <div id="defaultSaveButtons">
                         <button onclick="save()" class="saveButton" id="saveCurrent">Sauvegarder</button>
                         <button onclick="saveAs()" class="saveButton" id="saveAs">Sauvegarder sous</button>
+                    </div>
+
+                    <div id="section2" style="display: flex; flex-direction: row; justify-content: center;">
+                        <button class="createSaveMenu" onclick="addNewSaveMenu()" id="createSaveMenu">+</button>
+
+                        <div id="loadingSaves"></div>
                     </div>
         
                 </div>
