@@ -129,18 +129,82 @@ function runCode(code){
 
   game_receivingAllowed = true;
 
+  let codes = document.getElementsByClassName("code-input")
+  let extractedFunction = []
+
+
+for (let i = 0 ; i < codes.length ; i++){
+  if (codes[i].value == code){
+    codes[i].value = ""
+  } else {
+    extractedFunction.push(codes[i].value)
+  }
+}
+
 if (!game_codeRunning){
   console.log("game worker not running")
 }
 
     if (game_worker && !game_codeRunning){
       game_codeRunning = true;
+      code = extractPythonFunctions(extractedFunction) + "\n" + "\n" + code 
+      console.log(code)
       game_worker.postMessage({ type: "code", data : code });
     } else {
       console.log("No worker, restarting", game_worker, plant_worker)
       runWorker()
     }
 
+}
+
+function extractPythonFunctions(codeStrings) {
+  const allFunctions = [];
+
+  for (const code of codeStrings) {
+    const lines = code.split('\n');
+    let currentFunc = [];
+    let collecting = false;
+    let indentLevel = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // Start collecting if we find a decorator or a function definition
+      if (line.trim().startsWith('@') || line.trim().startsWith('def ')) {
+        if (!collecting) {
+          collecting = true;
+          currentFunc = [];
+          indentLevel = null;
+        }
+      }
+
+      if (collecting) {
+        currentFunc.push(line);
+
+        // If it's the def line, set indent level
+        if (line.trim().startsWith('def ') && indentLevel === null) {
+          indentLevel = line.match(/^(\s*)/)[1].length;
+        }
+
+        // Determine if we should stop collecting
+        const nextLine = lines[i + 1];
+        if (nextLine !== undefined) {
+          const nextIndent = nextLine.match(/^(\s*)/)[1].length;
+          if (nextLine.trim() && indentLevel !== null && nextIndent <= indentLevel && !nextLine.trim().startsWith('@')) {
+            collecting = false;
+            allFunctions.push(currentFunc.join('\n'));
+            currentFunc = [];
+          }
+        } else {
+          // End of file
+          collecting = false;
+          allFunctions.push(currentFunc.join('\n'));
+        }
+      }
+    }
+  }
+
+  return allFunctions.join('\n\n');
 }
 
 function formatNumber(num) {

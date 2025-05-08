@@ -72,6 +72,7 @@ function createIDE(id, name, code, x, y, w, h){
   let code_input = document.createElement('textarea');
   code_input.classList.add("IDE", "code-input")
   code_input.value = code;
+  code_input.id = "code_input" + id
   code_input.style.color = "transparent"
   code_input.setAttribute('spellcheck', false)
   code_input.addEventListener("input", updateHighlight)
