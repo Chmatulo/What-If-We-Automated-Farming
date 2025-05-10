@@ -40,6 +40,7 @@ class Plant {
 }
 
 function stopAllPlantGrowth() {
+  console.log("stopping growth")
     allPlants.forEach(plant => plant.stopGrowth());
   }
 

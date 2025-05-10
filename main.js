@@ -135,7 +135,7 @@ function runCode(code){
 
 for (let i = 0 ; i < codes.length ; i++){
   if (codes[i].value == code){
-    codes[i].value = ""
+    continue
   } else {
     extractedFunction.push(codes[i].value)
   }
@@ -148,7 +148,6 @@ if (!game_codeRunning){
     if (game_worker && !game_codeRunning){
       game_codeRunning = true;
       code = extractPythonFunctions(extractedFunction) + "\n" + "\n" + code 
-      console.log(code)
       game_worker.postMessage({ type: "code", data : code });
     } else {
       console.log("No worker, restarting", game_worker, plant_worker)
