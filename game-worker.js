@@ -63,6 +63,8 @@ var gameObject = {
   plantDelay: 1000,
   moveDelay: 1000,
 
+  goldenAppleValue : 0,
+
 }
 
 
@@ -90,7 +92,7 @@ self.onmessage = async (event) => {
   pyodide.globals.set("move", async (direction) => {
 
     delay(gameObject.moveDelay)
-    console.log("moving")
+    //console.log("moving")
 
     switch(direction) {
 
@@ -124,7 +126,7 @@ self.onmessage = async (event) => {
 
   pyodide.globals.set("till", async () => {
 
-    console.log("tilling")
+    //console.log("tilling")
 
     delay(gameObject.tillDelay)
 
@@ -146,7 +148,7 @@ self.onmessage = async (event) => {
 
   pyodide.globals.set("plant", async (seed) => {
 
-    console.log("planting")
+    //console.log("planting")
 
     delay(gameObject.plantDelay)
 
@@ -158,11 +160,13 @@ self.onmessage = async (event) => {
     switch (seed) {
       case "wheat":
         self.postMessage({ type: "plant", data: seed });
+        self.postMessage({ type: "playsound", data: "plant" });
         break;
       case "carrot":
         if (gameObject.carrotSeeds > 0){
           gameObject.carrotSeeds = gameObject.carrotSeeds - 1
           self.postMessage({ type: "plant", data: seed });
+          self.postMessage({ type: "playsound", data: "plant" });
         }
 
         break;
@@ -170,6 +174,7 @@ self.onmessage = async (event) => {
         if (gameObject.appleSeeds > 0){
           gameObject.appleSeeds = gameObject.appleSeeds - 1
           self.postMessage({ type: "plant", data: seed });
+          self.postMessage({ type: "playsound", data: "plant" });
         }
 
         break;
@@ -178,7 +183,6 @@ self.onmessage = async (event) => {
     }
 
     self.postMessage({ type: "seedUpdate", data: [gameObject.carrotSeeds, gameObject.appleSeeds] });
-    self.postMessage({ type: "playsound", data: "plant" });
       }
     }
   });
@@ -197,20 +201,28 @@ self.onmessage = async (event) => {
       if (gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 3){
         self.postMessage({ type: "harvest", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0]] });
         self.postMessage({ type: "playsound", data: "plant" });
+      } else if (gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 4){
+        self.postMessage({ type: "harvest", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1]] });
+        self.postMessage({ type: "playsound", data: "plant" });
       }
 
   });
 
   pyodide.globals.set("canHarvest", async () => {
     //console.log("checking harvest")
-    return (gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 3)
+    return (gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] >= 3)
   });
 
-  pyodide.globals.set("getPos", async () => {
+  pyodide.globals.set("getPos", async (par) => {
     let posArr = []
-    posArr[0] = gameObject.dronePosition[0]
-    posArr[1] = gameObject.dronePosition[1]
-    return posArr
+    if (par === "drone"){
+      posArr[0] = gameObject.dronePosition[0]
+      posArr[1] = gameObject.dronePosition[1]
+      return posArr
+    } else if (par === "goldenApple"){
+      console.log(gameObject.plantValues)
+      return locateGoldenApple()
+    }
   });
 
   pyodide.globals.set("buy", async (seed) => {
@@ -269,7 +281,6 @@ self.onmessage = async (event) => {
   });
 
   pyodide.globals.set("getNumber", async (item) => {
-    console.log("getting Number of ", item);
 
     switch (item){
       case "wheat" :
@@ -333,21 +344,54 @@ self.onmessage = async (event) => {
 
    pyodide.globals.set("water", async () => {
 
-    delay(gameObject.tillDelay)
+    delay(gameObject.plantDelay)
 
-    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0){
+    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] <= 1){
       gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 2
-      //console.log("tilled")
       self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 2] });
       self.postMessage({ type: "water", data: [gameObject.dronePosition[0], gameObject.dronePosition[1]] });
       self.postMessage({ type: "playsound", data: "water" });
-    } else if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] == 0){
+    } else if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] <= 0){
       gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 3
       self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 3] });
       self.postMessage({ type: "water", data: [gameObject.dronePosition[0], gameObject.dronePosition[1]] });
       self.postMessage({ type: "playsound", data: "water" });
     }
   });
+
+  pyodide.globals.set("goldenRun", async () => {
+
+    if (gameObject.money >= 250){
+
+    gameObject.money = gameObject.money - 250
+
+    gameObject.soilValues = [
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],  
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ]
+
+    gameObject.plantValues = [
+      [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+      [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+      [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+      [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+      [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+      [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+      [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
+    ]
+
+    self.postMessage({ type: "clear", data: "" });
+    self.postMessage({ type: "gameObject", data: gameObject });
+    self.postMessage({ type: "goldenApple", data: "" });
+    }
+    
+  });
+
 
   try {
     // Execution du code Python
@@ -382,37 +426,56 @@ function addAwaitForFunctions(text, functionList) {
   const lines = text.split('\n');
   let transformedLines = [];
 
-  lines.forEach(line => {
-      const indentation = line.match(/^(\s*)/)[0];
-      const trimmedLine = line.trim();
+  const innerCallRegex = /\b(\w+)\s*\(([^()]*)\)/g;
 
-      // Check if the line contains a function call and is in the list of functions
-      const functionName = trimmedLine.split('(')[0].trim();
-      if (
-          functionList.includes(functionName) &&
-          trimmedLine.includes('(') &&
-          trimmedLine.includes(')')
-      ) {
-          transformedLines.push(`${indentation}await ${trimmedLine}`);
-      } else {
-          transformedLines.push(line);
+  lines.forEach(line => {
+    const indentation = line.match(/^(\s*)/)[0];
+    let modifiedLine = line;
+
+    // Replace inner function calls that are in functionList and not already awaited
+    modifiedLine = modifiedLine.replace(innerCallRegex, (match, fnName, args, offset, fullText) => {
+      const before = fullText.slice(0, offset);
+      const isAlreadyAwaited = /\bawait\s*$/.test(before);
+      if (functionList.includes(fnName) && !isAlreadyAwaited) {
+        return `await ${fnName}(${args})`;
       }
+      return match;
+    });
+
+    transformedLines.push(modifiedLine);
   });
 
   // Add async to all function definitions
   transformedLines = transformedLines.map(line => {
-      return line.replace(/^(\s*)def /, '$1async def ');
+    return line.replace(/^(\s*)def /, '$1async def ');
   });
 
   return transformedLines.join('\n');
 }
 
 
-const functionList = ['move', 'harvest', 'plant']; // List of functions that should be awaited
+const functionList = ['move', 'harvest', 'plant', 'getPos', "canHarvest"]; // List of functions that should be awaited
 
 function addAwaitToFunctionCalls(code) {
   return code.replace(
     /(?<![\w.]\s*|await\s*)(\b\w+)\s*\(([^)]*)\)/g,
-    (match, fnName, args) => `await ${fnName}(${args})`
+    (match, fnName, args) => {
+      if (fnName === 'print') {
+        return `${fnName}(${args})`; // Leave print untouched
+      }
+      return `await ${fnName}(${args})`;
+    }
   );
+}
+
+function locateGoldenApple(){
+  for (let y = 0; y < gameObject.plantValues.length; y++) {
+        for (let x = 0; x < gameObject.plantValues[y].length; x++) {
+
+          if (gameObject.plantValues[y][x][0] == 3 && gameObject.plantValues[y][x][1] == 4){
+            return [x + 1, y + 1]
+          }
+
+        }
+      }
 }

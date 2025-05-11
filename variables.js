@@ -24,14 +24,14 @@ const defaultGameObject = {
       [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
     ],
   
-    money: 100000,
-    wheat: 1000,
-    carrot: 1000,
-    apple: 1000,
+    money: 0,
+    wheat: 0,
+    carrot: 0,
+    apple: 0,
   
     wheatSeeds: "∞",
-    carrotSeeds: 1000,
-    appleSeeds: 1000,
+    carrotSeeds: 0,
+    appleSeeds: 0,
   
     tillLevel: 1,
     harvestLevel: 1,
@@ -42,6 +42,8 @@ const defaultGameObject = {
     harvestDelay: 1000,
     plantDelay: 1000,
     moveDelay: 1000,
+
+    goldenAppleValue : 0,
   
   }
   

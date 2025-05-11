@@ -463,13 +463,19 @@ La commande suivante retourne les coordonnées du drone sous la forme d'un table
 
 <br><br>
 
-    <span class="yellow">getPos</span>()
+    <span class="yellow">getPos</span>("paramètre")
+
+<br><br>
+
+Il suffit alors de remplacer "paramètre" par "drone" ou "goldenApple" selon votre choix.
+
+<br><br>
 
 Et nous obtenons le résultat suivant : [x, y]. Pour obtenir la coordonnée voulue, nous utilisons : 
 
 <br><br> 
 
-x = <span class="yellow">getPos</span>()[0] et y = <span class="yellow">getPos</span>()[1] 
+x = <span class="yellow">getPos</span>("paramètre")[0] et y = <span class="yellow">getPos</span>()[1] 
 
 <br><br>
 
@@ -477,11 +483,32 @@ ou bien, en ayant déclaré une variable au préalable
 
 <br><br>
 
-pos = <span class="yellow">getPos</span>(), avec x = pos[0] et y = pos[1]
+pos = <span class="yellow">getPos</span>("paramètre"), avec x = pos[0] et y = pos[1]
 
 <br><br>
 
-<span class="explanation-title">10. Réinitialiser le champ</span>
+<span class="explanation-title">10. Mode de jeu spécial</span>
+
+<br><br>
+
+La commande suivante permet de lancer un mode de jeu spécial. Nous utilisons :
+
+<br><br>
+
+    <span class="yellow">goldenRun</span>()
+
+<br><br>
+
+Tout d'abord, le prix d'entrée du mode de jeu est de 250 CHF. Une fois la commande effectuée et les sous récupérés, le champ se vide et une pomme dorée apparaît. Le but est de diriger le drone pour récolter la pomme et obtenir de l'argent en fonction de la distance.
+
+
+<br><br> 
+
+Pour quitter le mode de jeu, il suffit d'utiliser la commande <span class="yellow">clear</span>() du point suivant
+
+<br><br>
+
+<span class="explanation-title">11. Réinitialiser le champ</span>
 
 <br><br>
 

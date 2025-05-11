@@ -47,6 +47,11 @@ function runWorker(){
             gameObject.carrot = gameObject.carrot + 1
         } else if (data[2] == 3){
             gameObject.apple = gameObject.apple + 1
+        } else if (data[2] == 4){
+          console.log("apple")
+            gameObject.money = gameObject.money + gameObject.goldenAppleValue
+            playSound("coin")
+            spawnApple()
         }
 
         gameObject.plantValues[data[1]-1][data[0]-1][0] = 0
@@ -62,9 +67,14 @@ function runWorker(){
         playSound(data)
       } else if (type === "clear"){
         plant_worker.postMessage({ type: "stopGrowing", data : "" });
-      } 
-      
-      else {
+      } else if (type === "goldenRun"){
+        plant_worker.postMessage({ type: "stopGrowing", data : "" });
+
+      } else if (type === "goldenApple"){
+
+        spawnApple()
+
+      } else {
         console.log("fin");
       }
       game_worker.postMessage({ type: "gameObject", data: gameObject });
@@ -521,7 +531,23 @@ function drawDrone(){
 
 setInterval(draw, 75)
 
+function spawnApple(){
+  function generateTwoRandomNumbers() {
+          const first = Math.floor(Math.random() * 7); // 0 to 6
+          const second = Math.floor(Math.random() * 7); // 0 to 6
+          return [first, second];
+        }
 
+        let applePositions = generateTwoRandomNumbers()
+
+        gameObject.plantValues[applePositions[0]][applePositions[1]][0] = 3
+        gameObject.plantValues[applePositions[0]][applePositions[1]][1] = 4
+
+        playSound("plant")
+
+        gameObject.goldenAppleValue = 5 + (Math.abs(gameObject.dronePosition[1] - 1 - applePositions[0]) * 3 + Math.abs(gameObject.dronePosition[0] - 1 - applePositions[1]) * 3);
+
+}
 
 
 

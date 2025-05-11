@@ -118,6 +118,8 @@ self.onmessage = (event) => {
             break;
         }
         var myPlant = new Plant(data[2], luck, data[3], data[0], data[1]);
+    } else if (type === "goldenApple"){
+      
     } else {
     console.log("fin")
     }
