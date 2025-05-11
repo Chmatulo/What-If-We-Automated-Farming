@@ -17,6 +17,12 @@ const tillSoundFiles = [
   const coinSoundFiles = [
     'data/sound/misc/pickupCoin.wav'
   ];
+
+  const waterSoundFiles = [
+    'data/sound/misc/water1.ogg',
+    'data/sound/misc/water2.ogg',
+    'data/sound/misc/water3.ogg'
+  ]
   
   const musicSoundFiles = [
     'data/sound/Music/Veracruz.mp3',
@@ -41,6 +47,7 @@ const tillSoundFiles = [
   const tillSounds = loadSounds(tillSoundFiles);
   const plantSounds = loadSounds(plantSoundFiles);
   const coinSounds = loadSounds(coinSoundFiles);
+  const waterSounds = loadSounds(waterSoundFiles);
   const musics = loadSounds(musicSoundFiles);
   
   plantSounds.forEach(sound => {
@@ -54,12 +61,17 @@ const tillSoundFiles = [
   coinSounds.forEach(sound => {
     sound.volume = volumesArray[2];
   });
+
+  waterSounds.forEach(sound => {
+    sound.volume = volumesArray[2];
+  });
   
   
   const soundMap = {
     till: { sounds: tillSounds },
     plant: { sounds: plantSounds },
     coin: { sounds: coinSounds },
+    water: {sounds: waterSounds },
     music: { sounds: musics },
   };
   

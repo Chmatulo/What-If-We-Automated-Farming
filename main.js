@@ -53,7 +53,12 @@ function runWorker(){
         gameObject.plantValues[data[1]-1][data[0]-1][1] = 0
         gameObject.soilValues[data[1]-1][data[0]-1] = 0
 
-      } else if (type == "playsound"){
+      } else if (type === "water"){
+        let array = JSON.parse(JSON.stringify(data));
+        if (gameObject.plantValues[array[1]-1][array[0]-1][0] > 0 && gameObject.plantValues[array[1]-1][array[0]-1][0] == 0){
+            plant_worker.postMessage({ type: "water", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], gameObject.plantValues[array[1]-1][array[0]-1][0],gameObject.dronePosition[1], gameObject.plantValues[array[1]-1][array[0]-1][1]] });
+        }
+      } else if (type === "playsound"){
         playSound(data)
       } else if (type === "clear"){
         plant_worker.postMessage({ type: "stopGrowing", data : "" });
@@ -89,6 +94,11 @@ function runWorker(){
         let array = JSON.parse(JSON.stringify(data));
         gameObject.plantValues[array[1]-1][array[0]-1][0] = array[2];
         gameObject.plantValues[array[1]-1][array[0]-1][1] = array[3];
+
+        if (array[3] == 3){
+          gameObject.soilValues[array[1]-1][array[0]-1] = 1
+        }
+
         game_worker.postMessage({ type: "gameObject", data: gameObject });
       } else if (type === "test"){
       } else {

@@ -66,7 +66,9 @@ self.onmessage = (event) => {
             case "carrot":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
                 self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 2, 0] });
-                var myPlant = new Plant(2, 5, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
+                if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 3){
+                  var myPlant = new Plant(2, 5, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
+                }
                 break;
 
             case "apple":
@@ -93,8 +95,7 @@ self.onmessage = (event) => {
           let plant = gameObject.plantValues[y][x][0];
           let stage = gameObject.plantValues[y][x][1]
 
-          if (plant > 0){
-            console.log(x,y)
+          if (plant > 0 && gameObject.soilValues[y][x] == 3){
             var myPlant = new Plant(plant, 5, stage, x+1, y+1);
             //self.postMessage({ type: "plantUpdate", data: [y+1 , x+1 , 2, 0] });
           }
@@ -102,6 +103,21 @@ self.onmessage = (event) => {
         }
       }
       
+    } else if(type === "water"){
+        let luck;
+        let plantType = data[2]
+        switch (plantType){
+          case 1:
+            luck = 2
+            break;
+          case 2:
+            luck = 5;
+            break;
+          case 3:
+            luck = 10;
+            break;
+        }
+        var myPlant = new Plant(data[2], luck, data[3], data[0], data[1]);
     } else {
     console.log("fin")
     }
