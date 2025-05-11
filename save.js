@@ -25,7 +25,7 @@ function save(type, num){
     currentSave = num
   }
 
-  console.log("saving ", currentSave)
+  //console.log("saving ", currentSave)
 
   switch (currentSave){
     case 1 :

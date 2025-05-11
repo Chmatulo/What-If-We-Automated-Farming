@@ -48,7 +48,7 @@ function runWorker(){
         } else if (data[2] == 3){
             gameObject.apple = gameObject.apple + 1
         } else if (data[2] == 4){
-          console.log("apple")
+          //console.log("apple")
             gameObject.money = gameObject.money + gameObject.goldenAppleValue
             playSound("coin")
             spawnApple()
@@ -60,7 +60,7 @@ function runWorker(){
 
       } else if (type === "water"){
         let array = JSON.parse(JSON.stringify(data));
-        if (gameObject.plantValues[array[1]-1][array[0]-1][0] > 0 && gameObject.plantValues[array[1]-1][array[0]-1][0] == 0){
+        if (gameObject.plantValues[array[1]-1][array[0]-1][0] > 0 && gameObject.plantValues[array[1]-1][array[0]-1][1] == 0){
             plant_worker.postMessage({ type: "water", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], gameObject.plantValues[array[1]-1][array[0]-1][0],gameObject.dronePosition[1], gameObject.plantValues[array[1]-1][array[0]-1][1]] });
         }
       } else if (type === "playsound"){
@@ -548,43 +548,6 @@ function spawnApple(){
         gameObject.goldenAppleValue = 5 + (Math.abs(gameObject.dronePosition[1] - 1 - applePositions[0]) * 3 + Math.abs(gameObject.dronePosition[0] - 1 - applePositions[1]) * 3);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function testC(){
-  let inputs = document.getElementsByClassName("code-input")
-  console.log(inputs.length)
-  createSave()
-}
-
-
-
-
-
-
-
-
-
 
 function stopGrowing(){
   plant_worker.postMessage({ type: "stopGrowing", data : "" });

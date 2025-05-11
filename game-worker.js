@@ -220,7 +220,7 @@ self.onmessage = async (event) => {
       posArr[1] = gameObject.dronePosition[1]
       return posArr
     } else if (par === "goldenApple"){
-      console.log(gameObject.plantValues)
+      //console.log(gameObject.plantValues)
       return locateGoldenApple()
     }
   });
@@ -346,12 +346,12 @@ self.onmessage = async (event) => {
 
     delay(gameObject.plantDelay)
 
-    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] <= 1){
+    if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 0 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 0){
       gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 2
       self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 2] });
       self.postMessage({ type: "water", data: [gameObject.dronePosition[0], gameObject.dronePosition[1]] });
       self.postMessage({ type: "playsound", data: "water" });
-    } else if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] <= 0){
+    } else if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 1 && gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][1] == 0){
       gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] = 3
       self.postMessage({ type: "soilUpdate", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], 3] });
       self.postMessage({ type: "water", data: [gameObject.dronePosition[0], gameObject.dronePosition[1]] });
@@ -400,7 +400,7 @@ self.onmessage = async (event) => {
     data = addAwaitToFunctionCalls(data)
     codeRunning = true
     self.postMessage({ type: "codeState", data: codeRunning })
-    console.log(data)
+    //console.log(data)
     const result = await pyodide.runPythonAsync(data); // Exécuter
     codeRunning = false
     self.postMessage({ type: "codeState", data: codeRunning })

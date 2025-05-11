@@ -59,7 +59,9 @@ self.onmessage = (event) => {
             case "wheat":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 1
                 self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 1, 0] });
-                var myPlant = new Plant(1, 2, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
+                if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 3){
+                  var myPlant = new Plant(1, 2, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
+                }
               break;
 
             case "carrot":
@@ -73,7 +75,9 @@ self.onmessage = (event) => {
             case "apple":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 3
                 self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 3, 0] });
-                var myPlant = new Plant(3, 10, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
+                if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 3){
+                  var myPlant = new Plant(3, 10, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
+                }
                 break;
 
             default:
