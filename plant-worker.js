@@ -40,7 +40,6 @@ class Plant {
 }
 
 function stopAllPlantGrowth() {
-  console.log("stopping growth")
     allPlants.forEach(plant => plant.stopGrowth());
   }
 
@@ -97,6 +96,7 @@ self.onmessage = (event) => {
 
           if (plant > 0 && gameObject.soilValues[y][x] == 3){
             var myPlant = new Plant(plant, 5, stage, x+1, y+1);
+            allPlants.push(myPlant)
             //self.postMessage({ type: "plantUpdate", data: [y+1 , x+1 , 2, 0] });
           }
 

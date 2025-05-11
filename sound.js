@@ -122,7 +122,7 @@ const tillSoundFiles = [
       const selectedSound = config.sounds[Math.floor(Math.random() * config.sounds.length)];
       selectedSound.currentTime = 0;
   
-     // selectedSound.volume = volume;
+     //selectedSound.volume = volume;
       selectedSound.play();
     }
   }
@@ -153,6 +153,10 @@ const tillSoundFiles = [
     tillSounds.forEach(sound => {
       sound.volume = volume2;
     });
+
+    waterSounds.forEach(sound => {
+      sound.volume = volume2;
+    });
     
 
     // Autres
@@ -166,7 +170,6 @@ const tillSoundFiles = [
       sound.volume = volumesArray[2];
     });
 
-
     localStorage.setItem('volumesArray', JSON.stringify(volumesArray))
   }
 
@@ -175,6 +178,7 @@ document.addEventListener('click', startAudioOnce);
 function startAudioOnce() {
 
   playMusic()
+  updateVolume()
 
   document.removeEventListener('click', startAudioOnce);
 }
