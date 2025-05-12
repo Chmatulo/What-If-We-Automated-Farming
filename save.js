@@ -1,13 +1,16 @@
 // Sons variables par défaut
 
+// Obtenir tableaux des volumes depuis la sauvegarde
 let storedVolume = localStorage.getItem('volumesArray');
 
+// Verifier qu'il a deja ete cree
 if (storedVolume !== null) {
   volumesArray = JSON.parse(storedVolume);
 } else {
   localStorage.setItem('volumesArray', JSON.stringify(volumesArray));
 }
 
+// Actualiser les sliders avec les valeurs correspondantes
 musicSlider.value = volumesArray[0] * 500
 musicValue.textContent = musicSlider.value + "%";
 
@@ -18,46 +21,45 @@ autresSlider.value = volumesArray[2] * 400
 autresValue.textContent = autresSlider.value + "%";
 
 
-
+// Fonction pour sauvegarder la partie
 function save(type, num){
 
-  if (type === "specific"){
-    currentSave = num
-  }
-
-  //console.log("saving ", currentSave)
-
-  switch (currentSave){
-    case 1 :
-      localStorage.setItem("gameObject1", JSON.stringify(gameObject));
-      localStorage.setItem("saveArray1", JSON.stringify(currentSaveArray));
-      break;
-    
-    case 2 :
-      localStorage.setItem("gameObject2", JSON.stringify(gameObject));
-      localStorage.setItem("saveArray2", JSON.stringify(currentSaveArray));
-      break;
-
-    case 3 :
-      localStorage.setItem("gameObject3", JSON.stringify(gameObject));
-      localStorage.setItem("saveArray3", JSON.stringify(currentSaveArray));
-      break;
-
-    case 4 :
-      localStorage.setItem("gameObject4", JSON.stringify(gameObject));
-      localStorage.setItem("saveArray4", JSON.stringify(currentSaveArray));
-      break;
-
-    case 5 :
-      localStorage.setItem("gameObject5", JSON.stringify(gameObject));
-      localStorage.setItem("saveArray5", JSON.stringify(currentSaveArray));
-      break;
-    }
+// sauvegarder dans une sauvegarde precise sinon sauvergarder dans la sauvergarde actuelle
+if (type === "specific"){
+  currentSave = num
 }
 
-function load(load){
+switch (currentSave){
 
-  //console.log("loading ", load)
+  case 1 :
+    localStorage.setItem("gameObject1", JSON.stringify(gameObject));
+    localStorage.setItem("saveArray1", JSON.stringify(currentSaveArray));
+    break;
+  
+  case 2 :
+    localStorage.setItem("gameObject2", JSON.stringify(gameObject));
+    localStorage.setItem("saveArray2", JSON.stringify(currentSaveArray));
+    break;
+
+  case 3 :
+    localStorage.setItem("gameObject3", JSON.stringify(gameObject));
+    localStorage.setItem("saveArray3", JSON.stringify(currentSaveArray));
+    break;
+
+  case 4 :
+    localStorage.setItem("gameObject4", JSON.stringify(gameObject));
+    localStorage.setItem("saveArray4", JSON.stringify(currentSaveArray));
+    break;
+
+  case 5 :
+    localStorage.setItem("gameObject5", JSON.stringify(gameObject));
+    localStorage.setItem("saveArray5", JSON.stringify(currentSaveArray));
+    break;
+  }
+}
+
+// Fonction pour charger une sauvegarde
+function load(load){
 
   switch (load){
     case 0 : 
@@ -91,14 +93,14 @@ function load(load){
       break;
   }
 
-  currentSave = load
+  currentSave = load // Actualiser la sauvergarde actuelle
 
   game_worker.postMessage({ type: "gameObject", data: gameObject });
   plant_worker.postMessage({ type: "firstTimeLoading", data: gameObject });
 
 
-  clearCodeBlocks()
-  loadCreateIDE()
+  clearCodeBlocks() // Effacer blocks de code
+  loadCreateIDE() // Charger les nouveaux
 
-  updateAll()
+  updateAll() // Charger items etc...
 }

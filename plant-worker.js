@@ -2,6 +2,7 @@
 var gameObject = {};
 var allPlants = [];
 
+// Class plante
 class Plant {
   constructor(type, luck, stage, x, y) {
       this.type = type;
@@ -11,6 +12,7 @@ class Plant {
       this.grow(luck); // Start growing immediately
   }
 
+// Fonction pour faire grandir la plante
   async grow(luck) {
     this.growthInterval = setInterval(() => {
       if (this.stage < 3) {
@@ -20,10 +22,11 @@ class Plant {
           self.postMessage({ type: "plantUpdate", data: [this.x, this.y, this.type, this.stage] });
         }
       } else {
+        // Lorsqu'elle a fini de pousser
         clearInterval(this.growthInterval);
         this.growthInterval = null;
   
-        // Remove this plant from the allPlants array
+        // Retirer la plante depuis le tableau des plantes
         const index = allPlants.indexOf(this);
         if (index !== -1) {
           allPlants.splice(index, 1);
@@ -39,10 +42,12 @@ class Plant {
   }
 }
 
+// Arreter la pousse de toutes les plantes
 function stopAllPlantGrowth() {
     allPlants.forEach(plant => plant.stopGrowth());
   }
 
+// Messages recu depuis main.js
 self.onmessage = (event) => {
    
     const { type, data } = event.data;
@@ -80,15 +85,13 @@ self.onmessage = (event) => {
                 }
                 break;
 
-            default:
-             // console.log(`Sorry, we are out of ${data}.`);
           }
 
           allPlants.push(myPlant);
 
     } else if (type === "stopGrowing"){
 
-        stopAllPlantGrowth();
+      stopAllPlantGrowth();
         
     } else if (type === "firstTimeLoading"){
       gameObject = JSON.parse(JSON.stringify(data));
@@ -101,7 +104,6 @@ self.onmessage = (event) => {
           if (plant > 0 && gameObject.soilValues[y][x] == 3){
             var myPlant = new Plant(plant, 5, stage, x+1, y+1);
             allPlants.push(myPlant)
-            //self.postMessage({ type: "plantUpdate", data: [y+1 , x+1 , 2, 0] });
           }
 
         }
@@ -122,10 +124,5 @@ self.onmessage = (event) => {
             break;
         }
         var myPlant = new Plant(data[2], luck, data[3], data[0], data[1]);
-    } else if (type === "goldenApple"){
-      
-    } else {
-    console.log("fin")
     }
-
 }
