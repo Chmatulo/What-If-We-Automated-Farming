@@ -42,7 +42,7 @@ class Plant {
   }
 }
 
-// Arreter la pousse de toutes les plantes
+// Arrêter la pousse de toutes les plantes
 function stopAllPlantGrowth() {
     allPlants.forEach(plant => plant.stopGrowth());
   }
@@ -51,67 +51,75 @@ function stopAllPlantGrowth() {
 self.onmessage = (event) => {
    
     const { type, data } = event.data;
-
-      
-    if (type === "gameObject") {
+     
+    if (type === "gameObject") { // Actualiser gameObject 
 
       gameObject = JSON.parse(JSON.stringify(data));
-      self.postMessage({ type: "test", data: "hello" });
 
-    } else if(type === "plant"){
+    } else if(type === "plant"){ // Planter
 
         switch (data) {
+
             case "wheat":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 1
-                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 1, 0] });
+                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 1, 0] }); // Envoyer la modification vers main.js
+
                 if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 3){
                   var myPlant = new Plant(1, 2, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
                 }
+
               break;
 
             case "carrot":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 2
-                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 2, 0] });
+                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 2, 0] }); // Envoyer la modification vers main.js
+
                 if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 3){
                   var myPlant = new Plant(2, 5, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
                 }
+
                 break;
 
             case "apple":
                 gameObject.plantValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1][0] = 3
-                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 3, 0] });
+                self.postMessage({ type: "plantUpdate", data: [gameObject.dronePosition[0] , gameObject.dronePosition[1] , 3, 0] }); // Envoyer la modification vers main.js
+
                 if (gameObject.soilValues[gameObject.dronePosition[1]-1][gameObject.dronePosition[0]-1] == 3){
                   var myPlant = new Plant(3, 10, 0, gameObject.dronePosition[0], gameObject.dronePosition[1]);
                 }
+
                 break;
 
           }
 
-          allPlants.push(myPlant);
+          allPlants.push(myPlant); // Ajouter nouvelle plante au tableaux des plantes entrain de pousser
 
-    } else if (type === "stopGrowing"){
+    } else if (type === "stopGrowing"){ // Arrêter la pousse de toutes les plantes
 
       stopAllPlantGrowth();
         
-    } else if (type === "firstTimeLoading"){
+    } else if (type === "firstTimeLoading"){ // Lancer la pousse des plantes qui sont "coincées au milieu de leur pousse lors du chargement d'une nouvelle partie"
+
       gameObject = JSON.parse(JSON.stringify(data));
 
       for (let y = 0; y < gameObject.plantValues.length; y++) {
         for (let x = 0; x < gameObject.plantValues[y].length; x++) {
+
           let plant = gameObject.plantValues[y][x][0];
           let stage = gameObject.plantValues[y][x][1]
 
-          if (plant > 0 && gameObject.soilValues[y][x] == 3){
+          if (plant > 0 && gameObject.soilValues[y][x] == 3){ // Vérifier si une plante est présente aux coordonnées et a été arrosée  
             var myPlant = new Plant(plant, 5, stage, x+1, y+1);
             allPlants.push(myPlant)
           }
-
         }
       }
       
-    } else if(type === "water"){
+    } else if(type === "water"){ // Lancer la pousse si la plante est arrosée après coup
+
         let luck;
         let plantType = data[2]
+
         switch (plantType){
           case 1:
             luck = 2

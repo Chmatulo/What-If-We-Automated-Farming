@@ -13,33 +13,37 @@ function runWorker(){
     console.log("game worker created")
   }
 
+
+  // Recevoir messages
   game_worker.onmessage = (event) => {
+
     const { type, data } = event.data;
 
     if (game_receivingAllowed){
-      if (type === "soilUpdate") {
+
+      if (type === "soilUpdate") { // Modification sol
         let array = JSON.parse(JSON.stringify(data));
         gameObject.soilValues[array[1]-1][array[0]-1] = array[2];
 
-      } else if (type === "plantUpdate") {
+      } else if (type === "plantUpdate") { // Modification plante
         let array = JSON.parse(JSON.stringify(data));
         gameObject.plantValues[array[1]-1][array[0]-1][0] = array[2];
         gameObject.plantValues[array[1]-1][array[0]-1][1] = array[3];
         game_worker.postMessage({ type: "gameObject", data: gameObject });
 
-      } else if (type == "codeState"){
+      } else if (type == "codeState"){ // Etat code
         game_codeRunning = data;
-      } else if (type == "gameObject"){
+      } else if (type == "gameObject"){ // Recevoir modification object gameObject
         gameObject = JSON.parse(JSON.stringify(data));
-      } else if (type == "move"){
+      } else if (type == "move"){ // bouger drone
         gameObject.dronePosition = data;
-      } else if (type === "plant") {
+      } else if (type === "plant") { // transfer plant au plantworker
         plant_worker.postMessage({ type: "gameObject", data: gameObject });
         plant_worker.postMessage({ type: "plant", data: data });
-      } else if (type === "seedUpdate"){
+      } else if (type === "seedUpdate"){ // modifications graines
         gameObject.carrotSeeds = data[0]
         gameObject.appleSeeds = data[1]
-      } else if (type === "harvest"){
+      } else if (type === "harvest"){ // Récolter
 
         if (data[2] == 1){
             gameObject.wheat = gameObject.wheat + 1
@@ -58,22 +62,21 @@ function runWorker(){
         gameObject.plantValues[data[1]-1][data[0]-1][1] = 0
         gameObject.soilValues[data[1]-1][data[0]-1] = 0
 
-      } else if (type === "water"){
+      } else if (type === "water"){ // Arroser
         let array = JSON.parse(JSON.stringify(data));
         if (gameObject.plantValues[array[1]-1][array[0]-1][0] > 0 && gameObject.plantValues[array[1]-1][array[0]-1][1] == 0){
             plant_worker.postMessage({ type: "water", data: [gameObject.dronePosition[0], gameObject.dronePosition[1], gameObject.plantValues[array[1]-1][array[0]-1][0],gameObject.dronePosition[1], gameObject.plantValues[array[1]-1][array[0]-1][1]] });
         }
-      } else if (type === "playsound"){
+      } else if (type === "playsound"){ // Jouer un son
         playSound(data)
-      } else if (type === "clear"){
+      } else if (type === "clear"){ // Réinitialiser le champ
         plant_worker.postMessage({ type: "stopGrowing", data : "" });
-      } else if (type === "goldenRun"){
+      } else if (type === "goldenRun"){ // Mode de jeu spécial
         plant_worker.postMessage({ type: "stopGrowing", data : "" });
-
-      } else if (type === "goldenApple"){
-
+      } else if (type === "goldenApple"){ // faire apparaître première pomme dorée
         spawnApple()
-
+      } else if (type === "test"){ // test
+        game_worker.postMessage({ type: "gameObject", data: gameObject });
       } else {
         console.log("fin");
       }
@@ -82,10 +85,12 @@ function runWorker(){
     }
   };
 
-  game_worker.onerror = (error) => {
+  // Gestion erreur
+  game_worker.onerror = (error) => { 
     console.error("Game Worker error:", error);
   };
 
+  // Envoyer gameObject au gameworker
   game_worker.postMessage({ type: "gameObject", data: gameObject });
 
   // Plant Worker
@@ -94,13 +99,16 @@ function runWorker(){
     console.log("Plant worker created")
   }
 
+  // Recevoir messages du plantworker
   plant_worker.onmessage = (event) => {
+
     const { type, data } = event.data;
 
     if (plant_receivingAllowed){
-      if (type === "gameObject"){
+
+      if (type === "gameObject"){ // Actualiser gameObject
         plant_worker.postMessage({ type: "gameObject", data: gameObject });
-      } else if (type === "plantUpdate") {
+      } else if (type === "plantUpdate") { // Actualiser état plante
         let array = JSON.parse(JSON.stringify(data));
         gameObject.plantValues[array[1]-1][array[0]-1][0] = array[2];
         gameObject.plantValues[array[1]-1][array[0]-1][1] = array[3];
@@ -110,24 +118,27 @@ function runWorker(){
         }
 
         game_worker.postMessage({ type: "gameObject", data: gameObject });
-      } else if (type === "test"){
-      } else {
-        //console.log("fin");
+      } else if (type === "test"){ // test
+        game_worker.postMessage({ type: "gameObject", data: gameObject });
       }
     }
   };
 
+  // GEstion erreur
   plant_worker.onerror = (error) => {
     console.error("Plant Worker error:", error);
   };
 
+  // Actualiser gameObject
   plant_worker.postMessage({ type: "gameObject", data: gameObject });
 }
 
-
+// Démarrer les workers
 runWorker()
 
+// Fonction arrêter le game worker
 function stopWorker(){
+
   game_codeRunning = false;
   game_receivingAllowed = false;
 
@@ -144,15 +155,15 @@ function stopWorker(){
 
 }
 
-
+// Fonction lancer l'exécution du code
 function runCode(code){
 
   game_receivingAllowed = true;
 
   let codes = document.getElementsByClassName("code-input")
-  let extractedFunction = []
+  let extractedFunction = [] // tableau code complet
 
-
+// Extraire le code de tous les blocks
 for (let i = 0 ; i < codes.length ; i++){
   if (codes[i].value == code){
     continue
@@ -165,17 +176,16 @@ if (!game_codeRunning){
   console.log("game worker not running")
 }
 
-    if (game_worker && !game_codeRunning){
-      game_codeRunning = true;
-      code = extractPythonFunctions(extractedFunction) + "\n" + "\n" + code 
-      game_worker.postMessage({ type: "code", data : code });
-    } else {
-      console.log("No worker, restarting", game_worker, plant_worker)
-      runWorker()
-    }
-
+if (game_worker && !game_codeRunning){
+    game_codeRunning = true;
+    code = extractPythonFunctions(extractedFunction) + "\n" + "\n" + code // Extraire les fonctions
+    game_worker.postMessage({ type: "code", data : code }); // Poster le code
+} else {
+    runWorker()
+  }
 }
 
+// Fonction pour extraire toutes les fonctions
 function extractPythonFunctions(codeStrings) {
   const allFunctions = [];
 
@@ -226,6 +236,7 @@ function extractPythonFunctions(codeStrings) {
   return allFunctions.join('\n\n');
 }
 
+// Fonction formatter un nombre 
 function formatNumber(num) {
   if (num >= 1_000_000) {
     return (Math.floor(num / 100_000) / 10).toString().replace(/\.0$/, '') + 'M';
@@ -237,9 +248,10 @@ function formatNumber(num) {
 }
 
 
-const baseCost = 50
-const growthRate = 1.5
+const baseCost = 50 // Cout de base pour les améliorations
+const growthRate = 1.5 // Facteur d'augmentation des prix
 
+// Fonction actualiser le nombre d'items et les différents niveau d'amélioration
 function updateAll(){
   document.getElementById("money").innerHTML = formatNumber(gameObject.money) + " CHF"
 
@@ -340,6 +352,7 @@ function updateAll(){
   }
 }
 
+// Fonction améliorer une abilité
 function upgrade(upgradeOption){
 
   let tillUpgradeCost = Math.floor(baseCost * (growthRate ** (gameObject.tillLevel - 1)))
@@ -376,25 +389,26 @@ function upgrade(upgradeOption){
   updateAll()
 }
 
+// Actualiser nombre d'items et améliorations
 updateAll()
 
-const field = document.getElementById("field");
-const field_context = field.getContext("2d");
+const field = document.getElementById("field"); // Champ objet
+const field_context = field.getContext("2d"); // Champ context
 
-field.height = 288; 
-field.width = 288; 
+field.height = 288; // hauteur
+field.width = 288; // largeur
 
-let isDragging = false;
-let offsetX, offsetY;
+let isDragging = false; // boolean déplacement du champ
+let offsetX, offsetY; // offset en x et y
 
-// Mouse down: Start dragging
+// Souris appuyer: Commencer le déplacement
 field.addEventListener("mousedown", (e) => {
   isDragging = true;
   offsetX = e.clientX - field.offsetLeft;
   offsetY = e.clientY - field.offsetTop;
 });
 
-// Mouse move: Update position if dragging
+// Souris bouge: Actualiser la position du champ en fonction de la position de la souris
 window.addEventListener("mousemove", (e) => {
   if (isDragging) {
     field.style.left = e.clientX - offsetX + "px";
@@ -402,41 +416,41 @@ window.addEventListener("mousemove", (e) => {
   }
 });
 
-// Mouse up: Stop dragging
+// Souris relacher click : arrêter le déplacement
 window.addEventListener("mouseup", () => {
   isDragging = false;
 });
 
-const textureSheet = document.getElementById("textureSheet");
-const textureSheet_context = textureSheet.getContext("2d");
+const textureSheet = document.getElementById("textureSheet"); // canvas de texture (invisible)
+const textureSheet_context = textureSheet.getContext("2d"); // canvas de texture context
 
-  // Create an Image object
+  // Créer Objet Image
   const img = new Image();
-  img.src = "data/textures/textures.png"; // Replace with your image path
+  img.src = "data/textures/textures.png"; // Fichier de textures
 
-  // Draw the image when it loads
+  // Dessiner l'image après le chargement
   img.onload = function () {
     textureSheet.height = img.height;
     textureSheet.width = img.width;
-    textureSheet_context.drawImage(img, 0,0, img.width, img.height);// (x, y, width, height)
+    textureSheet_context.drawImage(img, 0,0, img.width, img.height);
 
     draw()
   };
 
-let cellSize = 32
+let cellSize = 32 // taille d'une cellule
 
+// Fonction dessiner le champ
 function draw(){
-  
 
-  field_context.clearRect(0, 0, field.width, field.height);
+  field_context.clearRect(0, 0, field.width, field.height); // Effacer le canvas
 
-  drawField()
-  drawPlant()
-  drawDrone()
+  drawField() // dessiner le champ vide
+  drawPlant() // dessiner les plantes
+  drawDrone() // dessiner le drone
 
 }
 
-// 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet"
+// 0 = "normal" 1 = "tilled" 2 = "normal_wet" 3 ="tilled_wet" (tableau qui transforme le type de sol de (0,1,2,3) en coordonnées sur le canvas de textures)
 let soilTextures = [
   [2*cellSize, 0*cellSize],
   [2*cellSize, 1*cellSize],
@@ -444,7 +458,7 @@ let soilTextures = [
   [2*cellSize, 3*cellSize]
 ]
 
-// 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple"
+// 0 = nothing, 1 = "wheat", 2 = "carrot", 3 ="golden_apple" (tableau qui transforme le type de plante de (0,1,2,3) en coordonnées sur le canvas de textures)
 let plantTextures = [
   [-1, -1]
   [6*cellSize, 0],
@@ -454,6 +468,7 @@ let plantTextures = [
   
 ]
 
+// Fonction dessiner le sol du champ
 function drawField(){
 
   let topLeftCorner = textureSheet_context.getImageData(32, 0, cellSize, cellSize);
@@ -480,6 +495,7 @@ function drawField(){
   
 }
 
+// Fonction dessiner les plantes sur le champ
 function drawPlant(){
 
   for (let y = 1 ; y < 8 ; y++){  
@@ -511,6 +527,7 @@ function drawPlant(){
   }
 }
 
+// Dessiner le drone
 function drawDrone(){
   let droneTexture = textureSheet_context.getImageData(7*cellSize, gameObject.dronePosition[2]*cellSize, cellSize, cellSize); 
   let finalTexture = field_context.getImageData(gameObject.dronePosition[0] * cellSize, gameObject.dronePosition[1] * cellSize - 10, cellSize, cellSize)
@@ -529,8 +546,10 @@ function drawDrone(){
   gameObject.dronePosition[2] = gameObject.dronePosition[2] % 4
 }
 
+// Redessiner toutes les 75ms
 setInterval(draw, 75)
 
+// Fonction pour faire apparaître une pomme aléatoirement
 function spawnApple(){
   function generateTwoRandomNumbers() {
           const first = Math.floor(Math.random() * 7); // 0 to 6
@@ -539,6 +558,10 @@ function spawnApple(){
         }
 
         let applePositions = generateTwoRandomNumbers()
+
+        while (applePositions[0] == gameObject.dronePosition[1]-1 && applePositions[1] == gameObject.dronePosition[0]-1){
+          applePositions = generateTwoRandomNumbers()
+        }
 
         gameObject.plantValues[applePositions[0]][applePositions[1]][0] = 3
         gameObject.plantValues[applePositions[0]][applePositions[1]][1] = 4
@@ -549,6 +572,7 @@ function spawnApple(){
 
 }
 
+// Envoi commande d'interruption de la pousse des plantes
 function stopGrowing(){
   plant_worker.postMessage({ type: "stopGrowing", data : "" });
 }
