@@ -235,6 +235,7 @@ self.onmessage = async (event) => {
   pyodide.globals.set("buy", async (seed) => {
 
     //console.log("buying ", seed)
+    delay(50)
 
     if (seed == "carrotSeed" && gameObject.money >= 3){
       gameObject.money = gameObject.money - 3
@@ -468,7 +469,7 @@ function addAwaitForFunctions(text, functionList) {
 }
 
 
-const functionList = ['move', 'harvest', 'plant', 'getPos', "canHarvest", "sell", "buy"]; // Liste des fonction auxquelles ajouter await
+const functionList = ['move', 'harvest', 'plant', 'getPos', "canHarvest", "sell", "buy", "getNumber", "canBuy"]; // Liste des fonction auxquelles ajouter await
 
 function addAwaitToFunctionCalls(code) {
   return code.replace(

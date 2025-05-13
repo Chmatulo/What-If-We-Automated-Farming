@@ -1,18 +1,18 @@
-
-var IDE_number = -1
-
+// Charger IDE depuis la sauvegarde
 function loadCreateIDE(){
   for (let k = 0 ; k < currentSaveArray.length ; k++){
     createIDE(currentSaveArray[k][0], currentSaveArray[k][1], currentSaveArray[k][2], currentSaveArray[k][3], currentSaveArray[k][4], currentSaveArray[k][5], currentSaveArray[k][6])
   }
 }
 
+// Cree un IDE sur commande de l'utilisateur
 function createIDEUser(){
   let id = currentSaveArray.length
   currentSaveArray.push([id, "code " + id, "#Write your code here:", 124, 128, 350, 200])
   createIDE(id, "code " + id, "#Write your code here:", 124, 128, 350, 200)
 }
 
+// Fonction creer IDE
 function createIDE(id, name, code, x, y, w, h){
 
   const functionColor = '#fddd5c';
@@ -56,19 +56,19 @@ function createIDE(id, name, code, x, y, w, h){
 
 
   IDE_Container.addEventListener("mousedown", (event) => {
-    // Check if the click is outside the content area but not on the resize corner
+    // Verifie si le click est en dehors de la zone de contenu mais pas dans le coin
     const rect = IDE_Container.getBoundingClientRect();
     const isResizeArea = event.clientY > rect.top + 32;
-    // Start dragging if the click is not on the resize corner
+    // Deplace la division si ce n'est pas dans le coin
     if (!isResizeArea) {
       isDragging = true;
-      // Calculate the offset
+      // Offset
       offsetX = event.clientX - IDE_Container.offsetLeft;
       offsetY = event.clientY - IDE_Container.offsetTop;
     }
   });
 
-  // Textarea for code
+  // Textarea pour le code
   let code_input = document.createElement('textarea');
   code_input.classList.add("IDE", "code-input")
   code_input.value = code;
@@ -85,16 +85,17 @@ function createIDE(id, name, code, x, y, w, h){
         const start = code_input.selectionStart;
         const end = code_input.selectionEnd;
 
-        // Insert four spaces at the cursor position
+        // Ajouter 4 espaces 
         const value = code_input.value;
         code_input.value = value.substring(0, start) + "    " + value.substring(end);
 
-        // Move the cursor after the inserted spaces
+        // Deplacer le cursor
         code_input.selectionStart = code_input.selectionEnd = start + 4;
         updateHighlight()
     }
 });
 
+// Ecouter entree utilisateur pour ecrire le code en couleur
 code_input.addEventListener("input", (event) => {
 
   const textcontent = code_input.value;
@@ -115,13 +116,12 @@ if (span.parentElement.tagName === "SPAN") {
   });
 });
 
-
 IDE_Container.style.left = x + "px"
 IDE_Container.style.top = y + "px"
 
 main_container.addEventListener("mousemove", (event) => {
   if (isDragging) {
-    // Update the textarea's position
+    // Actualiser la position du textarea
     IDE_Container.style.left = event.clientX - offsetX + "px";
     IDE_Container.style.top = event.clientY - offsetY + "px";
 
@@ -327,36 +327,36 @@ return inputString
 
 }
 
+// Reorganise le tableau pour que chaque element ait le bon index
 function reorganize(){
   for (let i = 0 ; i < currentSaveArray.length ; i++){
     currentSaveArray[i][0] = i
   }
 }
 
+// Fonction qui supprime tous les blocks de code
 function clearCodeBlocks(){
   let codeBlocks = document.getElementsByClassName("IDE-container")
   Array.from(codeBlocks).forEach(el => el.remove());
 }
 
+// Fonction qui ajoute un eventlistener pour le changement de taille
 function addResizeListener(el, callback) {
   const observer = new ResizeObserver(entries => {
     for (let entry of entries) {
-      callback(entry); // Call it like a regular event handler
+      callback(entry);
     }
   });
   observer.observe(el);
-  return observer; // return in case you want to disconnect later
+  return observer;
 }
 
-//localStorage.setItem("saveLabels", JSON.stringify(["n", "", "", "", ""]));
-// Create saves
-
+// Creer les labels de sauvegarde
 function loadSaveLabels(){
 
 document.querySelectorAll('.load-container').forEach(el => el.remove());
 
 createdSavesData = JSON.parse(localStorage.getItem("saveLabels"));
-console.log(createdSavesData)
 
   for (let k = 0; k < 5 ; k++){
     if (createdSavesData[k] != ""){
@@ -366,6 +366,7 @@ console.log(createdSavesData)
 
 }
 
+// Fonction qui retorune vrai ou faux selon si l'on peut creer une nouvelle save
 function canCreateSave(){
   for (let k = 0; k < 5 ; k++){
     if (createdSavesData[k] === ""){
@@ -375,6 +376,7 @@ function canCreateSave(){
   return false
 }
 
+// Retourne l'index du premier emplacement disponible
 function firstAvailable(){
   for (let k = 0; k < 5 ; k++){
     if (createdSavesData[k] === ""){
@@ -383,7 +385,7 @@ function firstAvailable(){
   }
 }
 
-
+// Creer un label de sauvegarde
 function createSave(type, num){
 
     if (canCreateSave() || type === "loaded"){
@@ -425,11 +427,11 @@ function createSave(type, num){
         let range = document.createRange();
         let selection = window.getSelection();
     
-            range.selectNodeContents(load_button); // Selects all content inside
-            range.collapse(false); // Moves the cursor to the end
+            range.selectNodeContents(load_button); // Selectionne tout le contenu
+            range.collapse(false); // Deplace le cursor a la fin
 
-            selection.removeAllRanges(); // Clear existing selection
-            selection.addRange(range); // Apply new selection
+            selection.removeAllRanges(); // Supprime la seletion
+            selection.addRange(range); // Appliquer la nouvelle selection
 
         function onChange(e) {
           createdSavesData[load_container.id] = e.target.textContent
@@ -481,7 +483,7 @@ function createSave(type, num){
     }
 }
 
-
+// Fonction qui active la possibilite de modifier le nom de la sauvegarde
 function enableEditing() {
     let buttonText = document.getElementById("editableButton");
     buttonText.contentEditable = true;
@@ -499,6 +501,7 @@ function enableEditing() {
     });
 }
 
+// Fonction affiche menu sauvegarder sous
 function saveAs(){
 
   const saveButtons = document.querySelectorAll(".saveButtonLoad");
@@ -511,6 +514,7 @@ function saveAs(){
     loadMenuSaves()
 }
 
+// Charge lessauvegardes dans le menu 
 function loadMenuSaves(){
 
   let saveButtonsContainer = document.getElementById("loadingSaves");
@@ -519,8 +523,6 @@ function loadMenuSaves(){
   for (let i = 0; i < saveLabels.length; i++) {
     if (saveLabels[i] !== "") {
 
-      console.log("creating", i)
-  
       let saveButton = document.createElement("div");
       saveButton.innerText = saveLabels[i];
       saveButton.classList.add("saveButtonLoad");
@@ -533,6 +535,7 @@ function loadMenuSaves(){
   }
 }
 
+// Ajouter nouveau label de sauvegarde
 function addNewSaveMenu(){
   
   let saveButtonsContainer = document.getElementById("loadingSaves");
@@ -541,8 +544,6 @@ function addNewSaveMenu(){
   for (let i = 0; i < saveLabels.length; i++) {
     if (saveLabels[i] == "") {
 
-      console.log("creating", i)
-  
       let saveButton = document.createElement("div");
       saveButton.innerText = "New Save";
       saveButton.classList.add("saveButtonLoad");
@@ -553,11 +554,8 @@ function addNewSaveMenu(){
       };
 
       saveButtonsContainer.appendChild(saveButton);
-      console.log(saveLabels)
 
       break;
     }
   }
-
-
 }

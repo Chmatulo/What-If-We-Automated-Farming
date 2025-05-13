@@ -10,7 +10,6 @@ function runWorker(){
   // Game Worker
   if (!game_worker) {
     game_worker = new Worker("game-worker.js");
-    console.log("game worker created")
   }
 
 
@@ -96,7 +95,6 @@ function runWorker(){
   // Plant Worker
   if (!plant_worker) {
     plant_worker = new Worker("plant-worker.js");
-    console.log("Plant worker created")
   }
 
   // Recevoir messages du plantworker
@@ -146,10 +144,7 @@ function stopWorker(){
     game_worker.terminate()
     game_worker = null;
 
-    console.log("Worker Terminated")
-  } else {
-    console.log("No workers to terminate")
-  }
+  } 
 
   runWorker()
 
@@ -170,10 +165,6 @@ for (let i = 0 ; i < codes.length ; i++){
   } else {
     extractedFunction.push(codes[i].value)
   }
-}
-
-if (!game_codeRunning){
-  console.log("game worker not running")
 }
 
 if (game_worker && !game_codeRunning){
