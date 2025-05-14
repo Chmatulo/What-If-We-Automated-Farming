@@ -9,7 +9,7 @@ class Plant {
       this.x = x
       this.y = y
       this.stage = stage; // 0 = Seed, 1 = Sprout, etc.
-      this.grow(luck); // Start growing immediately
+      this.grow(luck); // Lance la pousse
   }
 
 // Fonction pour faire grandir la plante
@@ -49,7 +49,7 @@ function stopAllPlantGrowth() {
 
 // Messages recu depuis main.js
 self.onmessage = (event) => {
-   
+
     const { type, data } = event.data;
      
     if (type === "gameObject") { // Actualiser gameObject 
