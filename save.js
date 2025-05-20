@@ -65,6 +65,7 @@ function load(load){
     case 0 : 
       gameObject = structuredClone(defaultGameObject);
       currentSaveArray = structuredClone(defaultCurrentSave);
+      plant_worker.postMessage({ type: "stopGrowing", data: "rien" });
       changeScene()
       break;
     case 1 :

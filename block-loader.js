@@ -50,6 +50,7 @@ function createIDE(id, name, code, x, y, w, h){
   IDE_Container.style.width = w + "px"
 
   addResizeListener(IDE_Container, function (e) {
+      console.log(IDE_Container.id, currentSaveArray)
       currentSaveArray[IDE_Container.id][5] = e.contentRect.width
       currentSaveArray[IDE_Container.id][6] = e.contentRect.height
   });

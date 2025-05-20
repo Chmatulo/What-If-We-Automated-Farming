@@ -68,7 +68,7 @@ const defaultGameObject = {
   const autresSlider = document.getElementById('autres-slider');
   const autresValue = document.getElementById('autres-value');
 
-// Tableau codes + positions sauvegardés
+// Tableau codes + positions sauvegardées
 const defaultCurrentSave = [[0, "main", "#Write your code here:", 124 , 128, 350, 200]]
 let currentSaveArray = structuredClone(defaultCurrentSave);
 let currentSave = 0 // Numéro de la sauvegarde actuelle

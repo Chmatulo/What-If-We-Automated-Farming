@@ -44,6 +44,7 @@ class Plant {
 
 // Arrêter la pousse de toutes les plantes
 function stopAllPlantGrowth() {
+    console.log(allPlants)
     allPlants.forEach(plant => plant.stopGrowth());
   }
 
@@ -91,9 +92,10 @@ self.onmessage = (event) => {
                 break;
 
           }
-
-          allPlants.push(myPlant); // Ajouter nouvelle plante au tableaux des plantes entrain de pousser
-
+          if (myPlant){
+              allPlants.push(myPlant); // Ajouter nouvelle plante au tableaux des plantes entrain de pousser
+          }
+          
     } else if (type === "stopGrowing"){ // Arrêter la pousse de toutes les plantes
 
       stopAllPlantGrowth();
@@ -132,5 +134,6 @@ self.onmessage = (event) => {
             break;
         }
         var myPlant = new Plant(data[2], luck, data[3], data[0], data[1]);
+        allPlants.push(myPlant);
     }
 }

@@ -243,7 +243,6 @@ self.onmessage = async (event) => {
     } else if (seed == "appleSeed" && gameObject.money >= 10){
       gameObject.money = gameObject.money - 10
       gameObject.appleSeeds = gameObject.appleSeeds + 1
-      self.postMessage({ type: "playsound", data: "plant" });
     }
     self.postMessage({ type: "gameObject", data: gameObject });
   });
