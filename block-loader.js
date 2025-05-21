@@ -288,7 +288,7 @@ updateHighlight()
 
 function highlightKeywords(inputString, keywords) {
 
-  // Caractères spéciaux Regex
+  // Caractères spéciaux Regex 
   const escapedKeywords = keywords.map(keyword => keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   
   // Pattern Regex pour les keywords
@@ -297,7 +297,7 @@ function highlightKeywords(inputString, keywords) {
   // Pattern Regex pour les nombres
   const numberPattern = /-?\b\d+(\.\d+)?\b/g;
 
-  const linePattern = /#.*$/gm;
+  const linePattern = /#.*$/gm; // Comentaires python
 
   // Remplacer mots par un span stylisé
     inputString = inputString.replace(linePattern, (match) => {
